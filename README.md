@@ -19,7 +19,7 @@ A web-based platform for mining metagenomic data
 
 ## Framework
 
-Genocrunch uses the ruby on [Rails](http://rubyonrails.org/) framework with a PostgreSQL database.
+Genocrunch uses the ruby on Rails framework with a PostgreSQL database.
 
 ## Supported platforms
 
@@ -43,15 +43,16 @@ Genocrunch uses the ruby on [Rails](http://rubyonrails.org/) framework with a Po
 
 **Debian Linux**
 
-  Uninstall possible pre-installed versions of ruby:
+Uninstall possible pre-installed versions of ruby:
 
 ```
 $ sudo apt-get purge ruby
 ```
 
-  (Re-)install ruby and Rails using rbenv (see [here](https://www.digitalocean.com/community/tutorials/how-to-install-ruby-on-rails-with-rbenv-on-ubuntu-16-04#prerequisites)).
+(Re-)install ruby and Rails using rbenv (see [here](https://www.digitalocean.com/community/tutorials/how-to-install-ruby-on-rails-with-rbenv-on-ubuntu-16-04#prerequisites)).
 
-  Install PostgreSQL and start PostgreSQL server:
+Install PostgreSQL and start PostgreSQL server:
+
 ```
 $ sudo apt-get install postgresql postgresql-contrib libpq-dev
 $ sudo service postgresql start
@@ -59,9 +60,10 @@ $ sudo service postgresql start
 
 **macOS**
 
-  Install ruby and Rails using homebrew and rbenv (see [here](https://www.gorails.com/setup/osx/10.12-sierra)).
+Install ruby and Rails using homebrew and rbenv (see [here](https://www.gorails.com/setup/osx/10.12-sierra)).
 
-  Install PostgreSQL and start PostgreSQL server with homebrew:
+Install PostgreSQL and start PostgreSQL server with homebrew:
+
 ```
 $ brew install postgresql
 $ brew services start postgresql
@@ -76,24 +78,28 @@ $ sudo apt-get install build-essential python-dev python-pip
 $ pip install numpy
 ```
 
-  Check that python version is between 2.7.0 and 3.0.0:
+Check that python version is between 2.7.0 and 3.0.0:
+
 ```
 $ python -V
 ```
 
 **macOS**
 
-  If not done yet, install Homebrew:
+If not done yet, install Homebrew:
+
 ```
 $ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 ```
 
-  Install python 2.7 with Homebrew:
+Install python 2.7 with Homebrew:
+
 ```
 $ brew install python
 ```
 
-  Check that python version is between 2.7.0 and 3.0.0:
+Check that python version is between 2.7.0 and 3.0.0:
+
 ```
 $ python -V
 ```
@@ -103,10 +109,11 @@ $ python -V
 **Debian Linux**
 
 ```
-$ sudo apt install r-base-core
+$ sudo apt-get install r-base-core
 ```
 
-  Open the R environment and check that R version is above 3.2.2:
+Open the R environment and check that R version is above 3.2.2:
+
 ```
 $ R
 > R.version.string
@@ -114,16 +121,17 @@ $ R
 
 **macOS**
 
-  Update XQuartz and Xcode if needed.
+Update XQuartz and Xcode if needed.
 
-  Download the R binary from cran at <https://cran.r-project.org/bin/macosx>.
-  Click on the downloaded .pkg file and follow the instructions.
+Download the R binary from CRAN at <https://cran.r-project.org/bin/macosx>.
+Click on the downloaded .pkg file and follow the instructions.
 
 ### R dependencies
 
 Install required R packages from CRAN and bioconductor:
 
-*Note: Each package can be installed separately. If RcppEigen fails to compile, allocate more memory.*
+**Note: Each package can be installed separately. If RcppEigen fails to compile, allocate more memory.**
+
 ```
 $ sudo R
 > install.packages(c("ineq", "rjson", "fpc", "multcomp", "FactoMineR", "colorspace", "vegan", "optparse", "gplots", "igraph", "fossil", "coin", "SNFtool"))
@@ -133,6 +141,7 @@ $ sudo R
 ```
 
 In case of issue with igraph installation:
+
 ```
 > install.packages("devtools")
 > library(devtools)
@@ -141,76 +150,66 @@ In case of issue with igraph installation:
 
 ### Genocrunch web application
 
-  Create an empty rails project:
+Create an empty rails project:
+
 ```
 $ rails new genocrunch -d postgresql -B
 ```
 
-  Set the git repository:
+Set the git repository:
+
 ```
 $ cd genocrunch
 $ git init
 $ git remote add origin https://c4science.ch/source/genocrunch-2.1.git
 ```
 
-  Get a copy of genocrunch files:
+Get a copy of genocrunch files:
+
 ```
 $ git fetch --all
 $ git reset --hard origin/master
 ```
 
-  Set the <code>.gitignore</code> file:
+  Set the `.gitignore` file:
 
 ```
 $ cp gitignore.keep .gitignore
 ```
 
-  Run the <code>install.sh</code> script:
+Run the `install.sh` script (this is not essential for the application):
+
 ```
 $ cd /path/to/genocrunch
 $ chmod 755 install.sh
 $ ./install.sh
 ```
-  This simply uses the .bashrc or .bashprofile to include executable analysis scripts in the PATH.
 
-  Source .bashrc (or .bash_profile on macOS):
+This simply uses the `.bashrc` or `.bashprofile` to include executable analysis scripts fro `lib/genocrunch_console` in `$PATH`.
+
 ```
 $ source .bashrc  # for macOS replace .bashrc by .bash_profile
 ```
 
 **Additional steps for macOS**
 
-  Install the coreutils package with homebrew:
+Install the coreutils package with homebrew:
+
 ```
 $ brew install coreutils
 ```
-
 ### Ruby libraries (gems)
 
-  Use the Gemefile to install required gems:
+Use the Gemefile to install required gems:
+
 ```
 $ cd /path/to/genocrunch
 $ bundle install
 ```
 
-  A function in the activesupport library may cause the following error at creation of a job: <code>undefined method `to_datetime' for false:FalseClass</code>. This can be fixed by editing its <code>calculations.rb</code> file as described [here](http://stackoverflow.com/questions/36805639/rails-3-2-to-4-0-upgrade-undefined-method-to-datetime-for-falsefalseclass)):
-  Replace the <code>calculations.rb</code> file by a fixed copy:
-
-**Debian Linux**
-
-```
-$ wget https://raw.githubusercontent.com/alexisrapin/fix/master/calculations.rb -O ~/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activesupport-4.0.0/lib/active_support/core_ext/date_time/calculations.rb
-```
-
-**macOS**
-
-```
-$ curl "https://raw.githubusercontent.com/alexisrapin/fix/master/calculations.rb" -o ~/.rbenv/versions/2.3.1/lib/ruby/gems/2.3.0/gems/activesupport-4.0.0/lib/active_support/core_ext/date_time/calculations.rb
-```
-
 ### Set application configuration variables
 
-  Set the application configuration variables in the genocrunch/config/config.yml file to fit the current installation:
+Set the application configuration variables in the `genocrunch/config/config.yml` file to fit the current installation:
 
 ```
 $ cd /path/to/genocrunch
@@ -242,8 +241,8 @@ production:
 
 ### Set genocrunch emails
 
-  Set the email details that will be used by Genocrunch to send information such as registration confirmation link or password recovery link to users.
-The following example would set Genocrunch to use an hypothetical gmail address (app_email@gmail.com) in development.
+Set the email details that will be used by Genocrunch to send information such as registration confirmation link or password recovery link to users.
+The following example would set Genocrunch to use an hypothetical gmail address (`app_email@gmail.com`) in development.
 
 ```
 $ cd /path/to/genocrunch
@@ -280,7 +279,7 @@ Rails.application.configure do
 
 ### Setup the PostgreSQL server
 
-  Create a new role and a new database (you can create different users and databases for development, test and/or production):
+Create a new role and a new database (you can create different users and databases for development, test and/or production):
 
 ```
 $ sudo su postgres  # for macOS, replace postgres by _postgres
@@ -291,8 +290,8 @@ postgres=# \q
 $ exit
 ```
 
-  Set the genocrunch/config/database.yml file:
-  In development, test and/or production sections, set the <code>database</code>, <code>username</code> and <code>password</code> to fit the corresponding PostgreSQL database:
+Set the `genocrunch/config/database.yml` file:
+In development, test and/or production sections, set the `database`, `username` and `password` to fit the corresponding PostgreSQL database:
 
 ```
 $ cd /path/to/genocrunch
@@ -315,7 +314,7 @@ password: mypassword
 
 Two default users will be created: guest and admin. The guest user is required to try the application without registering/signing-in. The admin user is optional.
 Change the default passwords and emails.
-This can be done after seeding the database, with psql or prior to seeding the database, in the genocrunch/db/seeds.rb file:
+This can be done after seeding the database, with psql or prior to seeding the database, in the `genocrunch/db/seeds.rb` file:
 
 ```
 $ cp /path/to/genocrunch/db/seeds.rb.keep /path/to/genocrunch/db/seeds.rb
@@ -348,6 +347,7 @@ $ rake db:seed
 ```
 
 To set users emails and password after seeding:
+
 ```
 $ psql db_name
 db_name=# update users set email = 'guest_email' where username = 'guest';
@@ -359,14 +359,15 @@ db_name=# update users set password = 'admin_password' where username = 'admin';
 ### Run the Rails server
 
   * Development mode
+
 ```
 $ cd /path/to/genocrunch
 $ rails server
 ```
 
-You can now access the application in your browser at <code>http://localhost:3000</code> on your machine and <code>your_ip_address:3000</code> on your network.
+You can now access the application in your browser at <http://localhost:3000> on your machine and `your_ip_address:3000` on your network.
 
-*By default, the server runs in development mode.*
+**By default, the server runs in development mode.**
 
   * Production mode
 
@@ -375,44 +376,50 @@ This section is under construction.
 ### Start workers
 
   * Prefered way:
+
 ```
 $ cd /path/to/genocrunch
 $ RAILS_ENV=development bin/delayed_job -n 2  start
 ```
+
 OR
+
 ```
 $ cd /path/to/genocrunch
 $ RAILS_ENV=development bin/delayed_job -n 2 restart
 ```
 
   * Alternative way:
+
 ```
 $ cd /path/to/genocrunch
 $ rake jobs:work
 ```
 
 You can now create new jobs (run analysis).
-Read the documentation (<code>http://localhost:3000/home/doc</code>) for details.
+Read the documentation (<http://localhost:3000/home/doc>) for details.
 
 ### Create a new version
 
-Versions of installed R packages can be referenced in the version page (<code>http://localhost:3000/versions</code>).
-For this, run the <code>get_version.py</code> script:
+Versions of installed R packages can be referenced in the version page (<http://localhost:3000/versions>).
+For this, run the `get_version.py` script:
+
 ```
 $ cd /path/to/genocrunch
 $ get_version.py
 ```
-This will create a .json file in the genocrunch main directory with a name looking like <code>version_2017-12-18_18:03:08.898906.json</code>.
+
+This will create a .json file in the genocrunch main directory with a name looking like `version_2017-12-18_18:03:08.898906.json`.
 
 Sign in as admin and navigate to Infos>Versions
-Click on the <b>New Version</b> button and fill the form.
-In the JSON field, copy the json string contained in the .json file previously created using the <code>get_version.py</code> script.
-Finally, click on the <code>Create Version</code> button.
+Click on the **New Version** button and fill the form.
+In the JSON field, copy the json string contained in the .json file previously created using the `get_version.py` script.
+Finally, click on the **Create Version** button.
 
 ### Terms of service
 
-Terms of service can be edited in /path/to/genocrunch/public/app/TERMS_OF_SERVICE.txt
+Terms of service can be edited in `/path/to/genocrunch/public/app/TERMS_OF_SERVICE.txt`.
 
 ## Usage
 
-See Infos>Doc in the application web page (<code>http://localhost:3000/home/doc</code>).
+See **Infos>Doc** in the application web page (<http://localhost:3000/home/doc>).
