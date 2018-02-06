@@ -16,6 +16,7 @@ A web-based platform for mining metagenomic data
 - **Git clone URL:** <https://c4science.ch/source/genocrunch-2.1.git>
 - **Documentation:** <https://c4science.ch/source/genocrunch-2.1>
 - **Licence:** <https://www.gnu.org/licenses/agpl-3.0.md>
+- **Dockerfile:** <https://c4science.ch/source/genocrunch_docker.git>
 
 ## Framework
 
@@ -28,7 +29,7 @@ Genocrunch uses the ruby on Rails framework with a PostgreSQL database.
 
 ## Supported web browsers
 
-- **Mozilla Firefox** **(Mobile versions are not supported)**
+- **Mozilla Firefox** (Mobile versions are not supported)
 
 ## Requirements
 
@@ -37,7 +38,7 @@ Genocrunch uses the ruby on Rails framework with a PostgreSQL database.
 - **Python version >=2.7.0 <3.0.0**
 - **R version >3.2.2**
 
-## Installation *(Debian Linux and macOS)*
+## Installation (Debian Linux and macOS)
 
 ### Ruby, Rails and PostgreSQL
 
@@ -423,3 +424,7 @@ Terms of service can be edited in `/path/to/genocrunch/public/app/TERMS_OF_SERVI
 ## Usage
 
 See **Infos>Doc** in the application web page (<http://localhost:3000/home/doc>).
+
+## Running on Docker
+
+See a Dockerfile [here](https://c4science.ch/source/genocrunch_docker.git).
