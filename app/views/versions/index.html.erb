@@ -1,0 +1,59 @@
+<div class="container-fluid main-container">
+
+<p id="notice"><%= notice %></p>
+
+<h1>Versions</h1>
+
+    <% @versions.each do |version| %>
+<div class='card'>
+<div class='card-header'>Version <%= version.id %></div>
+<div class='card-block'>
+<p class='card-text'><%= version.description %></p>
+<% list_tools = JSON.parse(version.tools_json).select { |e| e['version'] != 'NA' } %>
+
+
+<table id='tools_<%= version.id %>' class='table version-table'>
+<thead  style=' white-space:nowrap;'>
+<th>R package</th>
+<th>Category</th>
+<th>Description</th>
+<th>Version</th>
+</thead>
+<tbody>
+<% list_tools.each do |t| %>
+<tr>
+<td><a href='<%= @h_tools[t['name']]['man'] %>' target='_blank'><%= t['name'] %></a></td>
+<td><%= @h_tools[t['name']]['categ'] %></td>
+<td><%= @h_tools[t['name']]['description'] %></td>
+<td><%= t['version'] %></td>
+</tr>
+<% end %>
+</tbody>
+</table>
+<%= link_to "Edit", edit_version_path(version) if admin? %>
+</div>
+</div>
+
+
+    <% end %>
+
+<br>
+
+<%= link_to('New Version', new_version_path) if admin? %>
+</div>
+
+
+<%= javascript_tag do  %>
+
+  <% @versions.each do |v| %>
+
+    table = $('#tools_<%= v.id %>').dataTable({  
+      sDom: 't',
+      "iDisplayLength" : -1
+    });
+
+    table.fnSort( [ [1,'asc'], [0,'asc'] ] );
+
+  <% end %>
+
+<% end %>

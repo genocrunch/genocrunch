@@ -1,0 +1,7 @@
+<p>Welcome to <%= Rails.application.class.parent_name %>, <%= @resource.username %>!</p>
+
+<p>You can confirm your account through the link below:</p>
+
+<p><%= link_to 'Confirm my account', confirmation_url(@resource, :confirmation_token => @token) %></p>
+
+<p>You will then be able to login to <%= Rails.application.class.parent_name %> using your login name and password.</p>

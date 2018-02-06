@@ -1,0 +1,57 @@
+<% data_parser = File.open(Rails.root.to_s+data.to_s, "r").read.split(/\r\n|\r|\n/) %>
+
+<table id="plot" class="table table-condensed overview-table">
+  <thead>
+    <tr align="center">
+    <% data_parser[0].split("\t").each_with_index do |h, i| %>
+      <th title="<%= h %>">
+        <div class="th-content-container">
+          <div class="form-group">
+            <label class="label-sm"><%= h %></label>
+            <input type="text" id="search<%= i %>" class="form-control input-sm" onkeyup="searchTable('plot', 'search<%= i %>', <%= i %>)" onclick="avoidSorting(event)">
+          </div>
+          <i class="fa fa-sort" aria-hidden="true"></i>
+        </div>
+      </th>
+    <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <% data_parser.drop(1).each do |l| %>
+      <tr align="center">
+      <% l.split("\t").each_with_index do |e, i| %>
+        <td class="column-<%= i %>"><%= e %></td>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>
+
+<script>
+
+  $(document).ready(function() {
+
+    var searchWholeTable = function() {
+      searchTable("plot", "searchInput", "all");
+    };
+
+    var buttons = d3.select("#d3-buttons");
+    var searchInput = buttons.append("div")
+      .attr("title", "Search")
+      .attr("class", "form-group has-feedback search-input")
+
+    searchInput.append("label")
+      .attr("class", "control-label sr-only")
+
+    searchInput.append("input")
+      .attr("id", "searchInput")
+      .attr("type", "text")
+      .attr("class", "form-control input-md")
+      .attr("placeholder", "Search")
+      .on("keyup", searchWholeTable);
+
+    searchInput.append("i")
+      .attr("class", "fa fa-search form-control-feedback")
+
+    colorTable(".column-", <%= data_parser.drop(1).to_json.html_safe %>);
+  });
+</script>

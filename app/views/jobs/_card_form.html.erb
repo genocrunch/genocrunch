@@ -1,0 +1,20 @@
+<% list_fields.each do |field| %>
+<% css_classes = [] %>
+<% css_classes.push('hidden') if (field['type'] == 'select' and !field['values'] and !@default[field['id']]) %>
+<% css_classes.push('missing_field') if @missing_fields and @missing_fields.map{|e| e['id']}.include?(field['id']) %>
+ 
+<div id='field-<%= field['id'] %>' class='card-text <%= css_classes.join(" ") %>'>
+  <% label = field_label(field).join("")  if !['check_box', 'model_type', 'bool'].include?field['type'] and !field['hidden_field'] %>
+  <%= raw label %>
+  <% if field['type'] %>
+  <%= render :partial => "field_" + field['type'], :locals => {:field => field} %>
+  <% else %>
+  <%= field.to_json %>
+  <% end %>
+</div>
+
+<% end %>
+
+
+
+  

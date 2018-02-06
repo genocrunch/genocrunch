@@ -1,0 +1,24 @@
+<div class="container-fluid" id="form-container">
+
+  <div id="test"></div>
+
+  <%= render partial: 'form', :locals => {default: @default, context: "main"} %>
+</div>
+
+<script>
+
+  $(document).ready(function() {
+    resizeMultiselect('.col-md-3', 0.92, '#form-container', true);
+
+    var form_element_containers = document.getElementsByClassName("form-categ-container"),
+        topbar_height = $("#topbar").height(),
+        bottombar_height = $("#bottombar").height();
+
+    for (var i = 0; i < form_element_containers.length; i++) {
+      form_element_containers[i].style.height = ($(window).height()-topbar_height-bottombar_height) + "px"; // max scroll down puts top of last row right below topbar
+    }
+
+  });
+
+</script>
+

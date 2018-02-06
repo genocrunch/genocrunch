@@ -1,0 +1,83 @@
+.navbar {
+  margin-bottom: 0;
+  border:0;
+}
+
+.git-link {
+  font-size: 1.5em
+}
+
+.topbar {
+  -webkit-box-shadow: 0px 3px 3px 2px #888888;
+  -moz-box-shadow: 0px 3px 3px 2px #888888;
+  box-shadow: 0px 3px 3px -2px #888888;
+
+  .topbar-title {
+    color:#999;
+  }
+
+  .topbar2 {
+    background-color:#333;
+    color:#fff;
+
+    .topbar2-btns>li>a,
+    .topbar2-tabs>li>a {
+      &,
+      &:hover,
+      &:focus,
+      &:active {
+       color:#fff;
+      }
+    }
+
+    .topbar2-btns>li>a {
+      &,
+      &:hover,
+      &:focus,
+      &:active {
+       background-color:#333;
+      }
+    }
+
+    .topbar2-tabs {
+      float:left;
+
+      &>li {
+        &:hover,
+        &:focus,
+        &:active,
+        &.active {
+         background-color:#3C65A9;
+        }
+      }
+    }
+
+    .input-group>.dropdown>.dropdown-toggle,
+    .input-group>.input-group-addon>a {
+      &,
+      &:hover,
+      &:focus,
+      &:active {
+        color: #333;
+        text-decoration: none;
+        background-color: #00000000;
+      }
+    }
+
+    .topbar2-title>li,
+    .topbar2-tabs>li.input-group-container {
+        padding:8px;
+    }
+
+    .topbar2-title>li {
+        padding-left:0;
+    }
+  }
+}
+
+.bottombar {
+  color:#999;
+  small {
+    color:#999;
+  }
+}

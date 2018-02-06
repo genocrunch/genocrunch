@@ -1,0 +1,15 @@
+<li>
+  <div class="btn-group">
+
+  <%- if controller_name != 'sessions' %>
+    <%= link_to "Sign in", new_session_path(resource_name), class: "btn btn-default navbar-btn" %>
+  <% end -%>
+
+  <%- if devise_mapping.registerable? && controller_name != 'registrations' %>
+    <%= link_to 'Sign up', new_registration_path(resource_name), class: "btn btn-default navbar-btn" %>
+  <% end -%>
+
+  <%= link_to 'Try', new_job_path, class: "btn btn-default navbar-btn" %>
+
+  </div>
+</li>

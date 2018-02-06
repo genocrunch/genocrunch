@@ -1,0 +1,13 @@
+<h3>Heatmap</h3>
+
+<%= render :partial => 'view_description' %>
+<%= render :partial => 'standard_fig_layout' %>
+
+<%= javascript_tag do %>
+
+  var fig_data = <%= raw @data_json %>;
+
+heatMap('fig', 'fig-legend', fig_data,  W = 750, H = 750, font_family = "verdana, arial, helvetica, sans-serif");
+
+<% end %>
+

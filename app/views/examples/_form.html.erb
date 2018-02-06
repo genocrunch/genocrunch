@@ -1,0 +1,22 @@
+<%= form_for(example) do |f| %>
+  <% if example.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(example.errors.count, "error") %> prohibited this example from being saved:</h2>
+
+      <ul>
+      <% example.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+Job Key
+<%= f.text_field 'job_key' %>
+
+  <div class="actions">
+
+   
+    <%= f.submit %>
+  </div>
+<% end %>

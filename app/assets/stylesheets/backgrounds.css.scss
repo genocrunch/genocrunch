@@ -1,0 +1,15 @@
+.bg-welcome,
+.bg-error {
+  min-height:100vh;
+  height:auto;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.bg-welcome {
+  background-image: asset-url("bg-welcome.jpg")
+}
+
+.bg-error {
+  background-image: asset-url("bg-error.jpg")
+}

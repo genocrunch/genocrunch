@@ -1,0 +1,100 @@
+name,version,homepage,summary,license
+actioncable,5.0.1,http://rubyonrails.org,WebSocket framework for Rails.,MIT
+actionmailer,5.0.1,http://rubyonrails.org,"Email composition, delivery, and receiving framework (part of Rails).",MIT
+actionpack,5.0.1,http://rubyonrails.org,Web-flow and rendering framework putting the VC in MVC (part of Rails).,MIT
+actionview,5.0.1,http://rubyonrails.org,Rendering framework putting the V in MVC (part of Rails).,MIT
+activejob,5.0.1,http://rubyonrails.org,Job framework with pluggable queues.,MIT
+activemodel,5.0.1,http://rubyonrails.org,A toolkit for building modeling frameworks (part of Rails).,MIT
+activerecord,5.0.1,http://rubyonrails.org,Object-relational mapper framework (part of Rails).,MIT
+activerecord-session_store,1.0.0,https://github.com/rails/activerecord-session_store,An Action Dispatch session store backed by an Active Record class.,MIT
+activesupport,5.0.1,http://rubyonrails.org,A toolkit of support libraries and Ruby core extensions extracted from the Rails framework.,MIT
+arel,7.1.4,https://github.com/rails/arel,Arel Really Exasperates Logicians  Arel is a SQL AST manager for Ruby,MIT
+bcrypt,3.1.11,https://github.com/codahale/bcrypt-ruby,OpenBSD's bcrypt() password hashing algorithm.,MIT
+bootstrap-sass,3.2.0.2,https://github.com/twbs/bootstrap-sass,"Twitter's Bootstrap, converted to Sass and ready to drop into Rails or Compass",MIT
+builder,3.2.3,http://onestepback.org,Builders for MarkUp.,MIT
+bundler,1.14.6,http://bundler.io,The best way to manage your application's dependencies,MIT
+climate_control,0.0.3,https://github.com/thoughtbot/climate_control,Modify your ENV easily with ClimateControl,MIT
+cocaine,0.5.8,https://github.com/thoughtbot/cocaine,A small library for doing (command) lines,MIT
+coffee-rails,4.2.1,https://github.com/rails/coffee-rails,CoffeeScript adapter for the Rails asset pipeline.,MIT
+coffee-script,2.4.1,http://github.com/josh/ruby-coffee-script,Ruby CoffeeScript Compiler,MIT
+coffee-script-source,1.12.2,http://coffeescript.org,The CoffeeScript Compiler,MIT
+concurrent-ruby,1.0.4,http://www.concurrent-ruby.com,"Modern concurrency tools for Ruby. Inspired by Erlang, Clojure, Scala, Haskell, F#, C#, Java, and classic concurrency patterns.",MIT
+d3-rails,4.9.1,https://github.com/iblue/d3-rails,D3 for Rails Asset Pipeline,MIT
+daemons,1.2.4,https://github.com/thuehlinger/daemons,A toolkit to create and control daemons in different ways,MIT
+dalli,2.7.6,https://github.com/petergoldstein/dalli,High performance memcached client for Ruby,MIT
+debug_inspector,0.0.2,https://github.com/banister/debug_inspector,A Ruby wrapper for the MRI 2.0 debug_inspector API,MIT
+delayed-web,0.4.4,http://github.com/tatey/delayed-web,A rails engine that provides a simple web interface for exposing the Delayed::Job queue.,MIT
+delayed_job,4.1.2,http://github.com/collectiveidea/delayed_job,Database-backed asynchronous priority queue system -- Extracted from Shopify,MIT
+delayed_job_active_record,4.1.1,http://github.com/collectiveidea/delayed_job_active_record,ActiveRecord backend for DelayedJob,MIT
+descriptive_statistics,2.5.1,https://github.com/thirtysixthspan/descriptive_statistics,Descriptive Statistics,MIT
+devise,4.2.0,https://github.com/plataformatec/devise,Flexible authentication solution for Rails with Warden,MIT
+did_you_mean,1.0.0,https://github.com/yuki24/did_you_mean,"""Did you mean?"" experience in Ruby",MIT
+erubis,2.7.0,http://www.kuwata-lab.com/erubis/,a fast and extensible eRuby implementation which supports multi-language,MIT
+execjs,2.7.0,https://github.com/rails/execjs,Run JavaScript code from Ruby,MIT
+font-awesome-rails,4.7.0.2,https://github.com/bokmann/font-awesome-rails,an asset gemification of the font-awesome icon font library,MIT
+gem-licenses,0.2.1,http://github.com/dblock/gem-licenses,Attempts to figure out what licenses various gems use.,MIT
+globalid,0.3.7,http://www.rubyonrails.org,Refer to any model with a URI: gid://app/class/id,MIT
+haml,4.0.7,http://haml.info/,"An elegant, structured (X)HTML/XML templating engine.",MIT
+i18n,0.8.0,http://github.com/svenfuchs/i18n,New wave Internationalization support for Ruby,MIT
+jbuilder,2.6.1,https://github.com/rails/jbuilder,Create JSON structures via a Builder-style DSL,MIT
+jquery-fileupload-rails,0.4.7,https://github.com/tors/jquery-fileupload-rails,jQuery File Upload for Rails 3.1+ Asset Pipeline,MIT
+jquery-rails,4.2.2,https://github.com/rails/jquery-rails,Use jQuery with Rails 4+,MIT
+jquery-ui-rails,5.0.5,https://github.com/joliss/jquery-ui-rails,jQuery UI packaged for the Rails asset pipeline,MIT
+libv8,3.16.14.15,http://github.com/cowboyd/libv8,Distribution of the V8 JavaScript engine,MIT
+listen,3.0.8,https://github.com/guard/listen,Listen to file modifications,MIT
+loofah,2.0.3,https://github.com/flavorjones/loofah,Loofah is a general library for manipulating and transforming HTML/XML documents and fragments,MIT
+mail,2.6.4,https://github.com/mikel/mail,"Mail provides a nice Ruby DSL for making, sending and reading emails.",MIT
+method_source,0.8.2,http://banisterfiend.wordpress.com,retrieve the sourcecode for a method,MIT
+mime-types,3.1,https://github.com/mime-types/ruby-mime-types/,The mime-types library provides a library and registry for information about MIME content type definitions,MIT
+mime-types-data,3.2016.0521,https://github.com/mime-types/mime-types-data/,mime-types-data provides a registry for information about MIME media type definitions,MIT
+mimemagic,0.3.0,https://github.com/minad/mimemagic,Fast mime detection by extension or content,MIT
+mini_portile2,2.1.0,http://github.com/flavorjones/mini_portile,Simplistic port-like solution for developers,MIT
+minitest,5.10.1,https://github.com/seattlerb/minitest,"minitest provides a complete suite of testing facilities supporting TDD, BDD, mocking, and benchmarking",MIT
+multi_json,1.12.1,http://github.com/intridea/multi_json,A common interface to multiple JSON libraries.,MIT
+multipart-parser,0.1.1,https://github.com/danabr/multipart-parser,simple parser for multipart MIME messages,MIT
+nio4r,1.2.1,https://github.com/celluloid/nio4r,NIO provides a high performance selector API for monitoring IO objects,MIT
+nokogiri,1.7.0.1,http://nokogiri.org,"Nokogiri (鋸) is an HTML, XML, SAX, and Reader parser",MIT
+orm_adapter,0.5.0,http://github.com/ianwhite/orm_adapter,orm_adapter provides a single point of entry for using basic features of popular ruby ORMs.  Its target audience is gem authors who want to support many ruby ORMs.,MIT
+paperclip,4.3.2,https://github.com/thoughtbot/paperclip,File attachments as attributes for ActiveRecord,MIT
+rack,2.0.1,http://rack.github.io/,a modular Ruby webserver interface,MIT
+rack-test,0.6.3,http://github.com/brynary/rack-test,Simple testing API built on Rack,MIT
+rails,5.0.1,http://rubyonrails.org,Full-stack web application framework.,MIT
+rails-dom-testing,2.0.2,https://github.com/rails/rails-dom-testing,Dom and Selector assertions for Rails applications,MIT
+rails-html-sanitizer,1.0.3,https://github.com/rails/rails-html-sanitizer,This gem is responsible to sanitize HTML fragments in Rails applications.,MIT
+rails4-autocomplete,1.1.1,http://github.com/peterwillcn/rails4-autocomplete,Use jQuery's autocomplete plugin with Rails 4.,MIT
+railties,5.0.1,http://rubyonrails.org,"Tools for creating, working with, and running Rails applications.",MIT
+rake,12.0.0,https://github.com/ruby/rake,Rake is a Make-like program implemented in Ruby,MIT
+rb-fsevent,0.9.8,http://rubygems.org/gems/rb-fsevent,Very simple & usable FSEvents API,MIT
+rb-inotify,0.9.8,http://github.com/nex3/rb-inotify,"A Ruby wrapper for Linux's inotify, using FFI",MIT
+ref,2.0.0,http://github.com/ruby-concurrency/ref,"Library that implements weak, soft, and strong references in Ruby.",MIT
+responders,2.3.0,http://github.com/plataformatec/responders,A set of Rails responders to dry up your application,MIT
+rucaptcha,2.2.0,https://github.com/huacnlee/rucaptcha,This is a Captcha gem for Rails Applications. It drawing captcha image with C code so it no dependencies.,MIT
+sass,3.4.23,http://sass-lang.com/,A powerful but elegant CSS compiler that makes CSS fun again.,MIT
+sass-rails,5.0.6,https://github.com/rails/sass-rails,Sass adapter for the Rails asset pipeline.,MIT
+skrollr-rails,0.6.29,https://github.com/reed/skrollr-rails,Skrollr is a stand-alone parallax scrolling library for mobile and desktop.  This gem integrates skrollr with the Rails asset pipeline for ease of use and version control.,MIT
+spring,2.0.1,https://github.com/rails/spring,Rails application preloader,MIT
+spring-watcher-listen,2.0.1,https://github.com/jonleighton/spring-watcher-listen,Makes spring watch files using the listen gem.,MIT
+sprockets,3.7.1,https://github.com/rails/sprockets,Rack-based asset packaging system,MIT
+sprockets-rails,3.2.0,https://github.com/rails/sprockets-rails,Sprockets Rails integration,MIT
+tether-rails,1.4.0,https://github.com/jakegavin/tether-rails,tether-rails wraps the Tether JavaScript library so that it can easily be included in Rails.,MIT
+therubyracer,0.12.2,http://github.com/cowboyd/therubyracer,Embed the V8 JavaScript interpreter into Ruby,MIT
+thor,0.19.4,http://whatisthor.com/,Thor is a toolkit for building powerful command-line interfaces.,MIT
+tilt,2.0.6,http://github.com/rtomayko/tilt/,Generic interface to multiple Ruby template engines,MIT
+turbolinks,2.5.3,https://github.com/rails/turbolinks/,Turbolinks makes following links in your web application faster (use with Rails Asset Pipeline),MIT
+tzinfo,1.2.2,http://tzinfo.github.io,Daylight savings aware timezone library,MIT
+uglifier,3.0.4,http://github.com/lautis/uglifier,Ruby wrapper for UglifyJS JavaScript compressor,MIT
+warden,1.2.6,http://github.com/hassox/warden,Rack middleware that provides authentication for rack applications,MIT
+web-console,3.4.0,https://github.com/rails/web-console,A debugging tool for your Ruby on Rails applications.,MIT
+websocket-driver,0.6.5,http://github.com/faye/websocket-driver-ruby,WebSocket protocol handler with pluggable I/O,MIT
+websocket-extensions,0.1.2,http://github.com/faye/websocket-extensions-ruby,Generic extension manager for WebSocket connections,MIT
+byebug,9.0.6,http://github.com/deivid-rodriguez/byebug,Ruby 2.0 fast debugger - base + CLI,BSD 2-Clause
+io-console,0.4.5,http://www.ruby-lang.org,Console interface,BSD 2-Clause
+sys-proctable,1.1.3,http://github.com/djberg96/sys-proctable,An interface for providing process table information,Apache 2.0
+thread_safe,0.3.5,https://github.com/ruby-concurrency/thread_safe,A collection of data structures and utilities to make thread-safe programming in Ruby easier,Apache 2.0
+ffi,1.9.17,http://wiki.github.com/ffi/ffi,Ruby FFI,bsd-3-clause
+pg,0.19.0,https://bitbucket.org/ged/ruby-pg,Pg is the Ruby interface to the {PostgreSQL RDBMS}[http://www.postgresql.org/],bsd-3-clause
+puma,3.7.0,http://puma.io,"Puma is a simple, fast, threaded, and highly concurrent HTTP 1.1 server for Ruby/Rack applications",bsd-3-clause
+font-awesome-rails,4.7.0.2,https://github.com/bokmann/font-awesome-rails,an asset gemification of the font-awesome icon font library,sil open font license
+jquery-datatables-rails,3.3.0,https://github.com/rweng/jquery-datatables-rails,jquery datatables for rails,unknown
+json,2.1.0,http://flori.github.com/json,JSON Implementation for Ruby,Ruby
+kgio,2.11.1,https://bogomips.org/kgio/,"kinder, gentler I/O for Ruby",LGPLv2.1

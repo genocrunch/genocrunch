@@ -1,0 +1,21 @@
+<div class="row">
+
+  <div class="col-md-10 col-md-offset-1">
+
+    <div class="log-title">
+      <h3>Sorry, something went wrong.<br>
+      <small>If the following output log does not help you, please contact us.</small></3>
+    </div>
+
+    <pre class="log-pre"><%= render :file => @job.send('log'.to_sym).url %></pre>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function(){
+    document.getElementById("background").className="row failure-background";
+    document.getElementById("background").setAttribute("data-top-top", "background-position: 50% 0%;");
+    document.getElementById("background").setAttribute("data-top-bottom", "background-position: 50% 100%;");
+    skrollr.init().refresh();
+  });
+</script>

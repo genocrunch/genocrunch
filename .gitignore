@@ -1,0 +1,38 @@
+# Backups files
+*~
+*.rbc
+*.orig
+*.bak
+*.bkp
+
+# Temporary files
+*.tmp
+/tmp/*
+/tmp/storage/*
+!/tmp/storage/.gitkeep
+
+# log files
+*.log
+/log/
+
+# Storage directory
+/users/*
+!/users/.gitkeep
+
+# Config
+config/config.yml
+config/environments/*
+!config/environments/*.keep
+config/initializers/devise.rb
+.env
+
+# Database
+/db/seeds.rb
+config/database.yml
+
+# Secrets
+config/initializers/secret_token.rb
+config/secrets.yml
+
+# Precompiled assets
+/public/assets/

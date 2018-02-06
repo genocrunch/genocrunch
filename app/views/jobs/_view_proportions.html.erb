@@ -1,0 +1,13 @@
+<h3>Proportions</h3>
+
+<%= render :partial => 'view_description' %>
+<%= render :partial => 'standard_fig_layout' %>
+
+<%= javascript_tag do %>
+
+  var fig_data = <%= raw @data_json %>;
+
+barchart('fig', 'fig-legend', fig_data,  W = 600, H = 600, font_family = "verdana, arial, helvetica, sans-serif", color_palette = d3.schemeCategory10);
+
+<% end %>
+

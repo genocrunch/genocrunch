@@ -1,0 +1,10 @@
+{"sample_name":"AnalysisID",
+"basic_model":"ExperimentalGroup",
+"model":"ExperimentalGroup*Sex",
+"is_log":"false",
+"unit":"counts",
+"metadata_is_log":"false",
+"metadata_unit":"Conc.",
+"diversity_metric":["shannon", "richness"],
+"category_levels":["3", "8"],
+"analysis":["abundance", "diversity", "pca", "pcoa", "heatmap"]}

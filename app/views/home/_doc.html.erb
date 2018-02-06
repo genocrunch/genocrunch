@@ -1,0 +1,496 @@
+<h1>Documentation</h1>
+
+<p>Version 1.1</p>
+
+<h2 id='overview'>Overview</h2>
+<p>Genocrunch is a web-based data mining platform dedicated to metagenomics and metataxonomics. It provides data mining tools for data <b>pre-processing</b> and <b>transformation</b>, <b>diversity analysis</b>, <b>multivariate statistics</b>, <b>dimensionality reduction</b>, <b>differential analysis</b>, <b>clustering</b> as well as <b>correlation and similarity network</b> analysis. <b>Interactive visualization</b> is offered for all figures.</p>
+
+<h3 id='pipeline'>Pipeline</h3>
+<p>The general organization of the tools is described in the figure below.
+
+<br><br>
+<%= image_tag 'genocrunch_pipeline.png' %>
+<br><br>
+
+<h2 id='new-users-and-registration'>New users and registration</h2>
+
+<p>Running an analysis session does not require any registration, however, managing multiple analysis (recovering/editing previous work) is done through a personnal index that requires users to sign in. Before signing in, new users need to register.</p>
+
+<h3 id='registering'>Registering</h3>
+<p>Registering allows users to recover and edit their previous work via a personal index page. Registering is done via the <a class='btn btn-secondary btn-sm' href="<%= new_user_registration_path %>" target='_self'>Register</a> button of the top-bar. The registration process requires new users to chose a password and provide an email address. The email address is only used to recover forgotten passwords.
+<% if APP_CONFIG[:user_confirmable] %>
+ In order to complete the registration process, new users need to follow a confirmation link which is automatically sent to the provided email address. In case of issue, this confirmation link can be resent to the provided email address via the <b>Resend confirmation instruction</b> link on the welcome page.
+<% end %>
+</p>
+
+<h3 id='signing-in'>Signing in</h3>
+<p>Signing in is done from the welcome page, which is accessible via the <a class='btn btn-secondary btn-sm' href="<%= new_user_session_path %>" target='_self'>Sign In</a> button of the top-bar. Before signing in, new users need to complete the registration process.</p>
+
+<h2 id='trying-genocrunch'>Trying Genocrunch</h2>
+<p>The best way to try Genocrunch is to load an example and edit it.</p>
+
+<h3 id='examples'>Examples</h3>
+<p>Examples of analyses are provided via the <b><a href="<%= examples_path %>" target='_self'>Examples</a></b> link of the top-bar. Loading Example data into a new analysis session is possible via the <span class='btn btn-primary btn-sm'>Load</span> button. This allows to visualize and edit Examples without restriction. For signed-in users, it will also clone the example into their personal job index.</p>
+
+<h2 id='analyzing-data'>Analyzing data</h2>
+
+<h3 id='running-a-new-analysis'>Running a new analysis</h3>
+<p>New analyses can be submitted via the <a class='btn btn-primary btn-sm' href="<%= new_job_path %>" target='_self'>New Job</a> button of the topbar. If the user is signed out, the analysis session will be associated to the browser session and remain available as long as the browser is not closed. If the user had been signed-in, the job will be stored in his personal index. Jobs parameters are set by filling a single form comprising four parts for <b>Inputs</b>, <b>Pre-processing</b>, <b>Transformation</b> and <b>Analysis</b>. Jobs are then submitted via the <span class='btn btn-success btn-sm'>Create Job</span> button located at the bottom the form. See the <b>Inputs and Tools</b> section below for details.</p>
+
+<h3 id='editing-an-analysis'>Editing an analysis</h3>
+<p>Analyses can be edited via the associated <span class='btn btn-primary btn-sm'>Edit</span> button present on the analysis page and via the edit icons (<i class="fa fa-pencil-square-o" aria-hidden="true"></i>) of the analysis index (for signed-in users only). Editing is performed by updating the job form and submiting the modifications via the <span class='btn btn-success btn-sm'>Update Job</span> button located at the bottom of the form.</p>
+
+<h3 id='cloning-an-analysis'>Cloning an analysis</h3>
+<p>Analyses can be cloned (copied) via the clone icons (<i class="fa fa-clone" aria-hidden="true"></i>) of the analysis index (for signed-in users only).</p>
+
+<h3 id='deleting-an-analysis'>Deleting an analysis</h3>
+<p>Analyses can be deleted via the delete icons (<i class="fa fa-trash-o" aria-hidden="true"></i>) of the analysis index (for signed-in users only). This process is irreversible.</p>
+
+<h2 id='inputs-and-tools'>Inputs and Tools</h2>
+<p>The analyses are set from a single form composed of four sections: <b>Inputs</b>, <b>Pre-processing</b>, <b>Transformation</b>, <b>Analysis</b>. These sections and their associated parameters are described below.</p>
+
+<h3 id='inputs'>Inputs</h3>
+<p>The <b>Inputs</b> section of the job creation form allows to upload data files.</p>
+<ul>
+  <li id='general-information'>General information
+    <ul>
+      <li id='general-information-name'><b>Name</b> (mandatory)
+        <p>The name will appear in the job index. It should be informative enough to differentiate from other jobs.</p>
+      </li>
+      <li id='general-information-description'><b>Description</b>
+        <p>The description can be used to provide additional information about the job.</p>
+      </li>
+    </ul>
+  </li>
+  <li id='data-files'>Data files
+    <ul>
+      <a name='primary_dataset_format'></a>
+      <li id='data-files-primary-dataset'><b>Primary dataset</b> (mandatory)
+        <p>The primary dataset is the principal data file. It must contain a data table in the tab-delimited text format with columns representing samples and rows representing observations. The first row must contain the names of samples. The first column must contain the names of the observations. Both columns and rows names must be unique. A column containing a description of each observation, in the form of semi-column-delimited categories, can be added. This format can be obtained from the BIOM format using the <a href='#' target='_bank'><code>biom_convert</code></a> command.</p>
+        <p>Format example:</p>
+<pre>
+#OTU ID	Spl1	Spl2	Spl3	Spl4	taxonomy
+1602	1	2	4	4	k__Bacteria; p__Actinobacteria; c__Actinobacteria; o__Actinomycetales; f__Propionibacteriaceae; g__Propionibacterium; s__acnes
+1603	0	0	24	0	k__Bacteria; p__Firmicutes; c__Clostridia; o__Clostridiales; f__Clostridiaceae; g__Clostridium; s__difficile
+1604	0	12	23	0	k__Bacteria; p__Firmicutes; c__Bacilli; o__Lactobacillales; f__Enterococcaceae; g__Enterococcus; s__casseliflavus
+1605	23	4	2	14	k__Bacteria; p__Firmicutes; c__Clostridia; o__Clostridiales; f__Veillonellaceae; g__Veillonella; s__parvula
+1606	45	10	42	12	k__Bacteria; p__Bacteroidetes; c__Bacteroidia; o__Bacteroidales; f__Bacteroidaceae; g__Bacteroides; s__fragilis
+1607	8	15	20	13	k__Bacteria; p__Bacteroidetes; c__Bacteroidia; o__Bacteroidales; f__Prevotellaceae; g__Prevotella; s__copri
+</pre>
+      </li>
+      <li id='data-files-category-column'><b>Category column</b> (mandatory)
+        <p>To increase compatibility, the category column specifies which column in the pimary dataset contains a categorical description of the observations.</p>
+      </li>
+
+      <a name='map_format'></a>
+      <li id='data-files-map'><b>Map</b> (mandatory)
+        <p>The map contains information about the experimental design. It must contain a table in the tab-delimited text format with columns representing experimental variables and rows representing samples. The first column must contain the names of the samples as they appear in the primary dataset. The first row must contain the names of experimental variables. Both columns and rows names must be unique. This format is compatible with the mapping file used by the <a href='#' target='_bank'>Qiime</a> pipeline.</p>
+        <p>Format example:</p>
+<pre>
+ID	Sex	Treatment
+Spl1	M	Treated
+Spl2	F	Treated
+Spl3	M	Control
+Spl4	F	Control
+</pre>
+      </li>
+       <a name='secondary_dataset_format'></a>
+      <li id='data-files-secondary-dataset'><b>Secondary dataset</b>
+        <p>The secondary dataset is an optional data file containing additional observations. It must contain a data table in the tab-delimited text format with columns representing samples and rows representing observations. The first row must contain the names of samples as they appear in the primary dataset and the map. The first column must contain the names of the observations. Both columns and rows names must be unique.</p>
+        <p>Format example:</p>
+<pre>
+Metabolites	Spl1	Spl2	Spl3	Spl4
+metabolite1	0.24	0.41	1.02	0.92
+metabolite2	0.98	0.82	1.12	0.99
+metabolite3	0.05	0.11	0.03	0.02
+</pre>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id='pre-processing'>Pre-processing</h3>
+<p>The <b>Pre-processing</b> section of the job creation form specifies modifications that will be applied to the primary dataset prior to analysis.</p>
+<ul>
+  <li id='filtering'>Filtering
+    <p>Data in the primary dataset can be filtered based on <b>Relative</b> or <b>Absolute</b> abundance and presence.</p>
+    <ul>
+      <li id='filtering-abundance-threshold'><b>Abundance threshold</b>
+        <p>Minimal abundance per sample to be retained.</p>
+      </li>
+      <li id='filtering-presence-threshold'><b>Presence thresholds</b>
+        <p>Minimal presence among samples to be retained.</p>
+      </li>
+    </ul>
+    <p>Example: Filtering data with an absolute abundance threshold of 5 and and an absolute presence threshold of 2.</p>
+<pre>
+#Before filtering
+#OTU ID	Spl1	Spl2	Spl3	Spl4	taxonomy
+1602	1	2	4	4	k__Bacteria; p__Actinobacteria; c__Actinobacteria; o__Actinomycetales; f__Propionibacteriaceae; g__Propionibacterium; s__acnes
+1603	0	0	24	0	k__Bacteria; p__Firmicutes; c__Clostridia; o__Clostridiales; f__Clostridiaceae; g__Clostridium; s__difficile
+1604	0	12	23	0	k__Bacteria; p__Firmicutes; c__Bacilli; o__Lactobacillales; f__Enterococcaceae; g__Enterococcus; s__casseliflavus
+1605	23	4	2	14	k__Bacteria; p__Firmicutes; c__Clostridia; o__Clostridiales; f__Veillonellaceae; g__Veillonella; s__parvula
+1606	45	10	42	12	k__Bacteria; p__Bacteroidetes; c__Bacteroidia; o__Bacteroidales; f__Bacteroidaceae; g__Bacteroides; s__fragilis
+1607	8	15	20	13	k__Bacteria; p__Bacteroidetes; c__Bacteroidia; o__Bacteroidales; f__Prevotellaceae; g__Prevotella; s__copri
+</pre>
+<pre>
+#After filtering
+#OTU ID	Spl1	Spl2	Spl3	Spl4	taxonomy
+1604	0	12	23	0	k__Bacteria; p__Firmicutes; c__Bacilli; o__Lactobacillales; f__Enterococcaceae; g__Enterococcus; s__casseliflavus
+1605	23	4	2	14	k__Bacteria; p__Firmicutes; c__Clostridia; o__Clostridiales; f__Veillonellaceae; g__Veillonella; s__parvula
+1606	45	10	42	12	k__Bacteria; p__Bacteroidetes; c__Bacteroidia; o__Bacteroidales; f__Bacteroidaceae; g__Bacteroides; s__fragilis
+1607	8	15	20	13	k__Bacteria; p__Bacteroidetes; c__Bacteroidia; o__Bacteroidales; f__Prevotellaceae; g__Prevotella; s__copri
+</pre>
+  </li>
+  <li id='category-binning'>Category binning
+    <p>Data in primary dataset can be binned by category thanks to the category column.</p>
+    <ul>
+      <li id='category-binning-binning-levels'><b>Binning levels</b>
+        <p>Category levels at which data should be binned.</p>
+      </li>
+      <li id='category-binning-category-binning-function'><b>Category binning function</b>
+        <p>Chose whether binning should be performed by summing or averaging values.</p>
+      </li>
+    </ul>
+    <p>Example: Binning data at level 2 with sum.</p>
+<pre>
+#Before binning
+#OTU ID	Spl1	Spl2	Spl3	Spl4	taxonomy
+1604	0	12	23	0	k__Bacteria; p__Firmicutes; c__Bacilli; o__Lactobacillales; f__Enterococcaceae; g__Enterococcus; s__casseliflavus
+1605	23	4	2	14	k__Bacteria; p__Firmicutes; c__Clostridia; o__Clostridiales; f__Veillonellaceae; g__Veillonella; s__parvula
+1606	45	10	42	12	k__Bacteria; p__Bacteroidetes; c__Bacteroidia; o__Bacteroidales; f__Bacteroidaceae; g__Bacteroides; s__fragilis
+1607	8	15	20	13	k__Bacteria; p__Bacteroidetes; c__Bacteroidia; o__Bacteroidales; f__Prevotellaceae; g__Prevotella; s__copri
+</pre>
+<pre>
+#After binning
+	ID	Spl1	Spl2	Spl3	Spl4	taxonomy
+1	23	16	25	14	k__Bacteria; p__Firmicutes
+2	53	25	62	25	k__Bacteria; p__Bacteroidetes
+</pre>
+  </li>
+</ul>
+
+<h3 id='transformation'>Transformation</h3>
+<p>The <b>Transformation</b> section of the job creation form propose additional modifications for both primary and secondary datasets.</p>
+<ul>
+  <li id='rarefaction'>Rarefaction
+    <p>Although controversial (<a href='https://www.ncbi.nlm.nih.gov/pubmed/24699258' target='_blank'>McMurdie and Holmes, 2014</a>), rarefaction is a popular method amongst microbial ecologists used to correct for variations in sequencing depth, inherent to high-throughput sequencing methods. It consists in random sampling (without replacement) of a fixed number of count from each sample to be compared. The same number of count being drawn out of each sample, this corrects for differences in sequencing depth while conserving the original count distribution among observations. Note that the analysis of diversity is particularly sensitive to variations in sequencing depth.</p>
+
+    <ul>
+      <li id='rarefaction-sampling-depth'><b>Sampling depth</b>
+        <p>This specifies the number of count to be drawn from each sample.</p>
+        <p>Tip: The maximal sampling depth corresponds to the minimal sequencing depth. First check the sequencing depth of your data by suming the counts in each sample. Then chose a sampling depth accordingly.</p>
+      </li>
+      <li id='rarefaction-n-sampling'><b>N samplings</b>
+        <p>This specifies how many times the random drawing should be repeated. If more than 1 random sampling is done, the result is the average of all random samplings.</p>
+      </li>
+    </ul>
+  </li>
+  <li id='transformation-subtitle'>Transformation
+    <p>Whether it is to correct for sequencing depth, to stabilize the variance or simply to improve the visualization of skewed data, a transformation step may be needed. Common methods include transforming counts into proportions (percent or counts per million) and applying a log. We are working to also propose more advanced transformations, including those developed for RNA sequencing (RNA-seq) as part of the DESeq2 (<a href='https://www.ncbi.nlm.nih.gov/pubmed/25516281' target='_blank'>Love et al., 2014</a>) and the Voom (<a href='https://www.ncbi.nlm.nih.gov/pubmed/24485249' target='_blank'>Law et al., 2014</a>) pipelines. To limit the effect of known experimental bias (or batch-effect), the Combat method can be applied.</p>
+
+    <ul>
+      <li id='transformation-subtitle-transformation'><b>Transformation</b>
+        <p>Specifies which transformation method should be applied.</p>
+      </li>
+    </ul>
+  </li>
+  <li id='batch-effect-suppression'>Batch-effect suppression <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>Under construction
+    <ul>
+      <li id='batch-effect-suppression-batch-effect-suppression'><b>Batch-effect suppression</b>
+        <p>Specifies which column from the map should be used to suppress batch effect.</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id='analysis'>Analysis</h3>
+<p>The <b>Analysis</b> section of the job creation form sets which statistics to apply and which figures to generate.</p>
+<ul>
+  <li id='experimental-design'><b>Experimental design</b>
+    <p>This sets the default statistical method to apply for the analysis. Two options are available: <b>Basic</b> and <b>Advanced</b>.</p>
+    <ul>
+      <li id='experimental-design-statistics'>Statistics (<b>Advanced</b> only)
+        <p>Chose a statistical method to compare groups of samples. If <b>Basic</b> is chosen, this defaults to ANOVA.</p>
+      </li>
+      <li id='experimental-design-model'>Model
+        <p>Chose a model defining groups of samples. If <b>Basic</b> is chosen, a model can be picked among headers of the map. If <b>Advanced</b> is chosen, the model must be typed by the user in the form of an R formula. The formula must be compatible with the specified statistics. All terms of the formula must refer to column headers of the map.</p>
+      </li>
+    </ul>
+
+    Examples:
+    <ol>
+      <li>Simple design:
+
+<pre>
+ID	Subject	Site
+Spl1	subject1	Hand
+Spl2	subject2	Hand
+Spl3	subject3	Hand
+Spl4	subject4	Foot
+Spl5	subject5	Foot
+Spl6	subject6	Foot
+</pre>
+        <table class="table doc-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Statistics</th>
+              <th>Model</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Comparing sites (parametric)</td>
+              <td>T-test</td>
+              <td>Site</td>
+            </tr>
+            <tr>
+              <td>Comparing sites (non-parametric)</td>
+              <td>Wilcoxon rank sum test</td>
+              <td>Site</td>
+            </tr>
+          </tbody>
+        </table>
+
+      </li>
+      <li>Simple paired design:
+
+<pre>
+ID	Subject	Site
+Spl1	subject1	Hand
+Spl2	subject2	Hand
+Spl3	subject3	Hand
+Spl4	subject1	Foot
+Spl5	subject2	Foot
+Spl6	subject3	Foot
+</pre>
+        <table class="table doc-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Statistics</th>
+              <th>Model</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Comparing sites (parametric)</td>
+              <td>Paired t-test</td>
+              <td>Site</td>
+            </tr>
+            <tr>
+              <td>Comparing sites (non-parametric)</td>
+              <td>Wilcoxon signed rank test</td>
+              <td>Site</td>
+            </tr>
+          </tbody>
+        </table>
+
+      </li>
+      <li>Multiple comparisons:
+
+<pre>
+ID	Subject	Site
+Spl1	subject1	Hand
+Spl2	subject2	Hand
+Spl3	subject3	Hand
+Spl4	subject4	Foot
+Spl5	subject5	Foot
+Spl6	subject6	Foot
+Spl7	subject7	Mouth
+Spl8	subject8	Mouth
+Spl9	subject9	Mouth
+</pre>
+        <table class="table doc-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Statistics</th>
+              <th>Model</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Comparing sites (parametric)</td>
+              <td>ANOVA</td>
+              <td>Site</td>
+            </tr>
+            <tr>
+              <td>Comparing sites (non-parametric)</td>
+              <td>Kruskal-Wallis rank sum test</td>
+              <td>Site</td>
+            </tr>
+          </tbody>
+        </table>
+
+      </li>
+      <li>Multiple comparisons with nesting:
+
+<pre>
+ID	Subject	Site
+Spl1	subject1	Hand
+Spl2	subject2	Hand
+Spl3	subject3	Hand
+Spl4	subject1	Foot
+Spl5	subject2	Foot
+Spl6	subject3	Foot
+Spl7	subject1	Mouth
+Spl8	subject2	Mouth
+Spl9	subject3	Mouth
+</pre>
+        <table class="table doc-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Statistics</th>
+              <th>Model</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Comparing sites</td>
+              <td>Friedman test</td>
+              <td>Site | Subject</td>
+            </tr>
+          </tbody>
+        </table>
+
+      </li>
+      <li>Additive model:
+
+<pre>
+ID	Treatment	Gender
+Spl1	Treated	M
+Spl2	Treated	M
+Spl3	Treated	M
+Spl4	Treated	F
+Spl5	Treated	F
+Spl6	Treated	F
+Spl7	Control	M
+Spl8	Control	M
+Spl9	Control	M
+Spl10	Control	F
+Spl11	Control	F
+Spl12	Control	F
+</pre>
+        <table class="table doc-table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Statistics</th>
+              <th>Model</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Assessing effects of treatment and gender</td>
+              <td>ANOVA</td>
+              <td>Treatment+Gender</td>
+            </tr>
+          </tbody>
+        </table>
+
+      </li>
+    </ol>
+
+  </li>
+
+  <li id='proportions'><b>Proportions</b>
+    <p>For each sample, display the proportions of each observation (as percent) in the form of a stacked barchart. This gives an overview of the primary dataset. This analysis is performed before applying any selected transformation.</p>
+  </li>
+
+  <li id='diversity'><b>Diversity</b>
+    <p>Perform a diversity analysis of the primary dataset. This will display rarefaction curves for the selected diversity metric(s). Rarefaction curves are used to estimate the diversity in function of the sampling depth. A rarefaction curve showing an asymptotic behavior is considered as an indicator of sufficient sampling depth to observe the sample diversity. This analysis is performed before applying any selected transformation.</p>
+    <ul>
+      <li id='diversity-metric'><b>metric</b>
+        <p>Chose a diversity metric. Choices include the richness as well as metrics included in the R vegan, ineq and fossil packages. The richness simply represents the number of different observations that are seen within a particular sample.</p>
+      </li>
+      <li id='diversity-compare-groups'><b>Compare groups</b>
+        <p>If selected, diversity between groups will be assessed using statistics and model specified in the experimental design.</p>
+      </li>
+    </ul>
+  </li>
+
+  <li id='permanova'><b>perMANOVA</b>
+    <p>Perform a permutational multivariate analysis of the variance using the Adonis method from R package vegan. This method uses a distance matrix based on the primary dataset.</p>
+    <ul>
+      <li id='permanova-distance-metric'><b>Distance metric</b>
+        <p>Chose a distance metric. Choices include metrics available in the R vegan package as well as distances based on correlation coefficients.</p>
+      </li>
+      <li id='permanova-model'><b>Model</b>
+        <p>For compatibility purpose, this model may differ from the model specified in the experimental design section. This model must be in the form of an R formula compatible with the Adonis function of the R vegan package. All terms of the formula must refer to column headers of the map.</p>
+      </li>
+      <li id='permanova-strata'><b>Strata</b>
+        <p>This is used to specify any nesting in the model. the strata must be compatible with the Adonis function of the R vegan package.</p>
+      </li>
+    </ul>
+  </li>
+
+  <li id='pca'><b>PCA</b>
+    <p>Perform a principal component analysis (PCA) on the primary dataset. PCA is a commonly used dimensionality reduction method that projects a set of observations onto a smaller set of components that capture most of the variance between samples.</p>
+  </li>
+
+  <li id='pcoa'><b>PCoA</b>
+    <p>Perform a principal coordinate analysis (PCoA) on the primary dataset. The PCoA is a form of dimensionality reduction based on a distance matrix.</p>
+    <ul>
+      <li id='pcoa-distance-metric'><b>Distance metric</b>
+        <p>Chose a distance metric. Choices include metrics available in the R vegan package as well as distances based on correlation coefficients.</p>
+      </li>
+    </ul>
+  </li>
+
+  <li id='heatmap'><b>Heatmap</b>
+    <p>This displays the primary dataset on a heatmap of proportions. The columns (samples) and rows (observations) of the heatmap are re-ordered using a hierarchical clustering. Each observation will be individually compared between groups of samples based on the specified experimental design and associated p-values will be displayed on the side of the heatmap. Individual correlations between observations from the primary dataset and observations from the secondary dataset will also be displayed on the side of the heatmap when available. Samples will be color-coded according to the experimental design.</p>
+  </li>
+
+  <li id='changes'><b>Changes</b>
+    <p>This performs a differential analysis. Each observation will be individually compared between groups of samples based on the specified experimental design. Fold-change between groups as well as the associated p-values and mean abundance will be displayed on MA plots and volcano plots.</p>
+  </li>
+
+  <li id='correlation-network'><b>Correlation network</b>
+    <p>This builds a network with nodes representing observations and edges representing the correlations. The network will be based on the primary dataset and will include the secondary dataset if available. Observations belonging to the primary and the secondary dataset will be represented using different node shapes. Nodes will be colored to include a number of additional information.</p>
+    <ul>
+      <li id='correlation-network-correlation-method'><b>Correlation method</b>
+        <p>Chose a correlation method. Choices include the Pearson correlation and the Spearman correlation.</p>
+      </li>
+    </ul>
+  </li>
+
+  <li id='clustering'><b>Clustering</b>
+    <p>This applies a clustering algorithm to separate samples into categories. The categories will be added as a new column to the map. Categories will automatically be compared with ANOVA in relevant analysis.</p>
+    <ul>
+      <li id='clustering-algorithm'><b>Algorithm</b>
+        <p>Chose a clustering algorithm. Choices include the k-means algorithm, the k-medoids algorithm (also known as the partitioning around medoids of pam algorithm) and versions of the k-medoids based on distance matrices.</p>
+      </li>
+    </ul>
+  </li>
+
+  <li id='similarity-network'><b>Similarity network</b>
+    <p>This builds a network with nodes representing samples and edges representing a similarity score. If a secondary dataset is available, three networks will be build: one based on the primary dataset, one based on the secondary dataset and a third based on the fusion of these two networks. The similarity network fusion (SNF) is based on the R SNFtool package. A categorical clustering based on each network is applied.</p>
+    <ul>
+      <li id='similarity-network-metric-for-primary-dataset'><b>Metric for primary dataset</b>
+        <p>Chose the similarity metric to apply on the primary dataset.</p>
+      </li>
+      <li id='similarity-network-metric-for-secondary-dataset'><b>Metric for secondary dataset</b>
+        <p>Chose the similarity metric to apply on the secondary dataset.</p>
+      </li>
+      <li id='similarity-network-clustering-algorithm'><b>Clustering algorithm</b>
+        <p>Chose the clustering algorithm to assign samples to categories based on each similarity network.</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id='versions'>Versions</h3>
+<p>Genocrunch data analysis tools are based on R libraries. Used libraries are mentionned in the analysis report. The version of the libraries are available on the <b><a href="<%= versions_path %>" target='_self'>Versions</a></b> page via the <b>Infos</b> menu of the topbar).</p>
+
+
+<h2 id='analysis-report'>Analysis report <i class='fa fa-eye'></i></h2>
+  <p>A detailed analysis report is generated for each job. It is available directly after creating/updating a new job via the <span class='btn btn-secondary btn-sm'>My Job</span> button of the topbar or via the corresponding icon (<i class='fa fa-eye'></i>) in the job index (for signed-in users only). The analysis report includes detailed descriptions of the tools and methods used, possible warning and error logs as well as intermediate files, final files and interactive figures as they become available. Information for the pre-processing and data transformation are available for the primary dataset and the optional secondary dataset in their respective sections. Figures and descriptions for each analysis are available in separate sections. If multiple binning levels were specified, figures for each levels can be accessed via the associated <b>Level</b> button.</p>
+
+<h3 id='exporting-figures'>Exporting figures</h3>
+<p>Figures can be exported via the associated <span class='btn btn-success btn-sm dropdown-toggle'>Export</span> menu. All figures can be exported as a vector image in the SVG format. Some figures are also available in the PDF format, but PDFs are generated in the same time as the figure raw data and cannot be edited with the interactive visualization tools. Raw figure data are also available either in the JSON format, the TXT format or both. Figure legends are currently only available in the HTML format.</p>
+
+<h3 id='archive'>Archive <i class="fa fa-file-archive-o" aria-hidden="true"></i></h3>
+<p>Files containing initial, intermediate and final data as well as the analysis log and logs for standard output and standard error are automatically included into a .tar.gz archive. This archive can be downloaded via the <span class='btn btn-secondary btn-sm'><i class="fa fa-file-archive-o" aria-hidden="true"></i></span> button of the analysis report page or via the corresponding icon (<i class="fa fa-file-archive-o" aria-hidden="true"></i>) in the job index (for signed-in users only). Although some figures may be automatically included in the archive in the form of a minimal PDF file, the archive does generally not contain figure images. These should be exported separately via the <b>Export</b> button.</p>

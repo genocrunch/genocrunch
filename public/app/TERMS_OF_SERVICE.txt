@@ -1,0 +1,35 @@
+Genocrunch Terms of Service
+
+No warranties
+1.This software is provided "as is" and without  any warranties, whether
+  express or implied, including but not limited to the warranties of
+  merchantability, fitness for any particular purpose and noninfringement.
+  In addition, EPFL expressively does not warrant that:
+  a) The software will function, be free of bug or any defect.
+  b) Any defect will be corrected.
+  c) The software and any of its inputs or outputs will be compatible with
+     any third-party software.
+  d) Any of the software result or output will be reliable.
+
+2.The protection of any data, whether it was uploaded, stored, generated,
+  downloaded or by any mean used with this web server, is not warrantied
+  in any way and EPFL expressively does not warrant that:
+  a) The data will remain confidential or will not be accessible or
+     disclosed to the public or a third-party.
+  b) The data will not be damaged or unusable.
+  c) Any damaged data will be repaired.
+  d) The data will remain accessible for any period of time or be
+     accessible at all.
+  e) The data or any derivative result will be merchantable.
+  f) The data will be compatible with any third-party software.
+
+3.The protection of privacy, whether it involves user information or any
+  private, medical or sensitive information found in the data, is not
+  warrantied.
+
+Usage
+1.This software is for research use only and shall not be used in medical
+  diagnosis.
+2.The authors and the copyrights owners shall have no liability of any
+  kind for the use of or inability to use the software, the software
+  content, data, or any associated service.

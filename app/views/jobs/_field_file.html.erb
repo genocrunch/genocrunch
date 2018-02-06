@@ -1,0 +1,57 @@
+<label class="custom-file">
+  <%= file_field_tag "p[#{field['id']}]", {:class => 'custom-file-input'} %>
+  <span class="custom-file-control form-control-file "></span>
+</label>
+
+<%= javascript_tag do %>
+
+ $(document).ready(function() {
+
+//var default_values = <%= raw @default.to_json %>;
+
+function change_<%= field['id'] %>(where){
+//alert("WHERE: " + where)
+<% if field['id'] == 'primary_dataset' %>
+
+ var url = (where == 'server') ? '<%= read_file_header_jobs_path() %>?file_key=<%= field['id'] %>' : null;
+ setSelectFromFileRow("category_column", $("#p_primary_dataset")[0].files[0], '<%= @default['category_column'] || '' -%>', null, url);
+
+<% elsif field['id'] == 'map' %>
+
+ var url = (where == 'server') ? '<%= read_file_header_jobs_path() %>?file_key=<%= field['id'] %>' : null;
+ setSelectFromFileRow("basic_model", $("#p_map")[0].files[0], '<%= @default['basic_model'] || '' -%>', null, url);
+ setSelectFromFileRow("sample_name", $("#p_map")[0].files[0], '<%= @default['sample_name'] || '' -%>', null, url);
+ var basic_model_help = $("#field-basic_model_help")
+
+ basic_model_help.addClass("hidden")
+
+<% end %>
+}
+
+$("#p_<%= field['id'] %>").on('change',function(){ 
+  var filename = $(this).val().replace(/.*?fakepath\\/, '');
+  $(this).next('.form-control-file').addClass("selected").html(filename);
+  // the file on the server is obsolete:
+  $("#p2_<%= field['id'] %>").val("")
+  // reset the default value of bin_levels
+  $("#default_bin_levels").val("[]");
+  // refresh the fields depending on the file field
+  change_<%= field['id'] %>("client");
+//alert("t");
+})
+
+<%# if @default and @default[field['id']] %>
+
+var ori_filename = $("#p2_<%= field['id'] %>").val();
+ if (ori_filename != ''){
+  $("#p_<%= field['id'] %>").next('.form-control-file').addClass("selected").html(ori_filename); //'<%# @default[field['id']].original_filename %>');
+  change_<%= field['id'] %>("server");
+  <% if field['id'] == 'map' %>
+    $("#field-basic_model_help").addClass("hidden");
+  <% end %>
+ }
+<%# end %>
+
+});
+
+<% end %>

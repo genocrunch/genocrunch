@@ -1,0 +1,98 @@
+
+<% @h_tips['form'].each_with_index do |tip, index| %>
+
+  <div id='tip_window<%= index %>' class='hidden tip_window topbar-margin'>
+    <i class="fa fa-info-circle" aria-hidden="true"></i>
+    <div id='tip_window<%= index %>_text'></div>
+    <div class='tip_window_close' onclick="$('#tip_window<%= index %>_text').html('');$('#tip_window<%= index %>').addClass('hidden'); $('#tip_window<%= index %>').css({display: 'none'});">
+      <i class="fa fa-check" aria-hidden="true"></i> Got it!
+    </div>
+</div>
+
+<% end %>
+
+<%= form_for(@job, :url => ((action_name == 'edit') ? job_path(@job.key) : jobs_path), :html => {:multipart => true}) do |f| %>
+
+ <%# @default['primary_dataset']['original_filename'] %>
+ <%# @default.to_json %>
+
+<% ['primary_dataset', 'map', 'secondary_dataset'].each do |k| %>
+  <%= hidden_field_tag "p2[" + k + "]", (params[:p2] && params[:p2][k]) || '' %>
+<% end %>
+
+<%= hidden_field_tag "default_bin_levels", @default['bin_levels'].to_json %>
+<%= hidden_field_tag "url_read_file_column", read_file_column_jobs_path() %>
+
+<%= hidden_field_tag 'tmp_key', @job.key %> 
+
+<div class="card-deck">
+
+  <% @h_form['fields'].each_key do |card_title| %>
+  
+  <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+    <div class="card" style='margin-top:10px'>
+      <div class="card-block">
+        <h3 class="card-title"><%= card_title %>
+	  <% if card_title == 'Inputs' %>
+	  <% l = ['', ''] %>
+	  <%# select_tag 'input_test', {:class => 'form-inline'} %>
+	  <% end %>
+	</h3>
+	 <div class="card-text form_card">
+	   <%= render :partial => 'card_form', :locals => {:list_fields => @h_form['fields'][card_title].reject{|e| e['belongs_to']}} %>
+	   <%#  @h_form['fields'][card_title].reject{|e| e['belongs_to']}.to_json %>
+	 </div>
+      </div>
+    </div>
+  </div>
+
+  <% end %>
+
+</div>
+
+<div class="form-group">
+  <%  type_job = (action_name == 'edit') ? 'Update' : 'Create' %>
+  <% if !current_user and !session[:agree_with_terms] %>
+    <%= f.submit type_job + " Job", data: { confirm: "Before using Genocrunch, you must agree with the following Terms of Service:\n\n"+File.read('public/app/TERMS_OF_SERVICE.txt') }, :class => "btn btn-success btn-lg col-md-12", :style=>'margin-top:10px' %>
+  <% else %>
+    <%= f.submit type_job + " Job", :class => "btn btn-success btn-lg col-md-12", :style=>'margin-top:10px' %>
+  <% end %>
+</div>
+
+
+ <%= javascript_tag do %>
+
+  $(document).ready(function() {
+
+  //var default_values = <%= raw @default.to_json %>;
+
+   var l = ['category_column', 'sample_name', 'bin_levels', 'basic_model'];
+   for (var i =0; i< l.length; i++){
+    $("#p_" + l[i]).change(function(){
+     if ($("#p_" + l[i] + " option").length == 0)
+      $("#field-" + l[i]).addClass("hidden");
+    });
+   }
+
+  $("#p_category_column").change(function(){
+    var ori_filename = $("#p2_primary_dataset").val();
+    var url = (ori_filename != '') ? "<%= read_file_column_jobs_path() + '?file_key=primary_dataset' %>" : null;
+    var val = <%= raw (@default["bin_levels"]) ? @default["bin_levels"].to_json : "[]" %>
+    update_bin_levels($(this).val(), val, url)
+  });
+
+  $("select.belongs_to").change(function(){
+   var d = $(this).parent().parent().parent().parent().parent().parent().children().filter('.card-header').first().children().filter('.form-check').first().children().filter('.form-check-label').first().children().filter('.form-check-input').first();
+   d.prop("checked", "checked");
+  });
+
+   $(".belongs_to").keyup(function(){
+   var d = $(this).parent().parent().parent().parent().children().filter('.card-header').first().children().filter('.form-check').first().children().filter('.form-check-label').first().children().filter('.form-check-input').first();   
+   d.prop("checked", "checked");
+  });
+
+ });
+
+ <% end %>
+
+<% end %>

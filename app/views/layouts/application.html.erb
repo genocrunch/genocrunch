@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title><%= Rails.application.class.parent_name %></title>
+  <%= stylesheet_link_tag    "application", media: "all", "data-turbolinks-track" => true %>
+  <%= javascript_include_tag "application", "data-turbolinks-track" => true %>
+  <%= csrf_meta_tags %>
+
+
+  <script type="text/javascript">
+    $(function(){
+      skrollr.init();
+    });
+
+    $(window).on('page:load', function () {
+      skrollr.init().refresh();
+    });
+
+  </script>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-24167610-32"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-24167610-32', {'anonymize_ip' : true});
+  </script>
+
+
+</head>
+
+
+<body>
+
+<nav class="navbar navbar-toggleable-md navbar-light bg-faded fixed-top">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerTop" aria-controls="navbarTogglerTop" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarTogglerTop">
+    <a class="navbar-brand" href="<%= (current_user) ? jobs_path() : root_path() %>"><%= Rails.application.class.parent_name %></a>
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+      <li class="nav-item">
+	<%= link_to 'Examples', examples_path, {:class => 'nav-link'} %>
+      </li>
+<!--        <li class="nav-item">
+<%= session[:current_key] %>
+      </li>-->
+
+      <li class="nav-item">
+        <a class="nav-link" href="<%= tutorial_home_index_path %>">Tutorial</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="<%= reference_home_index_path %>">Reference</a>
+      </li>
+       <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Infos
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+	        <%= link_to "Versions", versions_path,  target: "_self", class: "dropdown-item" %>
+	        <%= link_to 'Doc', doc_home_index_path, target: "_self", class: "dropdown-item" %>
+          <%= link_to 'Terms of service', terms_home_index_path, target: "_self", class: "dropdown-item" %>
+          <% if APP_CONFIG[:info_links] %>
+            <% APP_CONFIG[:info_links].each do |link| %>
+             <a class='dropdown-item' href="<%= link['href'] %>" target="<%= link['target'] %>"><%= link['name'] %></a>
+            <% end %>
+          <% end %>
+        </div>
+      </li>
+    </ul>
+    <div class="btn-group"> 
+      <% if current_user %>
+        <%= link_to 'New Job', new_job_path, class: "btn btn-primary navbar-btn" %>
+	      <%= link_to "My Jobs", jobs_path(), class: "btn btn-secondary navbar-btn" %>
+        <div class="btn-group"> 
+          <a class="btn btn-secondary navbar-btn dropdown-toggle" href="#" id="UserMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	          <i class="fa fa-user-o" aria-hidden="true"></i>
+	          <%= current_user.username %>
+          </a>
+          <div class="dropdown-menu" aria-labelledby="UserMenuLink">
+	          <%= link_to "Account", edit_user_registration_path,  target: "_self", class: "dropdown-item" %>
+	          <%= link_to "Sign Out", destroy_user_session_path, method: :delete, class: "dropdown-item" %>
+          </div>
+        </div>
+      <% else %>
+        <% sandbox_job = Job.where(:key => session[:current_key]).first %>
+        <% if sandbox_job  %>
+          <%= link_to 'My Job', job_path(sandbox_job.key), class: "btn btn-secondary navbar-btn" %>
+        <% else %>
+          <%= link_to 'New Job', new_job_path, class: "btn btn-primary navbar-btn" %>
+        <% end %>
+        <%= link_to "Sign In", new_user_session_path, class: "btn btn-secondary navbar-btn" %>
+        <%= link_to "Register", new_user_registration_path, class: "btn btn-secondary navbar-btn" %>
+      <% end %>
+    </div>      
+  </div>
+</nav>
+
+<div id='popup_window' class='hidden'>
+  <div id='popup_window_close'><span onclick="$('#popup_container').html('');$('#popup_window').addClass('hidden'); $('#popup_window').css({display: 'none'});"><span class='fa fa-window-close'></span></span></div>
+  <span class='title_popup'></span>
+  <div id='popup_container'></div>
+</div>
+
+
+<div class='topbar-padding'>
+  <%= yield %>
+</div>
+
+<nav class="navbar navbar-light bg-faded sticky-bottom align-center">
+<div class="container">
+  <div class="row align-items-center">
+    <div class="col-md-4 align-left">
+      <p>
+        <a href="mailto:<%= APP_CONFIG[:webmaster_email] %>?Subject=genocrunch" target="_top">
+          <i class="fa fa-envelope" aria-hidden="true"></i> Contact us</a>
+      </p>
+    </div>
+    <div class="col-md-4 align-center">
+     <a href="http://epfl.ch", target="_blank"><%= image_tag("EPFL_logo.png", width: "100px", alt: "Ecole Polytechnique Fédérale de Lausanne") %></a>
+       <p>
+         © All rights reserved. EPFL, Switzerland, <a href="http://harris-lab.epfl.ch/", target="_blank">Laboratory of Intestinal Immunology</a>, 2016-2017
+       </p>
+    </div>
+    <div class="col-md-4 align-right">
+      <p>
+        <a href = "javascript:void(0)" onclick = "backToTop();">
+          Back to top <i class="fa fa-chevron-up" aria-hidden="true"></i>
+        </a>
+      </p>
+    </div>
+  </div>
+</div>
+</nav>
+
+</body>
+</html>

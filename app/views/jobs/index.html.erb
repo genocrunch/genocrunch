@@ -1,0 +1,29 @@
+<div class="container-fluid">
+
+  <div class="main-container">
+
+      <div class="index", id="indexPartial">
+
+      <%# if session[:which] == "all" %>
+        <%# render partial: '/admins/index' %>
+      <%# else %>
+        <%= render partial: '/jobs/index' %>
+      <%# end %>
+
+  </div>
+</div>
+
+<script>
+
+  notice = '<%= notice %>'
+  $(document).ready(function() {
+    if (notice != '') {
+      alert(notice)
+    }
+  });
+
+  setInterval(function(){
+    $("#refreshIndex").click();
+  },5000);
+
+</script>

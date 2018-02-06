@@ -1,0 +1,148 @@
+<%# RETRIEVE INDEXES OF DATA CONRESPONDING TO CONTENT TO BE DISPLAYED %>
+<% indexes = @job.figtypes.size.times.select {|i| @job.figtypes[i] == content} %>
+
+<div class="container-fluid">
+
+  <div class="row figure-layout">
+
+    <div class="col-md-2 figure-btn-container">
+
+    <div class="container-fluid">
+
+      <div class="row">
+        <div id='test'></div>
+        <%# LEVEL %>
+        <div class="col-md-6" id="level-btn-container">
+          <div class="form-group">
+            <label title="Category level (ex: 1-kingdom, 2-phyla, 3-class, ...)">Level</label>
+            <% if content != Job.defaultView["param"] or Job.defaultView["level"] != 'none' %>
+              <% levels = @job.figlvls.values_at(*indexes) %>
+              <div class="multiselect-btn-container">
+                <%= select_tag("level", options_for_select(levels, selected=levels[0]), :id => "select_level", :onchange => "displayFigure('plot_wrapper', #{content.to_json.html_safe}, '#{@job.key}', #{ @job.figures.to_json.html_safe}, #{ @job.data.to_json.html_safe}, #{indexes.to_json.html_safe}, #{levels.to_json.html_safe}, #{Job.applicationJson["Rfunctions"].to_json.html_safe}, false);", multiple: false, class:"form-control fig-browser-multiselect") %>
+              </div>
+            <% else %>
+              <% levels = nil %>
+              <div class="multiselect-btn-container" title="Does not apply to this visualization.">
+                <%= select_tag("level", options_for_select([["NA", nil]], selected="none"), :id => "select_level", disabled: true, multiple: false, class:"form-control fig-browser-multiselect") %>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <%# EXPORT %>
+        <div class="col-md-6">
+          <div class="form-group export">
+          <label class="invisible">Export</label>
+          <div class="multiselect-btn-container">
+          <div class="dropdown">
+            <a class="dropdown-toggle btn btn-success" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Export <span class="caret"></span></a>
+            <ul id="export-btn" class="dropdown-menu">
+              <% if content != Job.defaultView["param"] or Job.defaultView["level"] != 'none' %>
+                <li id="exportSVG">
+                  <a>Figure SVG</a>
+                </li>
+                <li id="exportLegend">
+                  <a>Legend HTML</a>
+                </li>
+              <% end %>
+              <% if @job.data[indexes[0]].url.split('.')[-1] == 'json' %>
+                <li>
+                  <%= link_to "Data JSON", serve_job_path(key: @job.key, file: @job.data[indexes[0]], disposition: 'inline', type: 'application/json'), :target => '_blank', id: "data-link" %>
+                </li>
+              <% elsif @job.data[indexes[0]].url.split('.')[-1] == 'txt' %>
+                <li>
+                  <%= link_to "Data TXT", serve_job_path(key: @job.key, file: @job.data[indexes[0]], disposition: 'inline', type: 'application/text'), :data => { :no_turbolink => true }, id: "data-link" %>
+                </li>
+              <% end %>
+            </ul>
+          </div>
+        </div>
+        </div>
+        </div>
+      </div>
+
+      <div class="row">
+
+        <%# FIGURE OPTIONS %>
+        <div class="col-md-12 figure-btn">
+          <div id="d3-buttons"></div>
+        </div>
+      </div>
+      </div>
+    </div>
+
+    <div id="figure-container" class="col-md-10 figure-container">
+      <%# FIGURE %>
+      <div class="figure-container-margin">
+        <div class="scrollbar-top-container">
+          <div id="scrollbar-top" class="scrollbar-top"></div>
+        </div>
+        <div class="double-scrolled-container">
+          <div id="double-scrolled" class="double-scrolled">
+            <% if content != Job.defaultView["param"] or Job.defaultView["type"] == 'figure' %>
+              <div class="container-fluid">
+                <div id="plot_wrapper" class="row plot-wrapper"></div>
+              </div>
+            <% else %>
+              <%= render :partial => 'overview', :locals => {data: @job.data[indexes[0]]} %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <div id="sidebar" class="sidebar">
+        <i id="sidebar-icon" class="sidebar-icon fa fa-chevron-left"></i>
+        <div id="description" class="description">
+        <h3 class="title">
+          <%= content ==  Job.defaultView["param"] ? Job.defaultView["label"] : Job.applicationJson["Inputs"]["Analysis"]["expandable_fields"][content]["label"] %>
+        <br>
+        <small id="description" class="description-close"><%= @job.descriptions[indexes[0]] %></small>
+        </h3>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  $("#exportSVG").on("click", function(){
+    exportFigure('#svg-figure', 'svg', '<%= content %>')
+  })
+  $("#exportLegend").on("click", function(){
+    exportFigure('#svg-legend', 'html', 'legend-<%= content %>')
+  })
+
+  if (<%= content.to_json.html_safe %> != <%= Job.defaultView["param"].to_json.html_safe %> || <%= Job.defaultView["type"].to_json.html_safe %> == 'figure') {
+    displayFigure("plot_wrapper", <%= content.to_json.html_safe %>, '<%= @job.key %>', <%= job.figures.to_json.html_safe %>, <%= job.data.to_json.html_safe %>, <%= indexes %>, <%= levels.to_json.html_safe %>, <%= Job.applicationJson["Rfunctions"].to_json.html_safe %>, false);
+  }
+
+  $(document).ready(function() {
+    setMultiselect('.fig-browser-multiselect');
+    resizeMultiselect('.col-md-1', 1, '#level-btn-container', false);
+
+    if (<%= content.to_json.html_safe %> == <%= Job.defaultView["param"].to_json.html_safe %> || <%= Job.defaultView["type"].to_json.html_safe %> != 'figure') {
+
+      $('#plot').dataTable({
+        paging: false,
+        filter: false,
+        bInfo: false
+      });
+
+
+    };
+
+    $("#double-scrolled")[0].style["width"]=$("#plot_wrapper").width()+'px';
+    $("#scrollbar-top")[0].style["width"]=$("#plot_wrapper").width()+'px';
+
+    $(".scrollbar-top-container").scroll(function(){
+      $(".double-scrolled-container").scrollLeft($(".scrollbar-top-container").scrollLeft());
+    });
+    $(".double-scrolled-container").scroll(function(){
+      $(".scrollbar-top-container").scrollLeft($(".double-scrolled-container").scrollLeft());
+    });
+
+    $("#sidebar").on("mouseenter", showDescription)
+    $("#sidebar").on("mouseleave", hideDescription)
+  });
+
+
+</script>

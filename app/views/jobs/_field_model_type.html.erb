@@ -1,0 +1,65 @@
+<%  val = @default[field['id']] || field['default'] %>
+<%# val %>
+
+<div class='card-deck'>
+<div class="card">
+  <div class="card-header">
+ <%= field['label'] %>
+<div style='float:right'>
+  <label>
+      <%= radio_button_tag "p[#{field['id']}]", 'basic', (val == 'basic'), {:class => 'model_radio_button'} %>
+      Basic
+      </label>
+  <label>
+    <%= radio_button_tag "p[#{field['id']}]", 'advanced', (val == 'advanced'), {:class => 'model_radio_button'} %>
+    Advanced
+  </label>
+</div>
+  </div>
+  <div class="card-block">
+<!-- Tab panes -->
+  <div class="tab-pane" id="model-basic" role="tabpanel">
+     <div id='field-basic_model_help'><span style='font-style:italic'>Select a map file</span></div>
+     <%= render :partial => 'card_form', :locals => {:list_fields => @h_field_groups['model_type_basic']} %>
+  </div>
+  <div class="tab-pane hidden" id="model-advanced" role="tabpanel">
+    <%= render :partial => 'card_form', :locals => {:list_fields => @h_field_groups['model_type_advanced']} %>
+  </div>
+
+  </div>
+</div></div>
+
+<%= javascript_tag do %>
+/*
+
+$("a.nav-link").click(function(){
+var radio = $(this).children().first().children().first();
+radio.prop('checked', true);
+$(this).addClass("active");
+alert("active: " + this.id)
+var inactive = (this.id == 'p_model_type_basic') ? 'p_model_type_advanced' : 'model_type_basic';
+$("#" + inactive).parent().parent().removeClass("active");
+alert("inactive : " + inactive)
+});
+
+*/ 
+
+function set_tab(e){
+ if (e == 'advanced'){
+  $("#model-basic").addClass("hidden");
+  $("#model-advanced").removeClass("hidden");
+ }else{
+  $("#model-basic").removeClass("hidden");
+  $("#model-advanced").addClass("hidden");
+ }
+
+}
+
+$(".model_radio_button").change(function(){
+set_tab($(this).val());
+});
+
+set_tab($(".model_radio_button:checked").val());
+
+
+<% end %>

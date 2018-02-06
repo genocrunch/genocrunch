@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  name: MyString
+  input: MyString
+  map: MyString
+  params: MyString
+  output: MyString
+  status: MyString
+
+two:
+  name: MyString
+  input: MyString
+  map: MyString
+  params: MyString
+  output: MyString
+  status: MyString

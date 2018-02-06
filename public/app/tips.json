@@ -1,0 +1,31 @@
+{
+  "form":[
+    {
+     "id":"1",
+     "css_string":"right:0, width:'300px',top:0",
+     "html":"You are currently <b>signed out</b>. You can perform analyses but your work will <b>not be stored</b> after you close your web browser. Please first <b style='white-space:nowrap'>Register/Sign In</b> if you wish to store your work, <b>recover and edit</b> previous analyses."
+    },
+    {
+     "id":"2",
+     "css_string":"right:window_width/2-150, width:'300px',top:0",
+     "html":"You can find some help by clicking on a help icon (<i class='help-icon fa fa-question-circle-o', aria-hidden='true'></i>) and on the <b style='white-space:nowrap'>Infos<i class='fa fa-arrow-right' aria-hidden='true'></i>Doc</b> page."
+    },
+    {
+     "id":"3",
+     "css_string":"left:0, width:'300px',top:0",
+     "html":"You can load examples from the <b>Examples</b> page."
+    }
+  ],
+  "show":[
+    {
+     "id":"4",
+     "css_string":"left:window_width/2-150, width:'300px',top:0",
+     "html":"Data files and analysis logs can be downloaded as an archive (<span class='btn btn-sm btn-secondary'><i class='fa fa-file-archive-o' aria-hidden='true'></i></span>)."
+    },
+    {
+     "id":"5",
+     "css_string":"right:window_width/4-150, width:'300px',top:0",
+     "html":"Use <span class='btn btn-sm btn-primary'>Edit</span> to update your job."
+    }
+  ]
+}

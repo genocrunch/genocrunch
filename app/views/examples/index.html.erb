@@ -1,0 +1,27 @@
+<div class='main-container container-fluid'>
+<p id="notice"><%= notice %></p>
+
+<h1>Examples</h1>
+
+<div id='card-deck'>
+<% @jobs.each do |j| %>
+
+ <div class="card">
+   <div class='card-header'>
+<div style='float:right'>
+<a class='btn btn-primary clone-btn' href='<%= clone_job_path(:key => j.key) %>'>Load</a>
+</div>
+     <%= j.name %>
+   </div>
+   <div class="card-block">
+ <!--     <h4 class="card-title">Card title</h4>-->
+      <p class="card-text"><%= j.description %></p>
+    </div>
+  </div>
+<% end %>
+</div>
+<%= link_to 'New Example', new_example_path if admin? %>
+</div>
+<%= javascript_tag do %>
+
+<% end %>

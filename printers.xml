@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///usr/bin/../share/nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.01 scan initiated Wed Nov 23 10:01:41 2016 as: nmap -p 9100,515,631 -oX printers.xml 192.168.1.1/24 -->
+<nmaprun scanner="nmap" args="nmap -p 9100,515,631 -oX printers.xml 192.168.1.1/24" start="1479891701" startstr="Wed Nov 23 10:01:41 2016" version="7.01" xmloutputversion="1.04">
+<scaninfo type="connect" protocol="tcp" numservices="3" services="515,631,9100"/>
+<verbose level="0"/>
+<debugging level="0"/>
+<runstats><finished time="1479891703" timestr="Wed Nov 23 10:01:43 2016" elapsed="2.26" summary="Nmap done at Wed Nov 23 10:01:43 2016; 256 IP addresses (0 hosts up) scanned in 2.26 seconds" exit="success"/><hosts up="0" down="256" total="256"/>
+</runstats>
+</nmaprun>

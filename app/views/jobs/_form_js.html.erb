@@ -1,0 +1,37 @@
+<%= javascript_tag do  %>
+
+ var h_help = <%= raw @h_help.to_json %>;
+
+ $(document).ready(function() {
+
+ var window_width = $(window).width();
+
+  <% @h_tips['form'].each_with_index do |tip, index| %>
+    <% if !current_user and !session["tip#{tip['id']}".to_sym] %>
+      $("#tip_window<%= index %>").removeClass('hidden');
+      $("#tip_window<%= index %>").css({<%= raw tip['css_string'] %>}).stop().show(100);
+      $('#tip_window<%= index %>_text').html("<%= raw tip['html'] %>")
+      <% session["tip#{tip['id']}".to_sym] = true %>
+    <% end %>
+  <% end %>
+
+  $('.help').click(function(e) {
+
+  var t = this.id.split("-")
+  $('#popup_window').removeClass('hidden');
+  var help = h_help[t[1]];
+  $('#popup_container').html(help);
+   $("#popup_window").css({
+        left: (window_width -e.pageX < window_width/2) ? e.pageX-310 : e.pageX + 10 ,
+        width: 300,
+        top: e.pageY + 10
+    }).stop().show(100);
+  });
+
+  fold_section('.foldbar-icon');
+
+  setMultiselect('.multiselect');
+
+ });
+
+<% end %>

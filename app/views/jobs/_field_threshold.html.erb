@@ -1,0 +1,49 @@
+<div class="input-group">
+  <%# field.to_json %>
+  <% field['default']= (field['default_type'] == 'percent') ? field['default_percent'] : field['default_integer'] %>
+  <% field['placeholder']= (field['default_type'] == 'percent') ? field['placeholder_percent'] : field['placeholder_integer'] %>
+  <%=  field_integer field %>
+  <div class="input-group-btn">
+    
+    <button id='btn-<%= field['id'] %>' type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+     <%= (field['default_type'] == 'percent') ? 'Percent' : 'Absolute value' %>
+    </button>
+    <div id = 'select-<%= field['id'] %>' class="dropdown-menu dropdown-menu-right">
+      <a class="dropdown-item" href="#">Percent</a>
+      <a class="dropdown-item" href="#">Absolute value</a>
+    </div>
+  </div>
+</div>
+
+<!--
+    <a class="dropdown-item" href="#">%</a>
+    <a class="dropdown-item" href="#">Absolute value</a>
+  </div>
+</div>
+-->
+
+<%= javascript_tag do %>
+
+$("#select-<%= field['id'] %> a").click(function(){
+  name =  $(this).html();
+  $("#btn-<%= field['id'] %>").html(name);
+  var default_val = {
+    'Percent' : "<%= field['default_percent'] %>",
+    'Absolute value' : "<%= field['default_integer'] %>"
+  };
+  var default_placeholder = {
+   'Percent' : "<%= field['placeholder_percent'] %>",
+   'Absolute value' : "<%= field['placeholder_integer'] %>"
+  };
+  var type_val = {
+   'Percent' : 'percent',
+   'Absolute value' : 'int'
+  };
+
+ $("#p_<%= field['id'] %>").attr('placeholder', default_placeholder[name]);  
+ $("#p_<%= field['id'] %>").val(default_val[name]);
+ $("#p_<%= field['id'] %>_type").val(type_val[name]);
+});
+
+<% end %>
+

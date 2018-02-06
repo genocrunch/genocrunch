@@ -1,0 +1,15 @@
+<div class='card-deck'>
+<div class="card">
+  <div class="card-header">
+    <%= raw field_check_box(field) %>
+  </div>
+  
+  <% if field['trigger'] && field['trigger'] == 'drop_down' && @h_field_groups[field['id']] %>
+  <div class="card-block hidden">
+    <div id='field_group_<%= field['id'] %>' class='field_group_content'>
+      <%= render :partial => 'card_form', :locals => {:list_fields => @h_field_groups[field['id']]} %>
+    </div>
+  </div>
+  <% end %>
+</div>
+</div>

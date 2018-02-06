@@ -1,0 +1,40 @@
+<% if @final_json %>
+$("#global_status").attr('class', '<% (@final_json[:global_status] && @h_statuses[@final_json[:global_status]].icon) || @h_statuses['pending'].icon %>');
+
+<% @final_json[:global_status_by_step].each_key do |name| %>
+$("#status-<%= name %>").attr('class', '<%= (@h_statuses[@final_json[:global_status_by_step][name]]) ? @h_statuses[@final_json[:global_status_by_step][name]].icon :  @h_statuses['pending'].icon %>');
+<% end %>
+
+//$("#log_text").html('<%= raw @log_json.to_json %>');
+//alert("<%= session[:status_vector] %> = <%= @status_vector %>");
+
+<% if @update == 1 %>
+
+
+//alert("I want to update!");
+var div = $("#show_content");
+var view = $("#selected_view").val();
+ var url = '<%= view_job_path(:key => @job.key) %>?' + "partial=" + view;
+ $.ajax({
+  url: url,
+  type: "get",
+  dataType: "html",
+  beforeSend: function(){
+  },
+  success: function(returnData){
+    div.empty();
+    div.html(returnData);
+  },
+  error: function(e){
+  }
+ });
+
+<% session[:status_vector] = @status_vector %>
+<% end %>
+
+<% end %>
+
+<% tarfile = Pathname.new(APP_CONFIG[:data_dir]) + "users" + @user.id.to_s + @job.key + "#{@job.key}.tar.gz" %>
+<% if File.exist?(tarfile) %>
+  $("#archive-btn").removeClass('hidden');
+<% end %>

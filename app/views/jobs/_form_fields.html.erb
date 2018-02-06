@@ -1,0 +1,120 @@
+<%# SET DEFAULT VALUE %>
+<% if default.keys.include? key.to_sym %>
+  <% default_value = default[key.to_sym] %>
+<% else %>
+  <% default_value = nil %>
+<% end %>
+
+<%# BOOL %>
+<% if field["type"] == "bool" %>
+
+  <%= f.radio_button(key.to_sym, "True", checked: (default_value.to_s.downcase == "true"), id: 'job_'+key+'_true') %>
+  <%= f.label("Yes") %>
+  <%= f.radio_button(key.to_sym, "False", checked: (default_value.to_s.downcase == "false"), id: 'job_'+key+'_false') %>
+  <%= f.label("No") %>
+
+<%# TEXT %>
+<% elsif field["type"] == 'text' %>
+  <%= f.text_field(key.to_sym, value: default_value, placeholder: ((field["options"].key?("placeholder"))? field["options"]["placeholder"] : ''), class:"form-control form-text") %>
+
+
+<%# CHOICE %>
+<% elsif field["type"] == "choice" %>
+  <ul class="nav nav-tabs form-tabs-selector">
+    <% field["options"]["choices"].each_with_index do |choice, index| %>
+      <li id="tab_<%= key+'_selector_'+index.to_s %>" class="tab_<%= key %>_selector <%= (default_value == choice[1]) ? 'active' : '' %>">
+        <a href = "javascript:void(0)" onclick = "ShowTab('<%= key %>', '<%= index.to_s %>');", aria-hidden="true">
+          <%= f.radio_button(key.to_sym, choice[1], checked: (default_value == choice[1]), id: 'job_'+key+'_'+index.to_s, class: 'job_'+key+'_button') %>
+          <%= f.label(choice[0]) %>
+        </a>
+      </li>
+    <% end %>
+  </ul>
+
+<%# PERCENT %>
+<% elsif field["type"] == "percent" %>
+  <div class="input-group input-group-number">
+    <%= f.number_field(key.to_sym, value: default_value, min: 0, max: 100, step: 'any', class:"form-control form-number") %>
+    <div class="input-group-addon">%</div>
+  </div>
+
+<%# NUMBER %>
+<% elsif field["type"] == "number" %>
+
+  <%= f.number_field(key.to_sym, value: default_value, min: field["options"]["min"], max: field["options"]["max"], step: field["options"]["step"], class:"form-control form-number input-group-number") %>
+
+<%# CHECKBOX %>
+<% elsif field["type"] == "checkbox" %>
+
+  <%= f.check_box(key.to_sym, {:multiple => false, :disabled => false, :checked => (default_value == 'true')}, checked_value = field["options"]["checked_value"], unchecked_value = field["options"]["unchecked_value"]) %>
+  <%= f.label(field["options"]["label"]) %>
+
+<%# SELECT %>
+<% elsif field["type"] == "select" %>
+
+  <% if Job.applicationJson["Rfunctions"].keys().include? field["options"]["choices"] %>
+    <% choices = Job.applicationJson["Rfunctions"][field["options"]["choices"]] %>
+  <% else %>
+    <% choices = field["options"]["choices"] %>
+  <% end %>
+
+  <div class="multiselect-btn-container">
+    <%= f.select(key.to_sym, options_for_select(choices.map {|c| [c["label"], c["value"]]}, selected=default_value), {}, multiple: (field["options"]["multiple"].to_s.downcase == "true"), include_blank: (field["options"]["include_blank"].to_s.downcase == "true"), class:"form-control multiselect") %>
+  </div>
+
+<% elsif ["select-from-file-category", "select-from-file-row"].include? field["type"] %>
+
+  <div id="multiselect-btn-container-job_<%= key %>" class="multiselect-btn-container">
+    <%= f.select(key.to_sym, options_for_select(field["options"]["init"]), {}, multiple: (field["options"]["multiple"].to_s.downcase == "true"), include_blank: (field["options"]["include_blank"].to_s.downcase == "true"), class:"form-control") %>
+  </div>
+
+<%# FILE UPLOAD (WITH MANDATORY TEST FILE) %>
+<% elsif field["type"] == "file" %>
+
+  <%= f.file_field key, :id => 'job_'+key %>
+  <div id="field_<%= key %>_test_file", class="file_download">
+    <%= link_to "", download: "", target: "_blank", id: "link_"+key+"_test_file" do %>
+      Test file
+      <i class="fa fa-file-o" aria-hidden="true"></i>
+    <% end %>
+  </div>
+<% end %>
+
+
+<script>
+
+  if (<%= field['disable_if_file'].to_json.html_safe %> != null) {
+      disableFieldifFile(id = "job_"+<%= key.to_json.html_safe %>,
+              master_id = "job_"+<%= field['disable_if_file'].to_json.html_safe %>.id,
+              present = <%= field['disable_if_file'].to_json.html_safe %>.present,
+              type = <%= field['type'].to_json.html_safe %>,
+              test_id = "job_test",
+              test_files = <%= Job.test_files.to_json.html_safe %>.options.choices)
+  }
+
+  if (["select", "select-from-file-row", "select-from-file-category"].indexOf(<%= field['type'].to_json.html_safe %>) != -1) {
+      setMultiselect("#job_"+<%= key.to_json.html_safe %>);
+  }
+
+  if (<%= field['type'].to_json.html_safe %> == "select-from-file-row") {
+      var options = <%= field["options"].to_json.html_safe %>;
+      setSelectFromFileRow(id = "job_"+<%= key.to_json.html_safe %>,
+                         file_name = options.file,
+                         row = options.row,
+                         init= options.init,
+                         include = options.include,
+                         value = <%= default_value.to_json.html_safe %>,
+                         test_id = "job_test",
+                         test_files = <%= Job.test_files.to_json.html_safe %>.options.choices)
+  } else if (<%= field['type'].to_json.html_safe %> == "select-from-file-category") {
+      var options = <%= field["options"].to_json.html_safe %>;
+      setSelectFromFileCategory(id = "job_"+<%= key.to_json.html_safe %>,
+                              file_name = options.file,
+                              col = options.col,
+                              init = options.init,
+                              include = options.include,
+                              test_id = "job_test",
+                              test_files = <%= Job.test_files.to_json.html_safe %>.options.choices)
+  }
+
+</script>

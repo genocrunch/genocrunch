@@ -1,0 +1,8 @@
+<h3>Primary dataset</h3>
+ldksjflskdjf
+<%=  @final_json[:status_by_step].to_json %>
+<% @final_json[:status_by_step]['primary_dataset'].each do |e| %>
+<div class='card'>
+<%= e['name'] %> <%= image_tag @h_status[e['status']].filename %>
+</div>
+<% end %>

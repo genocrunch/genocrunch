@@ -1,0 +1,7 @@
+<% if @previous_jobs.nil? == false %>
+  <% if (@previous_jobs.to_a - @jobs.map {|e| e.status}).blank? == false %>
+    $("#<%= @id %>").html("<%=j render(:partial => @partial, :locals => {:jobs => @jobs, :users => @users}) %>");
+  <% end %>
+<% else %>
+  $("#<%= @id %>").html("<%=j render(:partial => @partial, :locals => {:jobs => @jobs, :users => @users}) %>");
+<% end %>

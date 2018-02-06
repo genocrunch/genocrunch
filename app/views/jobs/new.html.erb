@@ -1,0 +1,16 @@
+<div class="container-fluid main-container" id="form-container">
+<!--  <div class='alert alert-danger'>Sorry, this application is under construction.</div> -->
+
+
+  <h3>New job</h3>
+
+  <% if @missing_fields and @missing_fields.size > 0 %>
+    <div class='alert alert-danger'>These fields are missing: <%= @missing_fields.map{|e| e['label'] || e['id'].gsub("_", " ").capitalize}.join(", ") %>.</div>
+  <% end %>
+
+  <%= render partial: 'form', :locals => {default: @default, context: "main"} %>
+
+</div>
+
+<%= render :partial => 'form_js' %>
+

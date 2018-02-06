@@ -1,0 +1,49 @@
+.welcome-text {
+  color:#fff;
+  text-shadow: 3px 3px 3px #333;
+
+  h1 {
+    font-size: 10vh;
+    line-height: 15vh;
+  }
+
+  p {
+    font-size: 20px;
+    line-height: 20px;
+  }
+}
+
+.signin {
+  color:#fff;
+  padding:2%;
+  background-color: rgba(0, 0, 0, 0.5);
+
+  a {
+    color: #fff;
+  }
+
+}
+
+.move-down,
+.move-up {
+  a {
+    display:table;
+    font-size:60px;
+    margin-left:auto;
+    margin-right:auto;
+
+    &.dark {
+      color:#333;
+    }
+
+    &.light {
+      color:#fff;
+    }
+
+    &:hover,
+    &:focus,
+    &:active {
+      color:#ccc;
+    }
+  }
+}

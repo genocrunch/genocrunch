@@ -1,0 +1,69 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="card col-xl-3 col-lg-3 col-md-3 col-sm-12">
+    <div class='btn-container'>
+
+      <% if  @form_json['bin_levels'] %>
+        <div class='form-group'>
+	
+          <label>
+            <span class='label-text'>Level</span>
+          </label>
+	
+	        <div class='multiselect-btn-container figtool-multiselect-btn-container'>	
+	          <% l = @form_json['bin_levels'].map{|e| [e, e]} %>      
+            <%= select_tag 'current_level', options_for_select(l, session[:current_level].to_s), {:class => 'form-control multiselect figtool-multiselect'} %>
+          </div>
+
+        </div>
+
+      <% end %>
+      <%= render :partial => 'export_btn' %> 
+
+      <span class='btn-sep'></span>
+
+      <div id="d3-buttons"></div>
+
+    </div>
+    </div>
+    <div class="card col-xl-9 col-lg-9 col-md-9 col-sm-12">
+      <div class="row">
+        <div class="col-xl-9 col-lg-12 col-md-12 col-sm-12">
+          <div class="show-element fig-container">
+            <div id="fig"></div>
+          </div>
+        </div>
+        <div class="col-xl-3 col-lg-12 col-md-12 col-sm-12">
+          <div class="card show-element fig-legend-container">
+            <div id="fig-legend"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%= javascript_tag do %>
+
+$("#current_level").change(function(){
+var div = $('#show_content');
+var url = '<%= view_job_path(:key => @job.key) %>?partial=<%= params[:partial] %>&current_level=' + $(this).val();
+
+ $.ajax({
+  url: url,
+  type: "get",
+  beforeSend: function(){
+  },
+  success: function(returnData){
+   div.empty();
+   div.html(returnData);
+  },
+  error: function(e){
+  }
+ });
+
+});
+
+setMultiselect('#current_level');
+
+<% end %>

@@ -1,0 +1,18 @@
+development:
+  # Genocrunch main directory
+  data_dir: /path/to/genocrunch
+
+  # Additional link(s) that should be included in the Infos menu of the topbar
+  info_links: [{name: 'link_name', href: 'link_url', target: '_blank'}]
+
+  # Webmaster email
+  webmaster_email: 'webmaster_email'
+
+  # Send a validation link to user email to confirm registration?
+  user_confirmable: false
+
+production:
+  data_dir: /path/to/genocrunch
+  info_links: [{name: 'link_name', href: 'link_url', target: '_blank'}]
+  webmaster_email: 'webmaster_email'
+  user_confirmable: false

@@ -1,0 +1,22 @@
+.info-container {
+  display:table;
+  margin:auto;
+}
+
+.terms {
+  margin:20px;
+  width:800px;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -pre-wrap;
+  background-color: #fff;
+  color: #333;
+  font-family: "Lucida Console", monospace;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.credits {
+  border:solid 1px #333;
+}

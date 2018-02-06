@@ -1,0 +1,121 @@
+<%# BUILD A FORM BASED ON A JSON (recursively through expandable_fields and fields) %>
+
+
+
+<% if json.keys.include? "title" %>
+  <div class="col-md-3 form-categ-container">
+  <div class="form-categ">
+  <h4><%= json["title"] %></h4>
+<% end %>
+
+<%# FIELDS %>
+<% if json.keys.include? "fields" %>
+  <% json["fields"].each do |key, field| %>
+    <% if ["all", "web"].include? field["scope"] %>
+      <div id="field_<%= key %>" class="<%= field.key?('class') ? 'form-group '+field['class']:'form-group' %>" title="<%= field['hover'] %>">
+        <% if field.key?("help") %>
+          <a href = "javascript:void(0)" onclick = "ShowHelp('help_<%= key %>');", class="help-button", aria-hidden="true">
+            <label class="control-label full-width">
+              <span class="label-text">
+                <%= (context == 'edit' and field["type"] == "file") ? "New "+field["hover"] : field["label"] %>
+                <%= field["optional"] == "false" ? '*' : '' %>
+              </span>
+              <i class="help-icon fa fa-question-circle-o", aria-hidden="true"></i>
+            </label>
+          </a>
+        <% else %>
+          <label class="control-label full-width">
+            <span class="label-text">
+              <%= (context == 'edit' and field["type"] == "file") ? "New "+field["hover"] : field["label"] %>
+              <%= field["optional"] == "false" ? '*' : '' %>
+            </span>
+          </label>
+        <% end %>
+        <%= render partial: 'form_fields', locals: {f: f, context: context, default: default, field: field, key: key} %>
+        <% if field.key?("help") %>
+          <span id="help_<%= key %>" class="help-block">
+            <%= field["help"] %>
+            <%= field["type"] == "file" ? link_to('See a format example', root_url+"helps/"+key, target: "_blank", class: "file_example") : '' %>
+          </span>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+
+<% end %>
+
+
+<%# EXPANDABLE FIELDS %>
+<% if json.keys.include? "expandable_fields" %>
+
+  <% json["expandable_fields"].each do |key, expandable_field| %>
+
+    <% if ["all", "web"].include? expandable_field["scope"] %>
+      <div id="expandable_<%= key %>" class="expandable" title="<%= expandable_field["label"] %>">
+
+        <% if expandable_field.keys.include? "param" %>
+          <%= expandable_field["type"] == "checkbox_bool" ? f.check_box(expandable_field["param"].to_sym, {:multiple => false, :disabled => false, :checked => (default[expandable_field["param"].to_sym] == 'true')}, checked_value = expandable_field["options"]["checked_value"], unchecked_value = expandable_field["options"]["unchecked_value"]) : expandable_field["type"] == "checkbox_list" ? f.check_box(expandable_field["param"].to_sym, {:multiple => true, :disabled => false, :checked => (default[expandable_field["param"].to_sym].include? key)}, checked_value = key, unchecked_value = nil) : '' %>
+        <% end %>
+
+          <% if expandable_field.keys.include? "fields" %>
+            <a href = "javascript:void(0)" onclick = "showDiv('slide_<%= key %>');", class="slider">
+              <%= expandable_field["label"] %>
+            </a>
+            <a href = "javascript:void(0)" onclick = "ShowHelp('help_<%= key %>');", class="help-button", aria-hidden="true">
+              <i class="help-icon fa fa-question-circle-o"></i>
+            </a>
+            <a title="Close", href = "javascript:void(0)" onclick = "hideDiv('slide_<%= key %>');", class="slide-close fa fa-chevron-up", aria-hidden="true", id="slide_close_<%= key %>"></a>
+            <a title="Open", href = "javascript:void(0)" onclick = "showDiv('slide_<%= key %>');", class="slide-open fa fa-chevron-down", aria-hidden="true", id="slide_open_<%= key %>"></a>
+
+            <% if expandable_field.keys.include? "image" %>
+              <a href = "javascript:void(0)" onclick = "showDiv('slide_<%= key %>');", class="slider">
+                <%= image_tag(expandable_field["image"], class: "expandable-image img-rounded") %>
+              </a>
+            <% end %>
+
+          <% else %>
+            <%= expandable_field["label"] %>
+            <a href = "javascript:void(0)" onclick = "ShowHelp('help_<%= key %>');", class="help-button", aria-hidden="true">
+              <i class="help-icon fa fa-question-circle-o"></i>
+            </a>
+
+            <% if expandable_field.keys.include? "image" %>
+              <%= image_tag(expandable_field["image"], class: "expandable-image img-rounded") %>
+            <% end %>
+
+          <% end %>
+
+
+          <span id="help_<%= key %>" class="help-block"><%= expandable_field["help"] %></span>
+
+
+
+
+          <div id="slide_<%= key %>" class="slide">
+
+          <%= render partial: 'form_from_json', locals: {f: f, json: expandable_field, context: context, default: default} %>
+
+        </div>
+      </div>
+    <% end %>
+  <% end %>
+<% end %>
+
+<%# TABS %>
+<% if json.keys.include? "Tabs" %>
+    <% key = json["Tabs"]["Selection"].keys[0] %>
+    <%= render partial: 'form_fields', locals: {f: f, context: context, default: default, field: json["Tabs"]["Selection"][key], key: key} %>
+
+  <% json["Tabs"]["Content"].each_with_index do |content, index| %>
+    <div id="tab_<%= key + '_' + index.to_s %>" class="tab_<%= key %> <%= (json['Tabs']['Selection'][key]['options']['choices'][index][1] == default[key.to_sym])? 'visible' : 'hidden' %>">
+      <%= render partial: 'form_from_json', locals: {f: f, json: content, context: context, default: default} %>
+    </div>
+  <% end %>
+
+<% end %>
+
+<% if json.keys.include? "title" %>
+
+  </div>
+  </div>
+<% end %>

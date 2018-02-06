@@ -1,0 +1,151 @@
+<div class="container-fluid">
+<div class='row main-container'>
+
+ <div class='border-right col-xl-2 col-lg-2 col-md-3 col-sm-12'>
+
+   <%= hidden_field_tag 'selected_view', 'primary_dataset' %>
+
+  <b>Input data preparation</b>
+
+<% @inputs#.select{|e| @final_json[:global_status_by_step][e[:id]] }
+   .each do |input| %>
+  <div id='menu-<%= input[:id] %>' class='menu'>
+    <a class='btn btn-sm btn-secondary text-left' href="#">
+      <span class='float-left'>
+        <% status = (@final_json) ? @final_json[:global_status_by_step][input[:id]] : 'pending' %>
+        <i id="status-<%= input[:id] %>" class="<%= @h_statuses[status || 'pending'].icon %>" aria-hidden="true"></i>
+        <%# image_tag @h_statuses[status || 'pending'].filename, :alt => '', :id => "status-#{input[:id]}", :class => 'status_image' %>
+        <%= input[:label] %>
+      </span>
+      <span class='float-right'>
+        <i class="<%= (@h_views[input[:id]]) ? @h_views[input[:id]].icon : '' %>" aria-hidden="true"></i>
+      </span>
+    </a>
+  </div> 
+<% end %>
+
+  <b>Analysis</b>
+<% @analyses#.select{|e| @final_json[:global_status_by_step][e[:id]]}
+   .each do |analysis| %>
+  <div id='menu-<%= analysis[:id] %>' class='menu'>
+    <a class='btn btn-sm btn-secondary text-left' href="#">
+      <span class='float-left'>
+        <%# @final_json[:status_by_step].keys.to_json %>
+        <%# @final_json[:global_status_by_step][analysis[:id]] %>
+        <% status = (@final_json) ? @final_json[:global_status_by_step][analysis[:id]] : 'pending' %>
+        <i  id="status-<%= analysis[:id] %>" class="<%= @h_statuses[status || 'pending'].icon %>" aria-hidden="true"></i>
+        <%# image_tag @h_statuses[status || 'pending'].filename, :alt => '', :id => "status-#{analysis[:id]}", :class => 'status_image' %>
+        <%= analysis[:label] %>
+      </span>
+      <span class='float-right'>
+        <i class="<%= (@h_views[analysis[:id]]) ? @h_views[analysis[:id]].icon : '' %>" aria-hidden="true"></i>
+      </span>
+  </a>
+  </div>
+<% end %>
+ </div> 
+ <div class='col-xl-10 col-lg-10 col-md-9 col-sm-12'>
+  <h2>
+    Project '<%= @job.name %>'
+
+    <i id="global_status" class="<%= @h_statuses[(@final_json) ? @final_json[:global_status] : 'pending'].icon %>" aria-hidden="true"></i>
+    <%# image_tag @h_statuses[(@final_json) ? @final_json[:global_status] : 'pending'].filename, :id => 'global_status', :class => 'status_image' %>
+  </h2>
+  <div id='job_header_right'>
+
+    <%= link_to serve_job_path(@job.key, :filename => @job.key + '.tar.gz'), :id => 'archive-btn', :title => 'Download archive', :class => 'btn btn-secondary hidden' do %>
+<i class="fa fa-file-archive-o" aria-hidden="true"></i>
+
+    <% end %>
+    <%= link_to 'Edit', edit_job_path(:key => @job.key), :class => 'btn btn-primary' %>
+  </div>
+  <div id='show_content'>
+    <%# if @final_json and @final_json[:global_status_by_step]['primary_dataset'] %> 
+    <%= render :partial => 'view_primary_dataset' %>
+    <%# end %>
+  </div>
+ </div>
+
+
+<% @h_tips['show'].each_with_index do |tip, index| %>
+  <div id='tip_window<%= index %>' class='hidden tip_window topbar-margin'>
+    <i class="fa fa-info-circle" aria-hidden="true"></i>
+    <div id='tip_window<%= index %>_text'></div>
+    <div class='tip_window_close' onclick="$('#tip_window<%= index %>_text').html('');$('#tip_window<%= index %>').addClass('hidden'); $('#tip_window<%= index %>').css({display: 'none'});">
+      <i class="fa fa-check" aria-hidden="true"></i> Got it!
+    </div>
+  </div>
+<% end %>
+
+</div>
+</div>
+
+<%= javascript_tag do %>
+
+
+ $(document).ready(function() {
+
+  var window_width = $(window).width();
+
+  <% @h_tips['show'].each_with_index do |tip, index| %>
+    <% if !current_user and !session["tip#{tip['id']}".to_sym] %>
+      $("#tip_window<%= index %>").removeClass('hidden');
+      $("#tip_window<%= index %>").css({<%= raw tip['css_string'] %>}).stop().show(100);
+      $('#tip_window<%= index %>_text').html("<%= raw tip['html'] %>")
+      <% session["tip#{tip['id']}".to_sym] = true %>
+    <% end %>
+  <% end %>
+
+});
+
+
+$(".menu").click(function(){
+var name = this.id.split("-")[1];
+$("#selected_view").val(name);
+});
+
+var timer = setInterval(function(){
+refresh_data()
+}, 5000);
+
+function refresh_data(){
+ var url = '<%= refresh_job_path(:key => @job.key) %>';
+ $.ajax({
+  url: url,
+  type: "get",
+  dataType: "script",
+  beforeSend: function(){
+  },
+  success: function(returnData){
+//    div.empty();
+//    div.html(returnData);
+  },
+  error: function(e){
+  }
+ });
+
+}
+
+$(".menu").click(function(){
+ var t = this.id.split("-");
+ var div = $("#show_content");
+ var url = '<%= view_job_path(:key => @job.key) %>?partial=' + t[1];
+ $.ajax({
+  url: url,
+  type: "get",
+  beforeSend: function(){
+  },
+  success: function(returnData){
+    div.empty();
+    div.html(returnData);
+  },
+  error: function(e){
+  }
+ });
+
+});
+
+
+refresh_data();
+
+<% end %>

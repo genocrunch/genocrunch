@@ -1,0 +1,25 @@
+.doc-index-container {
+  max-height:100vh;
+  height:auto;
+  overflow:auto;
+}
+.doc-index {
+
+  padding-bottom:50vh;
+
+  .index-link-1 {
+    padding:.3em .5em;
+    font-size:1.2em;
+  }
+  .index-link-2 {
+    padding:.3em 1em;
+  }
+  .index-link-3 {
+    padding:.3em 1.2em;
+  }
+  .index-link-4 {
+    padding:.3em 1.8em;
+    font-size:0.9em;
+    font-weight:bold;
+  }
+}
