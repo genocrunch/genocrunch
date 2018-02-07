@@ -16,7 +16,7 @@ A web-based platform for mining metagenomic data
 - **Git clone URL:** <https://c4science.ch/source/genocrunch-2.1.git>
 - **Documentation:** <https://c4science.ch/source/genocrunch-2.1>
 - **Licence:** <https://www.gnu.org/licenses/agpl-3.0.md>
-- **Dockerfile:** <https://c4science.ch/source/genocrunch_docker.git>
+- **Dockerfile:** <https://c4science.ch/source/genocrunch_docker>
 
 ## Framework
 
@@ -427,4 +427,4 @@ See **Infos>Doc** in the application web page (<http://localhost:3000/home/doc>)
 
 ## Running on Docker
 
-See a Dockerfile [here](https://c4science.ch/source/genocrunch_docker.git).
+See [here](https://c4science.ch/source/genocrunch_docker).
