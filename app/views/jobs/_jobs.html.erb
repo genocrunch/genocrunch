@@ -35,8 +35,8 @@
           <%= link_to date, job_path(job.key) %>
         </td>	
         <% if current_user.role == "admin" %>
-          <td title="<%= job.user.username %>">
-            <%= job.user.username %>
+          <td title="<%= (job.user) ? job.user.username : 'NA' %>">
+            <%= (job.user) ? job.user.username : 'NA' %>
           </td>
 	 <td>
             <%= (Example.where(:job_key => job.key).all.size > 0) ? 'Example' : 'Std'  %>
