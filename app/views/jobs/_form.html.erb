@@ -51,11 +51,11 @@
 </div>
 
 <div class="form-group">
-  <%  type_job = (action_name == 'edit') ? 'Update' : 'Create' %>
+  <%  type_job = (action_name == 'edit') ? 'Restart' : 'Start' %>
   <% if !current_user and !session[:agree_with_terms] %>
-    <%= f.submit type_job + " Job", data: { confirm: "Before using Genocrunch, you must agree with the following Terms of Service:\n\n"+File.read('public/app/TERMS_OF_SERVICE.txt') }, :class => "btn btn-success btn-lg col-md-12", :style=>'margin-top:10px' %>
+    <%= f.submit type_job + " Analysis", data: { confirm: "Before using Genocrunch, you must agree with the following Terms of Service:\n\n"+File.read('public/app/TERMS_OF_SERVICE.txt') }, :class => "btn btn-success btn-lg col-md-12", :style=>'margin-top:10px' %>
   <% else %>
-    <%= f.submit type_job + " Job", :class => "btn btn-success btn-lg col-md-12", :style=>'margin-top:10px' %>
+    <%= f.submit type_job + " Analysis", :class => "btn btn-success btn-lg col-md-12", :style=>'margin-top:10px' %>
   <% end %>
 </div>
 

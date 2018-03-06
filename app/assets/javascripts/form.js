@@ -1,12 +1,10 @@
 function update_bin_levels(col_name, val, url){
     val = (val) ? val : [1]
-//    alert("toto: " + $("#p_primary_dataset").val() + "url:" + url);
     var ori_filename = $("#p2_primary_dataset").val();
     getColumn("bin_levels", $("#p_primary_dataset")[0].files[0], col_name, val, url);
 }
 
 function populate_multiselect(id, new_data, value, url){
-   // alert("set " + id + " : " + value + " all : " + new_data.length)
     $('#p_'+id).multiselect('enable')
         .multiselect('dataprovider', new_data)
         .multiselect('select', value)
@@ -17,10 +15,8 @@ function populate_multiselect(id, new_data, value, url){
     if (id == 'category_column'){
       var val = $("#default_bin_levels").val()
       	
-//      alert("value url: " + url);
       var new_url = (url) ? ($("#url_read_file_column").val() + "?file_key=primary_dataset") : null;
       update_bin_levels($("#p_category_column").val(), JSON.parse(val), new_url); 
-	//"http://genocrunch.epfl.ch/jobs/read_file_column")
     } 
 
 }
@@ -42,8 +38,7 @@ function getColumn(id, file, col_name, value, url) {
             }
             i = (i > 1) ? i-1 : 0;
 	    
-	    var header_els = lines[i].trim().split("\t")
-	    
+	    var header_els = lines[i].split("\t")
 	    var pos_col = 0
 	    for (var k = 0; k<header_els.length; k++){
 		if (header_els[k] == col_name){

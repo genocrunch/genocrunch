@@ -49,7 +49,7 @@ gem "font-awesome-rails"
 gem 'skrollr-rails', '~> 0.6.26'
 
 # Sort tables
-#gem 'jquery-tablesorter'
+gem 'jquery-tablesorter'
 
 # Manipulate json files
 gem 'json'

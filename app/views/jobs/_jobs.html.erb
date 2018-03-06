@@ -1,3 +1,5 @@
+<div class='card table-container'>
+<h3>Analyses</h3>
 <input type="text" id="filter-input" class='form-control filter-table' onkeyup="filterTable()" placeholder="Search">
 
 <table id="myTable" class="table table-striped table-condensed">
@@ -14,7 +16,7 @@
       <th title="input data">Data</th>
       <th title="map">Map</th>
       <th title="results">Results</th>
-      <th title="clone|edit|delete"></th>
+      <th title="copy|edit|delete"></th>
     </tr>
   </thead>
   <tbody>
@@ -63,7 +65,7 @@
           <% end %>
         </td>
         <% destroy_text = (['pending', 'running'].include? job.status) ? 'abort' : 'delete' %>
-        <td title="clone|edit|delete" style='white-space:nowrap'>
+        <td title="copy|edit|delete" style='white-space:nowrap'>
 	  <%= link_to raw('<i class="fa fa-clone" aria-hidden="true"></i>'), clone_job_path(job.key) %>
 	  |
 <%= link_to raw('<i class="fa fa-pencil-square-o" aria-hidden="true"></i>'), edit_job_path(job.key) %>
@@ -77,29 +79,31 @@
       <% end %>
   </tbody>
 </table>
+</div>
 
+<div class='card table-container'>
+<h3>Status summary</h3>
 <table id="myTableStats" class="table table-condensed">
   <thead>
     <tr>
-      <th title="jobs">jobs</th>
-      <th title="completed"><i class="fa fa-check icon-success" aria-hidden="true"></i></th>
-      <th title="pending"><i class="fa fa-ellipsis-h icon-inactive" aria-hidden="true"></i></th>
-      <th title="running"><i class="fa fa-circle-o-notch" aria-hidden="true"></i></th>
-      <th title="failed"><i class="fa fa-exclamation-triangle icon-warning" aria-hidden="true"></i></th>
+      <th title="completed">completed (<i class="fa fa-check icon-success" aria-hidden="true"></i>)</th>
+      <th title="pending">pending (<i class="fa fa-ellipsis-h icon-inactive" aria-hidden="true"></i>)</th>
+      <th title="running">running (<i class="fa fa-circle-o-notch" aria-hidden="true"></i>)</th>
+      <th title="failed">failed (<i class="fa fa-exclamation-triangle icon-warning" aria-hidden="true"></i>)</th>
+      <th title="total">total</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><%= @jobs.length %></td>
       <td><%= @jobs.select{ |i| i.status == "completed" }.length %></td>
       <td><%= @jobs.select{ |i| i.status == "pending" }.length %></td>
       <td><%= @jobs.select{ |i| i.status == "running" }.length %></td>
       <td><%= @jobs.select{ |i| i.status == "failed" }.length %></td>
+      <td><%= @jobs.length %></td>
     </tr>
   </tbody>
 </table>
-
-
+</div>
 <%= javascript_tag do  %>
 $(document).ready(function(){
   var table = $('#myTable').DataTable({

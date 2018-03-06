@@ -71,8 +71,8 @@
     </ul>
     <div class="btn-group"> 
       <% if current_user %>
-        <%= link_to 'New Job', new_job_path, class: "btn btn-primary navbar-btn" %>
-	      <%= link_to "My Jobs", jobs_path(), class: "btn btn-secondary navbar-btn" %>
+        <%= link_to 'New Analysis', new_job_path, class: "btn btn-primary navbar-btn" %>
+	      <%= link_to "My Analyses", jobs_path(), class: "btn btn-secondary navbar-btn" %>
         <div class="btn-group"> 
           <a class="btn btn-secondary navbar-btn dropdown-toggle" href="#" id="UserMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 	          <i class="fa fa-user-o" aria-hidden="true"></i>
@@ -86,9 +86,9 @@
       <% else %>
         <% sandbox_job = Job.where(:key => session[:current_key]).first %>
         <% if sandbox_job  %>
-          <%= link_to 'My Job', job_path(sandbox_job.key), class: "btn btn-secondary navbar-btn" %>
+          <%= link_to 'My Analysis', job_path(sandbox_job.key), class: "btn btn-secondary navbar-btn" %>
         <% else %>
-          <%= link_to 'New Job', new_job_path, class: "btn btn-primary navbar-btn" %>
+          <%= link_to 'New Analysis', new_job_path, class: "btn btn-primary navbar-btn" %>
         <% end %>
         <%= link_to "Sign In", new_user_session_path, class: "btn btn-secondary navbar-btn" %>
         <%= link_to "Register", new_user_registration_path, class: "btn btn-secondary navbar-btn" %>

@@ -208,6 +208,13 @@ $ cd /path/to/genocrunch
 $ bundle install
 ```
 
+You can customize the message appearing when a table is empty here:
+```
+$ cp ~/.rbenv/versions/*/lib/ruby/gems/*/gems/jquery-datatables-rails-*/app/assets/javascripts/dataTables/jquery.dataTables.js ~/.rbenv/versions/*/lib/ruby/gems/*/gems/jquery-datatables-rails-*/app/assets/javascripts/dataTables/jquery.dataTables.js.bkp
+$ sed -i -e 's/No data available in table/This table is empty/g' ~/.rbenv/versions/*/lib/ruby/gems/*/gems/jquery-datatables-rails-*/app/assets/javascripts/dataTables/jquery.dataTables.js
+```
+
+
 ### Set application configuration variables
 
 Set the application configuration variables in the `genocrunch/config/config.yml` file to fit the current installation:
