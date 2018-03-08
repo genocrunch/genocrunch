@@ -2,6 +2,12 @@
 
   <div class="row main-container align-items-center">
 
+    <div id='firefox_msg' class="col-md-10 offset-md-1 hidden">
+      <div class='alert alert-danger align-center'>
+        This app works better with <a href='https://www.mozilla.org' target='_blank'><i class='fa fa-firefox'></i> Firefox</a>
+      </div>
+    </div>
+
     <%# WELCOME TEXT %>
 
     <div class="col-md-5 offset-md-1">
@@ -68,11 +74,16 @@
 </div>
 
 <script>
-  notice = '<%= notice %>'
+  var notice = '<%= notice %>',
+      is_firefox = typeof InstallTrigger !== 'undefined';
+
   $(document).ready(function() {
+    if (!is_firefox) {
+      $('#firefox_msg').show();
+    };
     if (notice != '') {
       alert(notice)
-    }
+    };
   });
 
   $('#move-down').on('click', function(){

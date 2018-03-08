@@ -16,6 +16,26 @@
       skrollr.init().refresh();
     });
 
+    var is_mobile = (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+    $(document).ready(function() {
+      if (is_mobile) {
+        $('body').html('\
+  <div class="align-center">\
+    <h1><%= Rails.application.class.parent_name %><br>\
+    <small>a user-friendly data mining pipeline for metagenomics and metataxonomics</small></h1>\
+  </div>\
+  <div class="alert alert-danger align-center">\
+    <h1>Sorry, this app is not supported by mobile devices <i class="fa fa-mobile" aria-hidden="true"></i><br>\
+    Try accessing from a computer <i class="fa fa-laptop" aria-hidden="true"></i></h1>\
+  </div>\
+  <div class="align-center">\
+    <h2>Tutorial <small>(coming soon)</small></h2>\
+      <iframe width=627 height=353 src="#"></iframe>\
+  </div>\
+        ');
+      };
+    });
+
   </script>
 
   <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -109,7 +129,6 @@
 </div>
 
 <nav class="navbar navbar-light bg-faded sticky-bottom align-center">
-<div class="container">
   <div class="row align-items-center">
     <div class="col-md-4 align-left">
       <p>
@@ -130,7 +149,6 @@
         </a>
       </p>
     </div>
-  </div>
 </div>
 </nav>
 
