@@ -1,16 +1,22 @@
 <h1>Documentation</h1>
 
-<p>Version 1.1</p>
+<p>Version 1.2 / 14.03.2018</p>
 
 <h2 id='overview'>Overview</h2>
-<p>Genocrunch is a web-based data mining platform dedicated to metagenomics and metataxonomics. It provides data mining tools for data <b>pre-processing</b> and <b>transformation</b>, <b>diversity analysis</b>, <b>multivariate statistics</b>, <b>dimensionality reduction</b>, <b>differential analysis</b>, <b>clustering</b> as well as <b>correlation and similarity network</b> analysis. <b>Interactive visualization</b> is offered for all figures.</p>
 
-<h3 id='pipeline'>Pipeline</h3>
-<p>The general organization of the tools is described in the figure below.
+<div class='row p-1'>
+  <div class='col-xl-6 col-lg-6 col-md-6 col-sm-12 image-container align-self-center'>
+    <%= image_tag('genocrunch_workflow.png', width:'100%') %>
+  </div>
+</div>
 
-<br><br>
-<%= image_tag 'genocrunch_pipeline.png' %>
-<br><br>
+<p>Genocrunch is a web-based data mining platform dedicated to metagenomics and metataxonomics. It provides analysis tools for count datasets that are typically derived from next generation sequencing. These tools cover data <b>pre-processing</b> and <b>transformation</b>, <b>diversity analysis</b>, <b>multivariate statistics</b>, <b>dimensionality reduction</b>, <b>differential analysis</b>, <b>clustering</b> as well as <b>correlation and similarity network</b> analysis. <b>Interactive visualization</b> is offered for all figures.</p>
+
+<div class='row p-1'>
+  <div class='col-xl-6 col-lg-6 col-md-6 col-sm-12 image-container'>
+    <%= image_tag('genocrunch_pipeline.png', width:'100%') %>
+  </div>
+</div>
 
 <h2 id='new-users-and-registration'>New users and registration</h2>
 
@@ -187,7 +193,7 @@ metabolite3	0.05	0.11	0.03	0.02
     </ul>
   </li>
   <li id='transformation-subtitle'>Transformation
-    <p>Whether it is to correct for sequencing depth, to stabilize the variance or simply to improve the visualization of skewed data, a transformation step may be needed. Common methods include transforming counts into proportions (percent or counts per million) and applying a log. We are working to also propose more advanced transformations, including those developed for RNA sequencing (RNA-seq) as part of the DESeq2 (<a href='https://www.ncbi.nlm.nih.gov/pubmed/25516281' target='_blank'>Love et al., 2014</a>) and the Voom (<a href='https://www.ncbi.nlm.nih.gov/pubmed/24485249' target='_blank'>Law et al., 2014</a>) pipelines. To limit the effect of known experimental bias (or batch-effect), the Combat method can be applied.</p>
+    <p>Whether it is to correct for sequencing depth, to stabilize the variance or simply to improve the visualization of skewed data, a transformation step may be needed. Common methods include transforming counts into proportions (percent or counts per million) and applying a log. We are working to also propose more advanced transformations, including those developed for RNA sequencing (RNA-seq) as part of the DESeq2 (<a href='https://www.ncbi.nlm.nih.gov/pubmed/25516281' target='_blank'>Love et al., 2014</a>) and the Voom (<a href='https://www.ncbi.nlm.nih.gov/pubmed/24485249' target='_blank'>Law et al., 2014</a>) pipelines as well as methods to limit the effect of known experimental bias (or batch-effect), such as Combat.</p>
 
     <ul>
       <li id='transformation-subtitle-transformation'><b>Transformation</b>
@@ -195,6 +201,8 @@ metabolite3	0.05	0.11	0.03	0.02
       </li>
     </ul>
   </li>
+
+<!--
   <li id='batch-effect-suppression'>Batch-effect suppression <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>Under construction
     <ul>
       <li id='batch-effect-suppression-batch-effect-suppression'><b>Batch-effect suppression</b>
@@ -202,6 +210,8 @@ metabolite3	0.05	0.11	0.03	0.02
       </li>
     </ul>
   </li>
+-->
+
 </ul>
 
 <h3 id='analysis'>Analysis</h3>
@@ -493,4 +503,4 @@ Spl12	Control	F
 <p>Figures can be exported via the associated <span class='btn btn-success btn-sm dropdown-toggle'>Export</span> menu. All figures can be exported as a vector image in the SVG format. Some figures are also available in the PDF format, but PDFs are generated in the same time as the figure raw data and cannot be edited with the interactive visualization tools. Raw figure data are also available either in the JSON format, the TXT format or both. Figure legends are currently only available in the HTML format.</p>
 
 <h3 id='archive'>Archive <i class="fa fa-file-archive-o" aria-hidden="true"></i></h3>
-<p>Files containing initial, intermediate and final data as well as the analysis log and logs for standard output and standard error are automatically included into a .tar.gz archive. This archive can be downloaded via the <span class='btn btn-secondary btn-sm'><i class="fa fa-file-archive-o" aria-hidden="true"></i></span> button of the analysis report page or via the corresponding icon (<i class="fa fa-file-archive-o" aria-hidden="true"></i>) in the analysis index (for signed-in users only). Although some figures may be automatically included in the archive in the form of a minimal PDF file, the archive does generally not contain figure images. These should be exported separately via the <b>Export</b> button.</p>
+<p>Files containing initial, intermediate and final data as well as the analysis log and logs for standard output and standard error are automatically included into a .tar.gz archive. This archive can be downloaded via the <span class='btn btn-secondary btn-sm'><i class="fa fa-file-archive-o" aria-hidden="true"></i></span> button of the analysis report page or via the corresponding icon (<i class="fa fa-file-archive-o" aria-hidden="true"></i>) in the analysis index (for signed-in users only). Although some figures may be automatically included in the archive in the form of a minimal PDF file, the archive does generally not contain figure images. These should be exported separately via the <span class='btn btn-success btn-sm dropdown-toggle'>Export</span> menu.</p>

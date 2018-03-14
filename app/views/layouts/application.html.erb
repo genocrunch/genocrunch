@@ -78,8 +78,8 @@
           Infos
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-	        <%= link_to "Versions", versions_path,  target: "_self", class: "dropdown-item" %>
 	        <%= link_to 'Doc', doc_home_index_path, target: "_self", class: "dropdown-item" %>
+	        <%= link_to "Versions", versions_path,  target: "_self", class: "dropdown-item" %>
           <%= link_to 'Terms of service', terms_home_index_path, target: "_self", class: "dropdown-item" %>
           <% if APP_CONFIG[:info_links] %>
             <% APP_CONFIG[:info_links].each do |link| %>

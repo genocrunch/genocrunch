@@ -5,7 +5,7 @@
 
    <%= hidden_field_tag 'selected_view', 'primary_dataset' %>
 
-  <b>Input data preparation</b>
+  <b>Data</b>
 
 <% @inputs#.select{|e| @final_json[:global_status_by_step][e[:id]] }
    .each do |input| %>

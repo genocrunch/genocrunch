@@ -1,30 +1,16 @@
-<div class='row'>
+<div class='row p-1'>
 
   <%# PIPELINE %>
-  <div class='col-md align-center'>
-    <h2>Pipeline</h2>
-    <%= image_tag('genocrunch_pipeline.png', alt: 'Genocrunch pipeline') %>
+  <div class='col-xl-6 col-lg-6 col-md-6 col-sm-12 image-container align-self-center'>
+    <%= image_tag('genocrunch_workflow.png', width:'100%', alt: 'Genocrunch workflow') %>
   </div>
 
   <%# TUTORIAL VIDEO %>
-  <div class="col-md align-center">
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 align-center">
     <h2>Tutorial <small>(coming soon)</small></h2>
-      <iframe width=627 height=353 src='#'></iframe>
-  </div>
-
-</div>
-<div class='row topbar-padding'>
-
-  <div class='col-md-8 offset-md-2 card align-center'>
-     <h4>
-       How to cite <%= Rails.application.class.parent_name %>:
-       <br>
-       <small>
-         Data mining was performed on <%= Rails.application.class.parent_name %> (genocrunch.epfl.ch).
-         <br>
-         <i>R libraries used in the analysis should also be cited.</i>
-       </small>
-     </h4>
+    <div class='video-wrapper'>
+      <iframe width="560" height="315" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
   </div>
 
 </div>
