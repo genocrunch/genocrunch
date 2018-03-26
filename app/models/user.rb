@@ -19,13 +19,15 @@ class User < ActiveRecord::Base
       :case_sensitive => false
     }
 
-  validates :email,
-    :presence => true,
-    :uniqueness => { case_sensitive: false },
-    :format => {
-     :with  => Devise.email_regexp, :allow_blank => true, :if => :email_changed?
-    }
-
+  if APP_CONFIG[:user_confirmable]
+    validates :email,
+      :presence => true,
+      :uniqueness => { case_sensitive: false },
+      :format => {
+       :with  => Devise.email_regexp, :allow_blank => true, :if => :email_changed?
+      }
+  end
+  
   validates :password,
     :presence => {
       :on=>:create

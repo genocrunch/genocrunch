@@ -274,7 +274,7 @@ class JobsController < ApplicationController
       }
       
       @h_icons={
-        'description' => 'circle-o fa-xs',
+        'description' => '',
         'output' => 'file-text-o',
         'warning' => 'exclamation-triangle icon-warning',
         'error' => 'exclamation-triangle icon-danger'

@@ -19,54 +19,6 @@ function exportFigure(id, format, filename) {
 
 };
 
-function displayFigure(divid, type, id, figures, url, Rfunctions, demo) {
-
-  document.getElementById(divid).innerHTML='';
-  var index = 0;
-  if (document.getElementById("select_level") != null) {
-    index = levels.indexOf($("#select_level").val());
-  };
-
-  if (demo) {
-    fig = "/demos/"+id+"/serve?file="+figures[indexes[index]]['url']+"&type=pdf",
-    fig_data = "/demos/"+id+"/serve?file="+data[indexes[index]]['url']+"&type=file";
-  } else {
-    //fig = "/jobs/"+id+"/serve?file="+figures[indexes[index]]['url']+"&type=pdf",
-    fig_data = "/jobs/"+id+"/serve?file="+data[indexes[index]]['url']+"&type=file";
-  };
-
-  //document.getElementById('pdf-link').setAttribute('href', fig);
-  document.getElementById('data-link').setAttribute('href', fig_data);
-
-  var W = 600,
-      H = 600,
-      font_family = "verdana, arial, helvetica, sans-serif";
-
-  if (type == 'pdf') {
-    document.getElementById(divid).setAttribute('data', fig);
-  } else if (type == 'clustering') {
-    overview(divid, fig_data);
-  } else if (type == 'abundance') {
-    barchart(divid, fig_data, W, H, font_family, d3.schemeCategory20c);
-  } else if (type == 'diversity') {
-    diversity(divid, fig_data, Rfunctions.diversity, W, H, font_family, d3.schemeCategory10);
-  } else if (type == 'adonis') {
-    pieChart(divid, fig_data, W, H, font_family, d3.schemeCategory20c);
-  } else if (type == 'pca') {
-    pca(divid, fig_data, W, H, font_family, d3.schemeCategory10);
-  } else if (type == 'pcoa') {
-    pcoa(divid, fig_data, W, H, font_family, d3.schemeCategory10);
-  } else if (type == 'change') {
-    foldChange(divid, fig_data, W, H, font_family);
-  } else if (type == 'heatmap') {
-    heatMap(divid, fig_data, 750, 750, font_family);
-  } else if (type == 'correlationNetwork') {
-    correlationNetwork(divid, fig_data, W, H, font_family, d3.schemeCategory10);
-  } else if (type == 'similarityNetwork') {
-    similarityNetwork(divid, fig_data, W, H, font_family, d3.schemeCategory10);
-  };
-};
-
 // FIGURE DESCRIPTION
 function showDescription() {
   document.getElementById("sidebar").style.cssText="width:40vw;overflow:auto;padding-left:10px;padding-right:10px;";

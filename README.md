@@ -8,14 +8,14 @@ A web-based platform for mining metagenomic data
 ## Rights
 
 - **Copyright:** All rights reserved. ECOLE POLYTECHNIQUE FEDERALE DE LAUSANNE, Switzerland, Laboratory of Intestinal Immunology, 2016-2018
-- **Licence:** GNU AGPL 3 (See LICENCE.txt for details)
+- **License:** GNU AGPL 3 (See LICENSE.txt for details)
 - **Authors:** AR Rapin, FPA David, C Pattaroni, J Rougemont, BJ Marsland and NL Harris
 
 ## Resources
 
 - **Git clone URL:** <https://c4science.ch/source/genocrunch-2.1.git>
 - **Documentation:** <https://c4science.ch/source/genocrunch-2.1>
-- **Licence:** <https://www.gnu.org/licenses/agpl-3.0.md>
+- **License:** <https://www.gnu.org/licenses/agpl-3.0.md>
 - **Dockerfile:** <https://c4science.ch/source/genocrunch_docker>
 
 ## Framework
@@ -110,7 +110,7 @@ $ python -V
 **Debian Linux**
 
 ```
-$ sudo apt-get install r-base-core
+$ sudo apt-get install r-base-core libnlopt-dev libcurl4-openssl-dev libxml2 libxml2-dev
 ```
 
 Open the R environment and check that R version is above 3.2.2:
@@ -131,98 +131,58 @@ Click on the downloaded .pkg file and follow the instructions.
 
 Install required R packages from CRAN and bioconductor:
 
-**Note: Each package can be installed separately. If RcppEigen fails to compile, allocate more memory.**
-
 ```
 $ sudo R
-> install.packages(c("ineq", "rjson", "fpc", "multcomp", "FactoMineR", "colorspace", "vegan", "optparse", "gplots", "igraph", "fossil", "coin", "SNFtool"))
+> install.packages(c("ineq", "rjson", "fpc", "multcomp", "FactoMineR", "colorspace", "vegan", "optparse", "gplots", "fossil", "coin", "SNFtool", "devtools"))
 > source("https://bioconductor.org/biocLite.R")
 > biocLite("sva")
-> q()
-```
-
-In case of issue with igraph installation:
-
-```
-> install.packages("devtools")
 > library(devtools)
 > install_github("igraph/rigraph")
+> q()
 ```
 
 ### Genocrunch web application
 
-Create an empty rails project:
+Create a new rails project and add the Genocrunch files:
 
 ```
 $ rails new genocrunch -d postgresql -B
-```
-
-Set the git repository:
-
-```
-$ cd genocrunch
-$ git init
-$ git remote add origin https://c4science.ch/source/genocrunch-2.1.git
-```
-
-Get a copy of genocrunch files:
-
-```
-$ git fetch --all
-$ git reset --hard origin/master
-```
-
-  Set the `.gitignore` file:
-
-```
-$ cp gitignore.keep .gitignore
+$ git clone https://git@c4science.ch/source/genocrunch-2.1.git /tmp/genocrunch
+$ rsync -r /tmp/genocrunch/ /genocrunch
+$ sudo rm -r /tmp/genocrunch
+$ cd genocrunch \
+  && cp gitignore.keep .gitignore \
+  && cp config/config.yml.keep config/config.yml \
+  && cp config/database.yml.keep config/database.yml \
+  && cp config/initializers/devise.rb.keep config/initializers/devise.rb \
+  && cp config/environments/development.rb.keep config/environments/development.rb \
+  && cp db/seeds.rb.keep db/seeds.rb
 ```
 
 Run the `install.sh` script (this is not essential for the application):
 
 ```
-$ cd /path/to/genocrunch
 $ chmod 755 install.sh
 $ ./install.sh
+$ source .bashrc  # or .bash_profile for macOS
 ```
-
-This simply uses the `.bashrc` or `.bashprofile` to include executable analysis scripts fro `lib/genocrunch_console` in `$PATH`.
-
-```
-$ source .bashrc  # for macOS replace .bashrc by .bash_profile
-```
-
-**Additional steps for macOS**
-
-Install the coreutils package with homebrew:
+The Genocrunch web app will store data files in `users/`. To store data in another location, use a simlink:
 
 ```
-$ brew install coreutils
+$ rmdir users && ln -s /path/to/your/custom/storage/location users
 ```
+
 ### Ruby libraries (gems)
 
 Use the Gemefile to install required gems:
 
 ```
-$ cd /path/to/genocrunch
 $ bundle install
 ```
 
-You can customize the message appearing when a table is empty here:
-```
-$ cp ~/.rbenv/versions/*/lib/ruby/gems/*/gems/jquery-datatables-rails-*/app/assets/javascripts/dataTables/jquery.dataTables.js ~/.rbenv/versions/*/lib/ruby/gems/*/gems/jquery-datatables-rails-*/app/assets/javascripts/dataTables/jquery.dataTables.js.bkp
-$ sed -i -e 's/No data available in table/This table is empty/g' ~/.rbenv/versions/*/lib/ruby/gems/*/gems/jquery-datatables-rails-*/app/assets/javascripts/dataTables/jquery.dataTables.js
-```
-
-
 ### Set application configuration variables
 
-Set the application configuration variables in the `genocrunch/config/config.yml` file to fit the current installation:
-
-```
-$ cd /path/to/genocrunch
-$ cp config/config.yml.keep config/config.yml
-```
+Set the application configuration variables in the `config/config.yml` file to fit the current installation:
 
 ```
 #config/config.yml
@@ -251,12 +211,6 @@ production:
 
 Set the email details that will be used by Genocrunch to send information such as registration confirmation link or password recovery link to users.
 The following example would set Genocrunch to use an hypothetical gmail address (`app_email@gmail.com`) in development.
-
-```
-$ cd /path/to/genocrunch
-$ cp config/initializers/devise.rb.keep config/initializers/devise.rb
-$ cp config/environments/development.rb.keep config/environments/development.rb
-```
 
 ```
 #config/initializers/devise.rb
@@ -298,13 +252,9 @@ postgres=# \q
 $ exit
 ```
 
-Set the `genocrunch/config/database.yml` file:
-In development, test and/or production sections, set the `database`, `username` and `password` to fit the corresponding PostgreSQL database:
-
-```
-$ cd /path/to/genocrunch
-$ cp config/database.yml.keep config/database.yml
-```
+Set the `config/database.yml` file:
+In development, test and/or production sections, set the `database`, `username` and `password` to fit the corresponding PostgreSQL database.
+Also make sure to uncomment `host: localhost`:
 
 ```
 #config/database.yml
@@ -316,17 +266,14 @@ username: myusername
 ...
 password: mypassword
 ...
+host: localhost
+...
 ```
 
 ### Initialize the database
 
 Two default users will be created: guest and admin. The guest user is required to try the application without registering/signing-in. The admin user is optional.
-Change the default passwords and emails.
-This can be done after seeding the database, with psql or prior to seeding the database, in the `genocrunch/db/seeds.rb` file:
-
-```
-$ cp /path/to/genocrunch/db/seeds.rb.keep /path/to/genocrunch/db/seeds.rb
-```
+Seting the guest and admin passwords and emails can be done prior to seeding the database, by editing the `db/seeds.rb` file:
 
 ```
 #db/seeds.rb
@@ -344,24 +291,13 @@ User.create!([{username: 'guest',
 ...
 ```
 
-Run the folowing commands to create and seed the database.
-This would erase previous database tables. Use it for installation, not update.
-For updates, use migrations. 
+Run the following commands to create and seed the database.
+Caution: This will erase previous database tables. Use it for installation, not update.
+For updates, use migrations or SQL queries.
 
 ```
-$ cd /path/to/genocrunch
 $ rake db:schema:load
 $ rake db:seed
-```
-
-To set users emails and password after seeding:
-
-```
-$ psql db_name
-db_name=# update users set email = 'guest_email' where username = 'guest';
-db_name=# update users set password = 'guest_password' where username = 'guest';
-db_name=# update users set email = 'admin_email' where username = 'admin';
-db_name=# update users set password = 'admin_password' where username = 'admin';
 ```
 
 ### Run the Rails server
@@ -369,38 +305,30 @@ db_name=# update users set password = 'admin_password' where username = 'admin';
   * Development mode
 
 ```
-$ cd /path/to/genocrunch
 $ rails server
 ```
 
-You can now access the application in your browser at <http://localhost:3000> on your machine and `your_ip_address:3000` on your network.
+You can now access the application in your browser at <http://localhost:3000> on your machine and `your.ip.address:3000` on your network.
 
 **By default, the server runs in development mode.**
-
-  * Production mode
-
-This section is under construction.
 
 ### Start workers
 
   * Prefered way:
 
 ```
-$ cd /path/to/genocrunch
 $ RAILS_ENV=development bin/delayed_job -n 2  start
 ```
 
 OR
 
 ```
-$ cd /path/to/genocrunch
 $ RAILS_ENV=development bin/delayed_job -n 2 restart
 ```
 
-  * Alternative way:
+  * Alternative way (not recommanded):
 
 ```
-$ cd /path/to/genocrunch
 $ rake jobs:work
 ```
 
@@ -413,7 +341,6 @@ Versions of installed R packages can be referenced in the version page (<http://
 For this, run the `get_version.py` script:
 
 ```
-$ cd /path/to/genocrunch
 $ get_version.py
 ```
 
@@ -426,7 +353,7 @@ Finally, click on the **Create Version** button.
 
 ### Terms of service
 
-Terms of service can be edited in `/path/to/genocrunch/public/app/TERMS_OF_SERVICE.txt`.
+Terms of service can be edited in `public/app/TERMS_OF_SERVICE.txt`.
 
 ## Usage
 

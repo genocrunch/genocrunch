@@ -1,11 +1,15 @@
 <div class="container-fluid">
 <div class='row main-container'>
 
- <div class='border-right col-xl-2 col-lg-2 col-md-3 col-sm-12'>
+  <nav class="navbar navbar-toggleable-md fixed-top topbar-margin col-xl-2 col-lg-2 col-md-12 col-sm-12 side-index-container">
+    <div class="collapse navbar-collapse border-right">
+      <div class='side-index'>
 
-   <%= hidden_field_tag 'selected_view', 'primary_dataset' %>
-
-  <b>Data</b>
+        <%= hidden_field_tag 'selected_view', 'primary_dataset' %>
+        
+        <ul class='nav flex-column mr-auto mt-2 mt-lg-0 side-index-list'>
+          <li class="nav-item">
+            <b>Data</b>
 
 <% @inputs#.select{|e| @final_json[:global_status_by_step][e[:id]] }
    .each do |input| %>
@@ -14,7 +18,6 @@
       <span class='float-left'>
         <% status = (@final_json) ? @final_json[:global_status_by_step][input[:id]] : 'pending' %>
         <i id="status-<%= input[:id] %>" class="<%= @h_statuses[status || 'pending'].icon %>" aria-hidden="true"></i>
-        <%# image_tag @h_statuses[status || 'pending'].filename, :alt => '', :id => "status-#{input[:id]}", :class => 'status_image' %>
         <%= input[:label] %>
       </span>
       <span class='float-right'>
@@ -24,17 +27,17 @@
   </div> 
 <% end %>
 
-  <b>Analysis</b>
-<% @analyses#.select{|e| @final_json[:global_status_by_step][e[:id]]}
+          </li>
+          <li class="nav-item">
+            <b>Analysis</b>
+
+            <% @analyses#.select{|e| @final_json[:global_status_by_step][e[:id]]}
    .each do |analysis| %>
   <div id='menu-<%= analysis[:id] %>' class='menu'>
     <a class='btn btn-sm btn-secondary text-left' href="#">
       <span class='float-left'>
-        <%# @final_json[:status_by_step].keys.to_json %>
-        <%# @final_json[:global_status_by_step][analysis[:id]] %>
         <% status = (@final_json) ? @final_json[:global_status_by_step][analysis[:id]] : 'pending' %>
         <i  id="status-<%= analysis[:id] %>" class="<%= @h_statuses[status || 'pending'].icon %>" aria-hidden="true"></i>
-        <%# image_tag @h_statuses[status || 'pending'].filename, :alt => '', :id => "status-#{analysis[:id]}", :class => 'status_image' %>
         <%= analysis[:label] %>
       </span>
       <span class='float-right'>
@@ -43,26 +46,43 @@
   </a>
   </div>
 <% end %>
- </div> 
- <div class='col-xl-10 col-lg-10 col-md-9 col-sm-12'>
-  <h2>
-    Project '<%= @job.name %>'
 
-    <i id="global_status" class="<%= @h_statuses[(@final_json) ? @final_json[:global_status] : 'pending'].icon %>" aria-hidden="true"></i>
-    <%# image_tag @h_statuses[(@final_json) ? @final_json[:global_status] : 'pending'].filename, :id => 'global_status', :class => 'status_image' %>
-  </h2>
-  <div id='job_header_right'>
+          </li>
+        </ul>
 
-    <%= link_to serve_job_path(@job.key, :filename => @job.key + '.tar.gz'), :id => 'archive-btn', :title => 'Download archive', :class => 'btn btn-secondary hidden' do %>
-<i class="fa fa-file-archive-o" aria-hidden="true"></i>
-
-    <% end %>
-    <%= link_to 'Edit', edit_job_path(:key => @job.key), :class => 'btn btn-primary' %>
+ 
+ 
+     </div>
   </div>
+</nav>
+
+ 
+ <div class='col-xl-10 col-lg-10 col-md-9 col-sm-12 offset-xl-2 offset-lg-2'>
+  <div class='pb-1'>
+    <h2>
+      <span id='job-description-btn' class='btn btn-sm btn-secondary' title='Description'><i class='fa fa-bars'></i></span>
+      <span title='Analysis name: <%= @job.name %>'>
+        <%= @job.name %>
+      </span>
+      
+      <%= link_to 'Edit', edit_job_path(:key => @job.key), :class => 'btn btn-primary float-right' %>
+            
+      <%= link_to serve_job_path(@job.key, :filename => @job.key + '.tar.gz'), :id => 'archive-btn', :title => 'Download archive', :class => 'btn btn-secondary float-right mr-1 hidden' do %>
+        <i class="fa fa-file-archive-o" aria-hidden="true"></i>
+      <% end %>
+      
+    </h2>
+    <i id="global_status" class="<%= @h_statuses[(@final_json) ? @final_json[:global_status] : 'pending'].icon %>" aria-hidden="true"></i>
+  </div>
+    
+  <div id='job-description' class='hidden'>
+    <span>
+      <%= (@job.description != '') ? @job.description : 'Description: sorry, you did not enter any description for this analysis' %>
+    </span>
+  </div>
+  
   <div id='show_content'>
-    <%# if @final_json and @final_json[:global_status_by_step]['primary_dataset'] %> 
     <%= render :partial => 'view_primary_dataset' %>
-    <%# end %>
   </div>
  </div>
 
@@ -85,6 +105,10 @@
 
  $(document).ready(function() {
 
+  $('#job-description-btn').click(function(e) {
+    $('#job-description').toggleClass('hidden');
+  });
+
   var window_width = $(window).width();
 
   <% @h_tips['show'].each_with_index do |tip, index| %>
@@ -100,8 +124,10 @@
 
 
 $(".menu").click(function(){
-var name = this.id.split("-")[1];
-$("#selected_view").val(name);
+  var name = this.id.split("-")[1];
+  $("#selected_view").val(name);
+  $(".menu").removeClass('selected');
+  $(this).addClass('selected');
 });
 
 var timer = setInterval(function(){
