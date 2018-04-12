@@ -493,7 +493,7 @@ function similarityNetwork(id, legend_id, json0, W = 600, H = 600, font_family =
       .attr("class", "symbol")
       .attr("stroke", "#333333")
       .attr("fill-opacity", 0)
-      .style("stroke-opacity", 0);
+      .attr("stroke-opacity", 0);
 
     nodeLabel.append("text")
       .text(function (d) {
@@ -509,7 +509,7 @@ function similarityNetwork(id, legend_id, json0, W = 600, H = 600, font_family =
       .attr("display", "none")
       .attr("selected", false);
 
-    displayLabels("node-label");
+    displayLabels(".node-label");
     showLabels();
     
     // Apply display settings
@@ -538,16 +538,21 @@ function similarityNetwork(id, legend_id, json0, W = 600, H = 600, font_family =
       if ($("#labelButton").is(':checked')) {
         label_text.attr("display", "inline");
         label_text.attr("selected", true);
-        label_sym.style("stroke-opacity", 1);
       } else {
         label_text.attr("display", "none");
         label_text.attr("selected", false);
-        label_sym.style("stroke-opacity", 0);
       };
     };
+    
     appendLabelCheckBox(buttons, "Show labels", "Labels", "labelButton", showLabels)
-
+    
     // Search in labels
+    var searchLabels = function() {
+      searchLabels2("#labelButton", "#searchInput", ".node-label")
+    }
+    appendSearchInput(buttons, "Search", "searchInput", searchLabels);
+    
+    /*
     var searchLabels = function() {
       $("#labelButton").attr("checked", false);
       var key = $("#searchInput").val().toUpperCase();
@@ -569,6 +574,7 @@ function similarityNetwork(id, legend_id, json0, W = 600, H = 600, font_family =
     };
 
     appendSearchInput(buttons, "Search", "searchInput", searchLabels);
+*/
 
     // Select network
     var networkSelect = buttons.append("div")
@@ -616,9 +622,32 @@ function similarityNetwork(id, legend_id, json0, W = 600, H = 600, font_family =
     $("#colorSelect").on("change", setSymbolColor)
     $("#symbolSelect").on("change", setSymbolShape)
  
+         // Nodes labels functions
+      function displayLabels (labels) {
+      $(labels).on("mouseenter", function() {
+        d3.select(this.childNodes[1]).attr("display", "inline");
+        d3.select(this.childNodes[0]).attr("stroke-opacity", 1);
+      });
+      $(labels).on("mouseleave", function() {
+        if (this.childNodes[1].getAttribute("selected") == "false") {
+            d3.select(this.childNodes[1]).attr("display", "none");
+        };
+        d3.select(this.childNodes[0]).attr("stroke-opacity", 0);
+      });
+      $(labels).on("click", function() {
+        if (this.childNodes[1].getAttribute("selected") == "false") {    
+          d3.select(this.childNodes[1]).attr("display", "inline");
+          d3.select(this.childNodes[1]).attr("selected", true);
+        } else {
+          d3.select(this.childNodes[1]).attr("display", "none");
+          d3.select(this.childNodes[1]).attr("selected", false);
+        }
+      });
+    };
+    
   restart();
 
-        // Nodes labels functions
+    /*
         function displayLabels (id) {
           $("."+id).on("mouseenter", function(d) {
             d3.select(this.childNodes[1]).attr("display", "inline");
@@ -641,6 +670,6 @@ function similarityNetwork(id, legend_id, json0, W = 600, H = 600, font_family =
           }
         });
       };
-  //});
+      */
 
 };

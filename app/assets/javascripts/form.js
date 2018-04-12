@@ -10,7 +10,8 @@ function populate_multiselect(id, new_data, value, url){
         .multiselect('select', value)
         .multiselect("refresh");
     
-    $('#field-'+id).removeClass("hidden");
+    $('#p_'+id+'-container').removeClass("hidden");
+    $('#p_'+id+'-placeholder').addClass("hidden");
 
     if (id == 'category_column'){
       var val = $("#default_bin_levels").val()
@@ -95,15 +96,14 @@ function setSelectFromFileRow(id, file, value = 0, add_blank = null, url = null)
 	reader.onload = function (event) {
 	    var lines = event.target.result.split(/\r\n|\r|\n/g);
 	
-	    var i=0
+	    var i = 0;
 	    for (i = 0; i < (lines.length-1); i++) {
 		if (lines[i].charAt(0) != '#')
 		    break;
 	    }
-	    i = (i > 1) ? i-1 : 0;
+	    i = (i > 0) ? i-1 : 0;
 	    
 	    var content = lines[i].split("\t")
-	    
 	    if (add_blank)
 		new_data.push({label:"", value:""});
 	    
@@ -117,7 +117,7 @@ function setSelectFromFileRow(id, file, value = 0, add_blank = null, url = null)
 	reader.readAsText(file);
     }else{
 	$.ajax({
-	    url: url + "&add_blank=" + ((add_blank == null) ? '' : '1'),
+	    url: url + ((add_blank == null) ? '' : '&add_blank=1'),
 	    type: "get",
 	    dataType: "html",
 	    beforeSend: function(){
@@ -145,7 +145,7 @@ function setMultiselect(id, nonSelectedText = 'Select', where){
       li: '<li><a tabindex="0" class="dropdown-item"><label></label></a></li>',
     }
   });
-    $(id + ".form-control").addClass('hidden');
+  $(id + ".form-control").addClass('hidden');
 }
 
 

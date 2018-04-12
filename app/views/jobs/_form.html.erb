@@ -13,8 +13,6 @@
 
 <%= form_for(@job, :url => ((action_name == 'edit') ? job_path(@job.key) : jobs_path), :html => {:multipart => true}) do |f| %>
 
- <%# @default['primary_dataset']['original_filename'] %>
- <%# @default.to_json %>
 
 <% ['primary_dataset', 'map', 'secondary_dataset'].each do |k| %>
   <%= hidden_field_tag "p2[" + k + "]", (params[:p2] && params[:p2][k]) || '' %>
@@ -35,12 +33,10 @@
         <h3 class="card-title"><%= card_title %>
 	  <% if card_title == 'Inputs' %>
 	  <% l = ['', ''] %>
-	  <%# select_tag 'input_test', {:class => 'form-inline'} %>
 	  <% end %>
 	</h3>
 	 <div class="card-text form_card">
 	   <%= render :partial => 'card_form', :locals => {:list_fields => @h_form['fields'][card_title].reject{|e| e['belongs_to']}} %>
-	   <%#  @h_form['fields'][card_title].reject{|e| e['belongs_to']}.to_json %>
 	 </div>
       </div>
     </div>
@@ -64,13 +60,11 @@
 
   $(document).ready(function() {
 
-  //var default_values = <%= raw @default.to_json %>;
-
-   var l = ['category_column', 'sample_name', 'bin_levels', 'basic_model'];
+   var l = ['category_column', 'bin_levels', 'basic_model'];
    for (var i =0; i< l.length; i++){
     $("#p_" + l[i]).change(function(){
-     if ($("#p_" + l[i] + " option").length == 0)
-      $("#field-" + l[i]).addClass("hidden");
+      if ($("#p_" + l[i] + " option").length == 0)
+        $("#p_" + l[i] + "-container").addClass("hidden");
     });
    }
 

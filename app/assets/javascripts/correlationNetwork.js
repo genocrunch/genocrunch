@@ -484,7 +484,7 @@ function correlationNetwork(id, legend_id, json, W = 600, H = 600, font_family =
 
       setSymbolSize();
       setSymbolColor();
-      displayLabels();
+      displayLabels(".node-label");
       showLabels();
 
       // Restart simulation
@@ -549,19 +549,18 @@ function correlationNetwork(id, legend_id, json, W = 600, H = 600, font_family =
     }
 
     // Nodes labels functions
-    function displayLabels () {
-      var selected_label = $(".node-label");
-      selected_label.on("mouseenter", function() {
+    function displayLabels (labels) {
+      $(labels).on("mouseenter", function() {
         d3.select(this.childNodes[1]).attr("display", "inline");
         d3.select(this.childNodes[0]).attr("stroke-opacity", 1);
       });
-      selected_label.on("mouseleave", function() {
+      $(labels).on("mouseleave", function() {
         if (this.childNodes[1].getAttribute("selected") == "false") {
             d3.select(this.childNodes[1]).attr("display", "none");
         };
         d3.select(this.childNodes[0]).attr("stroke-opacity", 0);
       });
-      selected_label.on("click", function() {
+      $(labels).on("click", function() {
         if (this.childNodes[1].getAttribute("selected") == "false") {    
           d3.select(this.childNodes[1]).attr("display", "inline");
           d3.select(this.childNodes[1]).attr("selected", true);
@@ -597,27 +596,12 @@ function correlationNetwork(id, legend_id, json, W = 600, H = 600, font_family =
         };
       };
 
+    appendLabelCheckBox(buttons, "Show labels", "Labels", "labelButton", showLabels)
+    
     // Search in labels
     var searchLabels = function() {
-      $("#labelButton").attr("checked", false);
-      var key = $("#searchInput").val().toUpperCase();
-      if (key != '') {
-        var selected = d3.selectAll(".node-label").filter(function(){return this.__data__.name.toUpperCase().indexOf(key.toUpperCase()) != -1 });
-            non_selected = d3.selectAll(".node-label").filter(function(){return this.__data__.name.toUpperCase().indexOf(key.toUpperCase()) == -1 });
-        selected.select(function(){ return this.childNodes[1];}).attr("display", "inline");
-        selected.select(function(){ return this.childNodes[1];}).attr("selected", true);
-        non_selected.select(function(){ return this.childNodes[1];}).attr("display", "none");
-        non_selected.select(function(){ return this.childNodes[1];}).attr("selected", false);
-      } else {
-        to_free = d3.selectAll(".node-label");
-        to_free.select(function(){return this.childNodes[1];}).attr("display", "none");
-        to_free.select(function(){return this.childNodes[1];}).attr("selected", false);
-      };
-    };
-
-
-    // Label button and search
-    appendLabelCheckBox(buttons, "Show labels", "Labels", "labelButton", showLabels)
+      searchLabels2("#labelButton", "#searchInput", ".node-label")
+    }
     appendSearchInput(buttons, "Search", "searchInput", searchLabels);
 
 

@@ -786,7 +786,7 @@ RarefyTable <- function(table=NULL, sample='max', nsampling=1, verbose=TRUE) {
 ################
 SuppressBatchEffect <- function(table=NULL, map=NULL, effect=NULL,
                                 fun='combat', verbose=TRUE) {
-  method <- list(combat='COMBAT', mean_centering='mean centering')
+  method <- list(combat='ComBat', mean_centering='mean centering')
   PrintMsg(paste('"description":"Batch effect suppression on ',
                  effect,
                  ' using',
@@ -919,7 +919,6 @@ PerformClustering <- function(table=NULL, fun=c('kmeans', 'pam', 'pam-bray', 'pa
              verbose)
     return (NULL)
   }
-
   spec <- as.data.frame(do.call('rbind', json$clustering))
   spec <- spec[spec$value == fun, ]
   package <- ''
@@ -930,7 +929,6 @@ PerformClustering <- function(table=NULL, fun=c('kmeans', 'pam', 'pam-bray', 'pa
     }
     package <- paste(' (R package {', unlist(spec$pkg), '})', sep='')
   }
-
   PrintMsg(paste('"description":"Performed clustering using ', spec$label,
            package, '."', sep=''),
            verbose)
@@ -950,16 +948,13 @@ PerformClustering <- function(table=NULL, fun=c('kmeans', 'pam', 'pam-bray', 'pa
                      sep ='')
 
   } else if (fun == 'pam') {
-
     pam.out <- pamk(table, usepam=FALSE)
     if (graphical == TRUE) {
       plot(pam.out$pamobject, which.plots=2)
     }
-
     cluster <- paste('pam',
                      pam.out$pamobject$cluster,
                      sep ='')
-
   } else if (fun == 'pam-bray') {
 
     dist.data <- ComputeDistance(table=table, fun='bray', json=json,
@@ -991,8 +986,13 @@ PerformClustering <- function(table=NULL, fun=c('kmeans', 'pam', 'pam-bray', 'pa
     return(NULL)
   }
 
-
+  cluster <- as.data.frame(cluster)
+  row.names(cluster) <- row.names(table)
   names(cluster) <- 'Clustering'
+  PrintMsg(paste('"description":"Clusters: ',
+           paste(paste(row.names(cluster), unlist(cluster), sep=':'), collapse=', '),
+           '."', sep=''),
+           verbose)
   return (cluster)
 }
 
@@ -1938,7 +1938,7 @@ PerformPCA <- function(table=NULL, map=NULL, biplot=TRUE,
   }
 
   if (biplot == TRUE) {
-    data.var <- t(as.data.frame(pca.output$var$coord))
+    data.var <- as.data.frame(t(as.data.frame(pca.output$var$coord)))
     row.names(data.var) <- gsub('Dim.', 'PC', row.names(data.var))
 
     data.json <- paste('{"ind":',

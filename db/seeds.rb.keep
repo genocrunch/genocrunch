@@ -23,7 +23,7 @@ Status.create!([{name: 'completed',
                  precedence: '4'},
                 {name: 'skipped',
                  icon: 'fa fa-check icon-success',
-                 precedence: '5'}])
+                 precedence: '0'}])
 
 View.create!([{name: 'map',
                category: 'input_data_preparation',

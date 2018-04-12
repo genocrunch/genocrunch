@@ -29,6 +29,26 @@
     <div class="card col-xl-9 col-lg-9 col-md-9 col-sm-12">
       <div class="row">
         <div class="col-xl-9 col-lg-12 col-md-12 col-sm-12">
+
+          <% if @description and !@description.empty? %>
+            <div id='fig-description-container' class='show-element' title='Figure description'>
+              <span id='fig-description-btn'>
+                <i class='help-icon fa fa-info-circle fa-2x'></i>
+              </span>
+              <span id='fig-description' class='hidden'>
+                <% if @description.length() > 1 %>
+                  <ul>
+                    <% @description.each do |d| %>
+                      <li><%= d %></li>
+                    <% end %>
+                  </ul>
+                <% else %>
+                  <%= @description.first %>
+                <% end %>
+              </span>
+            </div>
+          <% end %>
+        
           <div class="show-element fig-container">
             <div id="fig"></div>
           </div>
@@ -44,6 +64,11 @@
 </div>
 
 <%= javascript_tag do %>
+
+  $('#fig-description-btn').click(function(e) {
+    $('#fig-description-container').toggleClass('active');
+    $('#fig-description').toggleClass('hidden');
+  });
 
 $("#current_level").change(function(){
 var div = $('#show_content');

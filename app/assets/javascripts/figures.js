@@ -19,21 +19,6 @@ function exportFigure(id, format, filename) {
 
 };
 
-// FIGURE DESCRIPTION
-function showDescription() {
-  document.getElementById("sidebar").style.cssText="width:40vw;overflow:auto;padding-left:10px;padding-right:10px;";
-  document.getElementById("description").style.cssText="visibility:visible;opacity:1;";
-  $("#sidebar")[0].style["height"]=$("#figure-container").height()+'px';
-  document.getElementById("sidebar-icon").style.cssText="transform:rotate(180deg)";
-};
-
-function hideDescription() {
-  document.getElementById("sidebar").style.cssText="width:20px;overflow:hidden;padding-left:2px;padding-right:2px;";
-  document.getElementById("description").style.cssText="opacity:0;visibility:hidden;";
-  $("#sidebar")[0].style["height"]=$("#figure-container").height()+'px';
-  document.getElementById("sidebar-icon").style.cssText="transform:rotate(0deg)";
-};
-
 // FIGURE BUTTONS/CONTROLS
 function appendRange(appendTo, title, label, id, min, max, value, onchange) {
 
@@ -91,3 +76,73 @@ function appendSearchInput(appendTo, title, id, onclick) {
     //  .attr("class", "form-control-feedback fa fa-search")
 }
 
+  function searchLabels1(button, input, labels) {
+      $(button).attr("checked", false);
+      var key = $(input).val().toUpperCase().split(' AND ');
+      if (key != '') {
+        var selected = d3.selectAll(labels).filter(function(d){
+              var matches=false;
+              for (var i=0;i<key.length;i++) {
+                if (d.toUpperCase().indexOf(key[i]) != -1) {
+                  matches=true;
+                  break;
+                }
+              }
+              return matches;
+            }).filter(function(d){return this.getAttribute('filtered') == 'false' }),
+            non_selected = d3.selectAll(labels).filter(function(d){
+              var matches=true;
+              for (var i=0;i<key.length;i++) {
+                if (d.toUpperCase().indexOf(key[i]) != -1) {
+                  matches=false;
+                  break;
+                }
+              }
+              return matches;
+            });
+        selected.attr("display", "inline");
+        selected.attr("selected", 'true');
+        non_selected.attr("display", "none");
+        non_selected.attr("selected", 'false');
+      } else {
+        to_free = d3.selectAll(labels);
+        to_free.attr("display", "none");
+        to_free.attr("selected", 'false');
+      };
+    };
+
+function searchLabels2(button, input, labels) {
+      $(button).attr("checked", false);
+      var key = $(input).val().toUpperCase().split(' AND ');
+      if (key != '') {
+        var selected = d3.selectAll(labels).filter(function(){
+              var matches=false;
+              for (var i=0;i<key.length;i++) {
+                if (this.__data__.name.toUpperCase().indexOf(key[i]) != -1) {
+                  matches=true;
+                  break;
+                }
+              }
+              return matches;
+            }).select(function(){return this.childNodes[1];}),
+            non_selected = d3.selectAll(labels).filter(function(){
+              var matches=true;
+              for (var i=0;i<key.length;i++) {
+                if (this.__data__.name.toUpperCase().indexOf(key[i]) != -1) {
+                  matches=false;
+                  break;
+                }
+              }
+              return matches;
+            }).select(function(){return this.childNodes[1];});
+        selected.attr("display", "inline");
+        selected.attr("selected", 'true');
+        non_selected.attr("display", "none");
+        non_selected.attr("selected", 'false');
+      } else {
+        to_free = d3.selectAll(labels).select(function(){return this.childNodes[1];});
+        to_free.attr("display", "none");
+        to_free.attr("selected", 'false');
+      };
+    };
+    

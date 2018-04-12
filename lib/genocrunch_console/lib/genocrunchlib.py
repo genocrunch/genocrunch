@@ -268,6 +268,7 @@ class Map(object):
 
         self.fp = output+'/map.txt'
         copyfile(fp, self.fp)
+        table2R(self.fp)
         self.log = []
         self.log.append({'name':'file', 'type':'file', 'path':self.fp})
         self.log.append({'name':'validation', 'type':'validation', 'status':'pending', 'messages':[]})
@@ -326,7 +327,8 @@ class DataSet(object):
                  rarefaction_depth = '',
                  nsampling = '',
                  transformation = '',
-                 batch_effect = ''):
+                 batch_effect = '',
+                 batch_effect_fun = ''):
 
         self.json_fp = json_fp
         self.pipeline = self._pipeline
@@ -352,6 +354,7 @@ class DataSet(object):
         self.nsampling = nsampling
         self.transformation = transformation
         self.batch_effect = batch_effect
+        self.batch_effect_fun = batch_effect_fun
 
         self.log = []
         self.log.append({'name':'file', 'type':'file', 'path':self.data_fp[0]})
@@ -529,7 +532,7 @@ class DataSet(object):
                        '--effect',
                        self.batch_effect,
                        '--fun',
-                       'combat'])
+                       self.batch_effect_fun])
 
         suffix = {'rarefaction':'rar',
                   'transformation':'trans',
@@ -647,7 +650,8 @@ class Analysis(object):
                                        rarefaction_depth = self.parameters.params['prim_sampling_depth'],
                                        nsampling = self.parameters.params['prim_nsampling'],
                                        transformation = self.parameters.params['prim_trans_method'],
-                                       batch_effect = self.parameters.params['prim_batch_effect_suppression'])
+                                       batch_effect = self.parameters.params['prim_batch_effect_suppression'],
+                                       batch_effect_fun = self.parameters.params['prim_batch_effect_suppression_fun'])
         self.log.data.append({'name':'primary_dataset', 'type':'dataset', 'log':self.primary_dataset.log})
         self.log.update()
         self.stdout.data.append({'primary_dataset':self.primary_dataset.stdout})
@@ -692,7 +696,8 @@ class Analysis(object):
                                            rarefaction_depth = self.parameters.params['sec_sampling_depth'],
                                            nsampling = self.parameters.params['sec_nsampling'],
                                            transformation = self.parameters.params['sec_trans_method'],
-                                           batch_effect = self.parameters.params['sec_batch_effect_suppression'])
+                                           batch_effect = self.parameters.params['sec_batch_effect_suppression'],
+                                           batch_effect_fun = self.parameters.params['prim_batch_effect_suppression_fun'])
           self.log.data.append({'name':'secondary_dataset', 'type':'dataset', 'log':self.secondary_dataset.log})
           self.log.update()
           self.stdout.data.append({'secondary_dataset':self.secondary_dataset.stdout})

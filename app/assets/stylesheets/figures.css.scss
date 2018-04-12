@@ -1,3 +1,27 @@
+#fig-description-container.active {
+  border:1px solid rgba(0,0,0,.125);
+  border-radius:.25rem;
+}
+
+#fig-description-btn {
+
+  color:#333;
+  cursor: pointer;
+  float:right;
+
+  &:hover,
+  &:focus,
+  &:active,
+  &.active {
+    color:#014c8c;
+  }
+}
+
+.network-well {
+  border:1px solid rgba(0,0,0,.125);
+}
+
+
 .figure-layout {
   display: -webkit-box;
   display: -webkit-flex;

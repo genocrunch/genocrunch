@@ -617,6 +617,11 @@ function heatMap(id, legend_id, json, W = 750, H = 750, font_family = "verdana, 
 
       var selected_sidebar = $("#sidebarSelect").val();
 
+      if (selected_sidebar == '') {
+        restart();
+        return 0;
+      }
+
       // For linear scales
       if (sidebarColors[selected_sidebar].domain().length > 0) {
 
@@ -784,24 +789,9 @@ function heatMap(id, legend_id, json, W = 750, H = 750, font_family = "verdana, 
 
     // Search in labels
     var searchLabels = function() {
-      $("#rowLabelButton").attr("checked", false);
-      var key = $("#searchInput").val().toUpperCase();
-      if (key != '') {
-        var selected = d3.selectAll(".row-label").filter(function(d){return d.toUpperCase().indexOf(key.toUpperCase()) != -1 }).filter(function(d){return this.getAttribute('filtered') == 'false' });
-            non_selected = d3.selectAll(".row-label").filter(function(d){return d.toUpperCase().indexOf(key.toUpperCase()) == -1 });
-        selected.attr("display", "inline");
-        selected.attr("selected", 'true');
-        non_selected.attr("display", "none");
-        non_selected.attr("selected", 'false');
-      } else {
-        to_free = d3.selectAll(".row-label");
-        to_free.attr("display", "none");
-        to_free.attr("selected", 'false');
-      };
-    };
-
+      searchLabels1("#rowLabelButton", "#searchInput", ".row-label")
+    }
     appendSearchInput(buttons, "Search", "searchInput", searchLabels);
-
 
     // Select model
     var modelSelect = buttons.append("div")

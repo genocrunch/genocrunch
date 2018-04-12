@@ -1,6 +1,6 @@
 <% list_fields.each do |field| %>
 <% css_classes = [] %>
-<% css_classes.push('hidden') if (field['type'] == 'select' and !field['values'] and !@default[field['id']]) %>
+<% css_classes.push("ml-#{field['increment']}") if field['increment'] %>
 <% css_classes.push('missing_field') if @missing_fields and @missing_fields.map{|e| e['id']}.include?(field['id']) %>
  
 <div id='field-<%= field['id'] %>' class='card-text <%= css_classes.join(" ") %>'>

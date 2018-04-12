@@ -1,13 +1,13 @@
 <div id="welcome" class="container-fluid bg-welcome" data-top-top="background-position: 50% 80%;" data-top-bottom="background-position: 50% 20%;">
 
   <div class="row main-container align-items-center">
-
+<!--
     <div id='firefox_msg' class="col-md-10 offset-md-1 hidden">
       <div class='alert alert-danger align-center'>
         This app works better with <a href='https://www.mozilla.org' target='_blank'><i class='fa fa-firefox'></i> Firefox</a>
       </div>
     </div>
-
+-->
     <%# WELCOME TEXT %>
 
     <div class="col-md-5 offset-md-1">
@@ -15,7 +15,6 @@
         <h1>Analyse your data online</h1>
 	      <p>We offer a user-friendly data mining pipeline for metagenomics and metataxonomics</p>
       </div>
-<!--      <div class='alert alert-danger'>Sorry, this application is under construction.<br>Some features may not be available yet.</div>-->
     </div>
 
     <%# SIGNIN %>
@@ -76,7 +75,7 @@
 <script>
   var notice = '<%= notice %>',
       is_firefox = typeof InstallTrigger !== 'undefined';
-
+/*
   $(document).ready(function() {
     if (!is_firefox) {
       $('#firefox_msg').show();
@@ -85,7 +84,7 @@
       alert(notice)
     };
   });
-
+*/
   $('#move-down').on('click', function(){
     document.getElementById('infos').scrollIntoView({ behavior: 'smooth' });
   });

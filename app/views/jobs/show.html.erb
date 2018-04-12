@@ -73,13 +73,12 @@
       
     </h2>
     <i id="global_status" class="<%= @h_statuses[(@final_json) ? @final_json[:global_status] : 'pending'].icon %>" aria-hidden="true"></i>
-  </div>
     
-  <div id='job-description' class='hidden'>
-    <span>
+    <div id='job-description' class='hidden'>
       <%= (@job.description != '') ? @job.description : 'Description: sorry, you did not enter any description for this analysis' %>
-    </span>
+    </div>
   </div>
+
   
   <div id='show_content'>
     <%= render :partial => 'view_primary_dataset' %>

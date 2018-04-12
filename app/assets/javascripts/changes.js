@@ -678,22 +678,8 @@ function foldChange(id, legend_id, json, W = 600, H = 600, font_family = "verdan
 
     // Search in labels
     var searchLabels = function() {
-      $("#labelButton").attr("checked", false);
-      var key = $("#searchInput").val().toUpperCase();
-      if (key != '') {
-        var selected = d3.selectAll(".plot-label").filter(function(){return this.__data__.name.toUpperCase().indexOf(key.toUpperCase()) != -1 }).select(function(){ return this.childNodes[1];});
-            non_selected = d3.selectAll(".plot-label").filter(function(){return this.__data__.name.toUpperCase().indexOf(key.toUpperCase()) == -1 }).select(function(){ return this.childNodes[1];});
-        selected.attr("display", "inline");
-        selected.attr("selected", true);
-        non_selected.attr("display", "none");
-        non_selected.attr("selected", false);
-      } else {
-        to_free = d3.selectAll(".plot-label").select(function(){return this.childNodes[1];});
-        to_free.attr("display", "none");
-        to_free.attr("selected", false);
-      };
-    };
-
+      searchLabels2("#labelButton", "#searchInput", ".plot-label")
+    }
     appendSearchInput(buttons, "Search", "searchInput", searchLabels);
 
     // Select axis

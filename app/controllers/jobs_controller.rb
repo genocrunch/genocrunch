@@ -274,7 +274,8 @@ class JobsController < ApplicationController
       }
       
       @h_icons={
-        'description' => '',
+        'description' => 'info-circle',
+        'comment' => 'info-circle',
         'output' => 'file-text-o',
         'warning' => 'exclamation-triangle icon-warning',
         'error' => 'exclamation-triangle icon-danger'
@@ -536,13 +537,17 @@ class JobsController < ApplicationController
     @h_tips = JSON.parse(File.read(Rails.root.join('public', 'app', 'tips.json')))
     @h_help = {}
     @h_field_groups = {}
-    @h_form['fields'].keys.map{|card| @h_form['fields'][card]}.flatten.map{|field|
-      @h_help[field['id']]=field['help']
-      ### add the fields with belongs_to to the @h_field_groups                                                                                                                                                              
-      if field['belongs_to']
-        @h_field_groups[field['belongs_to']]||=[]
-        @h_field_groups[field['belongs_to']].push(field)
-      end
+
+    @h_form['fields'].each_key{|card_title|
+      @h_form['fields'][card_title] = @h_form['fields'][card_title].select{|field| field['scope'] != 'cli_only'}
+
+      @h_form['fields'][card_title].map{|field|
+        @h_help[field['id']] = field['help']
+        if field['belongs_to']
+          @h_field_groups[field['belongs_to']]||=[]
+          @h_field_groups[field['belongs_to']].push(field)
+        end
+      }
     }
   end
 
@@ -551,10 +556,8 @@ class JobsController < ApplicationController
     
     @user = (current_user) ? current_user : User.where(:username => 'guest').first
     @job = @user.jobs.new
-#    if current_user
     session[:current_key] = create_key()
-    @job.key = session[:current_key] #(Job.where(:key => session[:current_key])) ? create_key() : session[:current_key]
-#    end
+    @job.key = session[:current_key]
     get_basic_info
     @default = {}
    
@@ -566,11 +569,11 @@ class JobsController < ApplicationController
     @present_fields = []
     get_basic_info
     @h_fields ={}
-    @h_form['fields'].each_key do |card_title|
-      @h_form['fields'][card_title].each do |f|
-        @h_fields[f['id']]=f
-      end
-    end
+    @h_form['fields'].each_key{|card_title|
+      @h_form['fields'][card_title].map{|field|
+        @h_fields[field['id']]=field
+      }
+    }
     @log = ''
     
     flag=0
@@ -582,7 +585,6 @@ class JobsController < ApplicationController
       p.each_key do |k|
         if !@h_fields[k] 
           flag = 0
-   #       @log += k + " is missing!!!! FUCK"
           break
         end
       end
@@ -590,13 +592,12 @@ class JobsController < ApplicationController
       ### check if all parameters required are submitted                                                                                                                                                                       
       @h_fields.keys.select{|k| @h_fields[k]['optional'] == false}.each do |k|
         logger.debug("EXPLORE field " + k)
-        if (@h_fields[k]['type']== 'file' and ((p[k] and !p[k].blank? #p[k].original_filename and !p[k].original_filename.empty?
+        if (@h_fields[k]['type']== 'file' and ((p[k] and !p[k].blank?
                                                 ) or !params[:p2][k].empty?) ) or (p[k] and !p[k].empty?)
           @present_fields.push(@h_fields[k])
         else
           @missing_fields.push(@h_fields[k])
           flag = 0
-   #       @log += k + " is missing!!!! FUCK2"
         end
 
       end

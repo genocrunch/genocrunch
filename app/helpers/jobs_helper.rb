@@ -14,7 +14,7 @@ module JobsHelper
   end
 
   def help_button f    
-    html = "<a id='help-#{f['id']}' style='float:right;padding-left:5px;padding-right:5px;margin:0' class='help margin_addon' href='javascript:void(0)'><i class='help-icon fa fa-question-circle-o'></i></a>"
+    html = "<a id='help-#{f['id']}' style='float:right;padding-left:5px;padding-right:5px;margin:0' class='help margin_addon' href='javascript:void(0)'><i class=' fa fa-question-circle-o'></i></a>"
     if f['trigger'] && f['trigger'] == 'drop_down'
       html += "<a id='fold_button-#{f['id']}' style='float:right;padding-left:5px;padding-right:5px;margin:0' class='margin_addon' href='javascript:void(0)'><i id='fold_bar-icon' class='foldbar-icon fa fa-chevron-down '></i></a>"
     end
@@ -24,7 +24,7 @@ module JobsHelper
   def field_label f
     label = (f['label']) ? f['label'] : f['id'].gsub(/_/, ' ').capitalize
     css_classes = []
-    css_classes.push('form-check-label') if f['type'] == 'check_box' #) ? 'form-check-label' : ''
+    css_classes.push('form-check-label') if f['type'] == 'check_box'
     html  = "<label class=' #{css_classes.join(" ")} full-width'>"     
     html2 = "<span class='label-text'>"
     html2 += label
@@ -40,11 +40,10 @@ module JobsHelper
 
     if f['trigger'] && f['trigger'] == 'drop_down'
       val = (@default[f['db_field']] && @default[f['db_field']].include?(f['id'])) || @default[f['id']] || false
-     # val =  @default[f['id']] || f['default']
     else
       val = @default[f['id']] || false
     end
-#    id = (f['trigger'] && f['trigger'] == 'drop_down') ? "p[#{f['db_field']}][#{f['id']}]" : "p[#{f['id']}]"
+
     id = "p[#{f['id']}]"
     label = field_label f
     html = "<div class='form-check'>"
@@ -52,12 +51,6 @@ module JobsHelper
     html += check_box_tag id, 1, val, {:class => 'form-check-input'}
     html += label.second
     html += "</div>"
-
-#    if f['trigger'] && f['trigger'] == 'drop_down'
-#      html += "<div id='field_group_#{f['id']}' class='hidden'>"
-#      html += render :partial => 'card_form', :locals => {:list_fields => @h_field_groups[f['id']]}
-#      html += "</div>"
-#    end
 
     return html
   end
@@ -101,60 +94,16 @@ module JobsHelper
   def field_select f, h_c
     val = @default[f['id']] || f['default']
     l = (h_c) ? h_c.map{|e| [e['label'], e['value']]} : []
-    css_class=(f['belongs_to']) ? 'belongs_to' : '' 
-    html = "<div class='multiselect-btn-container'>" 
+    css_class=(f['belongs_to']) ? 'belongs_to' : ''
+    container_css_classes=['multiselect-btn-container']
+    container_css_classes.push('hidden') if l.length == 0
+    placeholder_css_classes=(l.length != 0) ? 'hidden' : ''
+    html = f['placeholder'] ? "<i id='p_#{f["id"]}-placeholder' class='#{placeholder_css_classes}'>#{f["placeholder"]}</i>" : ''
+    html += "<div id='p_#{f["id"]}-container' class='#{container_css_classes.join(" ")}'>" 
     html += select_tag "p[#{f['id']}]", options_for_select(l, val), {:placeholder => (f['placeholder'] || ''),  multiple: (f["multiple"] && f["multiple"] == true), :class => "form-control full-width multiselect #{css_class}" } 
     html += "</div>"
 
     return html
   end
 
-  def toto
-
-#         <label class="control-label full-width">
-#            <span class="label-text">
-#              Name *
-#              <%= field["optional"] == "false" ? '*' : '' %>
-#            </span>
-#          </label>
-#            <%= f.text_field(key.to_sym, value: default_value, placeholder: ((field["options"].key?("placeholder"))? field["options"]["plac#eholder"] : ''), class:"form-control form-text") %>
-
-  end
-
-
-  # Build a hash of paramters (sort of 'flatten' the app JSON)
-  # element_h (hash) A hash containing fields
-  # params_h  (hash) Parameter hash to build
-  # type      (array) Type of field to search for
-  def set_params(element_h, params_h, type)
-    for t in type
-    if element_h.keys.include? t
-      element_h[t].each do |key, field|
-        # Check if field represents a parameter to be set in the form
-        if field.keys.include? "param" and ["all", "web"].include? field["scope"]
-          # If field is not included in the parameter hash already, ad it
-          if !params_h.keys.include? field["param"]
-            params_h[field["param"].to_sym] = Hash.new
-            params_h[field["param"].to_sym][:optional] = field["optional"]
-            params_h[field["param"].to_sym][:scope] = field["scope"]
-            if field.keys.include? "type"
-              params_h[field["param"].to_sym][:type] = field["type"]
-            end
-            if field.keys.include? "options"
-              if field["options"].keys.include? "default"
-                params_h[field["param"].to_sym][:default] = field["options"]["default"]
-              end
-              if field["options"].keys.include? "hidden_if"
-                params_h[field["param"].to_sym][:hidden_if] = field["options"]["hidden_if"]
-              end
-            end
-            if ["text-if-file", "bool-if-file", "select-from-field", "select-from-file-row", "select-from-file-category", "select-heatmap-sidebar"].include? field["type"]
-              params_h[field["param"].to_sym][:options] = field["options"]           
-            end
-          end
-        end
-      end
-    end
-  end
-  end
 end

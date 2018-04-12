@@ -1,1 +1,66 @@
-<%= render :partial => 'view_description' %>
+<div class="container-fluid">
+  <div class="row">
+    <div class=" col-xl-12 col-lg-12 col-md-12 col-sm-12">
+
+      <% if  @form_json['bin_levels'] %>
+        <div class='form-group'>
+	
+          <label>
+            <span class='label-text'>Level</span>
+          </label>
+	
+	        <div class='multiselect-btn-container figtool-multiselect-btn-container'>	
+	          <% l = @form_json['bin_levels'].map{|e| [e, e]} %>      
+            <%= select_tag 'current_level', options_for_select(l, session[:current_level].to_s), {:class => 'form-control multiselect figtool-multiselect'} %>
+          </div>
+
+        </div>
+
+      <% end %>
+
+          <% if @description and !@description.empty? %>
+            <div class='show-element' title='Figure description'>
+              <span>
+                <i class='help-icon fa fa-info-circle fa-2x'></i>
+              </span>
+              <span id='fig-description'>
+                <% if @description.length() > 1 %>
+                  <ul>
+                    <% @description.each do |d| %>
+                      <li><%= d %></li>
+                    <% end %>
+                  </ul>
+                <% else %>
+                  <%= @description.first %>
+                <% end %>
+              </span>
+            </div>
+          <% end %>
+        
+  </div>
+</div>
+
+<%= javascript_tag do %>
+
+$("#current_level").change(function(){
+var div = $('#show_content');
+var url = '<%= view_job_path(:key => @job.key) %>?partial=<%= params[:partial] %>&current_level=' + $(this).val();
+
+ $.ajax({
+  url: url,
+  type: "get",
+  beforeSend: function(){
+  },
+  success: function(returnData){
+   div.empty();
+   div.html(returnData);
+  },
+  error: function(e){
+  }
+ });
+
+});
+
+setMultiselect('#current_level');
+
+<% end %>

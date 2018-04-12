@@ -198,7 +198,6 @@ if (graphical[[opt$method]] == TRUE && opt$graphical == TRUE) {
 ###################
 data <- list()
 if (opt$method == 'clustering') {
-
   data[['txt']] <- PerformClustering(table=table,
                                      fun=fun,
                                      json=json,
@@ -208,7 +207,6 @@ if (opt$method == 'clustering') {
     names(data[['txt']]) <- basename(opt$output)
   }
 } else if (opt$method == 'proportions') {
-
   data[['json']] <- AnalyseProportions(table=table,
                                       verbose=opt$verbose,
                                       graphical=opt$graphical)

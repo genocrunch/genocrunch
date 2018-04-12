@@ -1,12 +1,12 @@
 <% if @final_json[:status_by_step][k] %>
-<% @final_json[:status_by_step][k].each do |e| %>
-<div class='card step-card'>
+<% @final_json[:status_by_step][k].select{|e| e[:status] != 'skipped'}.each do |e| %>
+
+<div class='card mb-1'>
   <div class='card-header'>
 <div class='float-right'>
   <%= raw display_duration(e[:execution_time]) %>
 </div>
   <i id="status-<%= e[:id] %>" class="<%= @h_statuses[e[:status] || 'pending'].icon %>" aria-hidden="true"></i>
-  <%# image_tag @h_statuses[e[:status] || 'pending'].filename, :alt => '', :id => "status-#{e[:id]}", :class => 'status_image' %>
   <%= e[:name].capitalize %>
 </div>
 
@@ -14,7 +14,6 @@
 <% if @final_json[:messages_by_step][step_key] and @final_json[:messages_by_step][step_key].select{|e| e[:messages] and e[:messages].select{|h| h.keys.size > 0}.compact.size > 0}.size > 0  %>
 <div class='card-block'>
 
-<%# @final_json[:messages_by_step][step_key].to_json %>
 <ul class='no-bullets'>
 <% @final_json[:messages_by_step][step_key].select{|e| e[:messages] and e[:messages].select{|h| h.keys.size > 0}.compact.size > 0}.each do |e2| %>
 <li>
@@ -25,8 +24,7 @@
   <%if status_substep %>
     <i id="status-<%= e[:id] %>" class="<%= @h_statuses[status_substep[:status] || 'pending'].icon %>" aria-hidden="true"></i>
   <% end %>
- <%# image_tag(@h_statuses[status_substep[:status] || 'pending'].filename, :alt => '', :id => "status-#{e[:id]}", :class => 'status_image') if status_substep %>
-<%= e2[:name].capitalize %>
+<%= e2[:name].capitalize if status_substep %>
 
 <% e2[:messages].each do |e3| %>
 <% k = e3.keys.first %>

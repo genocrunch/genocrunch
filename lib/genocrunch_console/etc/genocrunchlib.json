@@ -19,6 +19,10 @@
     {"value":"log2", "label":"Log2"},
     {"value":"percent", "label":"Percent"}
   ],
+  "batch_effect":[
+    {"value":"none", "label":"None"},
+    {"value":"combat", "label":"ComBat"}
+  ],
   "diversity":[
     {"value":"richness", "label":"Richness", "pkg":""},
     {"value":"shannon", "label":"Shannon Diversity Index", "pkg":"vegan"},
@@ -100,10 +104,11 @@
    "optional":false
   },
   {"id":"category_column",
-   "help":"This must be the name of the column in your input file that contains the category (i.e. taxonomy, pathways, etc.).",
+   "help":"This must be the name of the column in your input file that contains the category (i.e. taxonomy, pathways, etc.). The selected column will be used in categorical binning.",
    "type":"select",
-   "optional":false,
-   "depends_on":"primary_dataset"
+   "placeholder":"Select Primary dataset first",
+   "increment":"3",
+   "optional":false
   },
   {"id":"map",
    "help":"Mapping file. It describes the experimental design. Columns represent factors (ex: treatment,sex,etc.) and rows indicates samples. Format must be tab-delimited text. First row must contain column names. At least one column must contain the sample names,matching the first row of data file (Input). [<a href='/home/doc#map_format' target='_blank'>File format</a>]",
@@ -148,12 +153,14 @@
    "label":"Category binning levels",
    "help":"The level(s) at which the categories will be binned.",
    "type":"select",
+   "placeholder":"Select Primary dataset first",
    "multiple":true
   },
   {"id":"bin_fun",
    "label":"Category binning function",
    "help":"Function to apply for category binning.",
    "type":"select",
+   "increment":"3",
    "values":"binning",
    "default":"sum"
   }
@@ -191,10 +198,20 @@
    "default":"none"
   },
   {"id":"prim_batch_effect_suppression",
+   "scope":"cli_only",
    "label":"Batch effect suppression (Primary dataset)",
    "help":"Batch effect(s) can be suppressed to facilitate statistical tests. Example: In an experiment where 20 samples from experimental group A and 20 samples from experimental group B where distributed into two batches for processing,the batch-effect can be supressed. Make sure it is consitent with Model,in the Experimental design section.",
+   "placeholder":"Select Map first",
+   "type":"select"
+  },
+  {"id":"prim_batch_effect_suppression_fun",
+   "scope":"cli_only",
+   "label":"Batch effect suppression method (Primary dataset)",
+   "help":"Method to apply to suppress batch-effect in primary dataset.",
    "type":"select",
-   "multiple":true
+   "values":"batch_effect",
+   "increment":"3",
+   "default":"none"
   },
   {"id":"sec_rarefaction",
    "label":"Rarefaction (Secondary dataset)",
@@ -228,10 +245,20 @@
    "default":"none"
   },
   {"id":"sec_batch_effect_suppression",
+   "scope":"cli_only",
    "label":"Batch effect suppression (Secondary dataset)",
    "help":"Batch effect(s) can be suppressed to facilitate statistical tests. Example: In an experiment where 20 samples from experimental group A and 20 samples from experimental group B where distributed into two batches for processing,the batch-effect can be supressed. Make sure it is consitent with Model,in the Experimental design section.",
+   "placeholder":"Select Map first",
+   "type":"select"
+  },
+  {"id":"sec_batch_effect_suppression_fun",
+   "scope":"cli_only",
+   "label":"Batch effect suppression method (Secondary dataset)",
+   "help":"Method to apply to suppress batch-effect in secondary dataset.",
    "type":"select",
-   "multiple":true
+   "increment":"3",
+   "values":"batch_effect",
+   "default":"none"
   }
 ],
 "Analysis":[
@@ -245,6 +272,7 @@
    "label":"Model",
    "help":"This will define the statistical model to use for the analysis. An Anova will be used to compare groups.",
    "type":"select",
+   "placeholder":"Select Map first",
    "belongs_to":"model_type_basic"
   },
   {"id":"advanced_stats",

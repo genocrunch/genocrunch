@@ -7,10 +7,8 @@
 
  $(document).ready(function() {
 
-//var default_values = <%= raw @default.to_json %>;
-
 function change_<%= field['id'] %>(where){
-//alert("WHERE: " + where)
+
 <% if field['id'] == 'primary_dataset' %>
 
  var url = (where == 'server') ? '<%= read_file_header_jobs_path() %>?file_key=<%= field['id'] %>' : null;
@@ -19,11 +17,9 @@ function change_<%= field['id'] %>(where){
 <% elsif field['id'] == 'map' %>
 
  var url = (where == 'server') ? '<%= read_file_header_jobs_path() %>?file_key=<%= field['id'] %>' : null;
+ setSelectFromFileRow("prim_batch_effect_suppression", $("#p_map")[0].files[0], '<%= @default['prim_batch_effect_suppression'] || '' -%>', null, url);
+ setSelectFromFileRow("sec_batch_effect_suppression", $("#p_map")[0].files[0], '<%= @default['sec_batch_effect_suppression'] || '' -%>', null, url);
  setSelectFromFileRow("basic_model", $("#p_map")[0].files[0], '<%= @default['basic_model'] || '' -%>', null, url);
- setSelectFromFileRow("sample_name", $("#p_map")[0].files[0], '<%= @default['sample_name'] || '' -%>', null, url);
- var basic_model_help = $("#field-basic_model_help")
-
- basic_model_help.addClass("hidden")
 
 <% end %>
 }
@@ -37,20 +33,28 @@ $("#p_<%= field['id'] %>").on('change',function(){
   $("#default_bin_levels").val("[]");
   // refresh the fields depending on the file field
   change_<%= field['id'] %>("client");
-//alert("t");
 })
-
-<%# if @default and @default[field['id']] %>
 
 var ori_filename = $("#p2_<%= field['id'] %>").val();
  if (ori_filename != ''){
-  $("#p_<%= field['id'] %>").next('.form-control-file').addClass("selected").html(ori_filename); //'<%# @default[field['id']].original_filename %>');
+  $("#p_<%= field['id'] %>").next('.form-control-file').addClass("selected").html(ori_filename);
   change_<%= field['id'] %>("server");
   <% if field['id'] == 'map' %>
-    $("#field-basic_model_help").addClass("hidden");
+    $('#p_prim_batch_effect_suppression_fun-container').removeClass("hidden");
+    $('#p_prim_batch_effect_suppression_fun-placeholder').addClass("hidden");
+    $('#p_sec_batch_effect_suppression_fun-container').removeClass("hidden");
+    $('#p_sec_batch_effect_suppression_fun-placeholder').addClass("hidden");
+    $('#p_basic_model-container').removeClass("hidden");
+    $('#p_basic_model-placeholder').addClass("hidden");
+  <% end %>
+    <% if field['id'] == 'primary_dataset' %>
+    $('#p_category_column-container').removeClass("hidden");
+    $('#p_category_column-placeholder').addClass("hidden");
+    $('#p_bin_levels-container').removeClass("hidden");
+    $('#p_bin_levels-placeholder').addClass("hidden");
   <% end %>
  }
-<%# end %>
+
 
 });
 

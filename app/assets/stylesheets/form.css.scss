@@ -132,27 +132,6 @@ text-align:right
   }
 }
 
-.help-button {
-
-  .label-text,
-  .help-icon {
-    cursor:pointer;
-    color:#666;
-
-    &:hover,
-    &:focus,
-    &:active,
-    &.active {
-     color:#333;
-    }
-  }
-
-  .help-icon {
-    float:right;
-    margin-right:10px;
-  }
-}
-
 .help-block {
   padding-top:8px;
   max-height:0;
