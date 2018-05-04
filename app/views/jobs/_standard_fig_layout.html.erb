@@ -1,7 +1,6 @@
 <div class="container-fluid">
   <div class="row">
-    <div class="card col-xl-3 col-lg-3 col-md-3 col-sm-12">
-    <div class='btn-container'>
+    <div class="card col-xl-3 col-lg-3 col-md-3 col-sm-12 p-2 mb-1">
 
       <% if  @form_json['bin_levels'] %>
         <div class='form-group'>
@@ -18,45 +17,54 @@
         </div>
 
       <% end %>
-      <%= render :partial => 'export_btn' %> 
 
-      <span class='btn-sep'></span>
+      <div class='form-group'>
+        <%= render :partial => 'export_btn' %> 
+      </div>
 
-      <div id="d3-buttons"></div>
+      <div id="d3-buttons" class="pt-2 border-top"></div>
 
     </div>
-    </div>
-    <div class="card col-xl-9 col-lg-9 col-md-9 col-sm-12">
+    <div class="col-xl-9 col-lg-9 col-md-9 col-sm-12">
       <div class="row">
-        <div class="col-xl-9 col-lg-12 col-md-12 col-sm-12">
+        <div class="col-xl-9 col-lg-12 col-md-12 col-sm-12 pl-1 pr-0 mb-1">
 
-          <% if @description and !@description.empty? %>
-            <div id='fig-description-container' class='show-element' title='Figure description'>
-              <span id='fig-description-btn'>
-                <i class='help-icon fa fa-info-circle fa-2x'></i>
-              </span>
-              <span id='fig-description' class='hidden'>
+
+            <% if @description and !@description.empty? %>
+
+              <div id='fig-description-container' title='Figure description' class="p-2 mb-1 card">
+
                 <% if @description.length() > 1 %>
-                  <ul>
-                    <% @description.each do |d| %>
-                      <li><%= d %></li>
-                    <% end %>
-                  </ul>
+
+                  <span id='fig-description-btn'>
+                    <i class='help-icon fa fa-info fa-2x'></i>
+                  </span>
+                  <span id='fig-description' class="inactive">
+                    <ul>
+                      <% @description.each do |d| %>
+                        <li><%= d %></li>
+                      <% end %>
+                    </ul>
+                  </span>
+
                 <% else %>
-                  <%= @description.first %>
+                  
+                  <span id='fig-description'>
+                    <i class='fa fa-info fa-2x'></i> <%= @description.first %>
+                  </span>
+
                 <% end %>
-              </span>
-            </div>
-          <% end %>
+
+              </div>
+            <% end %>
         
-          <div class="show-element fig-container">
-            <div id="fig"></div>
-          </div>
+            <div class="fig-container card">
+              <div id="fig"></div>
+            </div>
+
         </div>
-        <div class="col-xl-3 col-lg-12 col-md-12 col-sm-12">
-          <div class="card show-element fig-legend-container">
-            <div id="fig-legend"></div>
-          </div>
+        <div class="col-xl-3 col-lg-12 col-md-12 col-sm-12 pl-1 pr-0 mb-1">
+          <div id="fig-legend" class="card p-2 m-0 full-width full-height"></div>
         </div>
       </div>
     </div>
@@ -66,8 +74,8 @@
 <%= javascript_tag do %>
 
   $('#fig-description-btn').click(function(e) {
-    $('#fig-description-container').toggleClass('active');
-    $('#fig-description').toggleClass('hidden');
+    $('#fig-description-btn').toggleClass('active');
+    $('#fig-description').toggleClass('inactive');
   });
 
 $("#current_level").change(function(){

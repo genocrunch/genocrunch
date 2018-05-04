@@ -22,6 +22,7 @@
 </div>
 <%= link_to 'New Example', new_example_path if admin? %>
 </div>
-<%= javascript_tag do %>
 
+<%= javascript_tag do %>
+  selectBtn("#home-pages-list.navbar-nav>nav-item", "#home-pages-list.navbar-nav>#examples")
 <% end %>

@@ -7,10 +7,41 @@
  var window_width = $(window).width();
 
   <% @h_tips['form'].each_with_index do |tip, index| %>
-    <% if !current_user and !session["tip#{tip['id']}".to_sym] %>
-      $("#tip_window<%= index %>").removeClass('hidden');
-      $("#tip_window<%= index %>").css({<%= raw tip['css_string'] %>}).stop().show(100);
-      $('#tip_window<%= index %>_text').html("<%= raw tip['html'] %>")
+    <% if !current_user and !session["tip#{tip['id']}".to_sym] and tip['target'] %>
+
+      var target = $("#<%= tip['target'] %>"),
+          offset = target.offset(),
+          tip = $('<div></div>', {
+            id: "tip_window<%= index %>",
+            class: "tip-window"
+          }),
+          tip_container = $("<div></div>", {
+            class: "tip-window-container"
+          }).append(tip),
+          tip_text = $("<p></p>").html("<%= raw tip['html'] %>"),
+          tip_icon = $('<i></i>', {
+            class: "fa fa-info-circle"
+          }),
+          tip_close = $('<div></div>', {
+            class: "tip-window-close"
+          });
+      tip_close.html('<i class="fa fa-check" aria-hidden="true"></i> Got it!')
+      tip_close.click(function() {
+        $("#tip_window<%= index %> p").html('');
+        $("#tip_window<%= index %>").css({display:'none'});
+      })
+
+
+      tip.css({
+        left: (window_width-offset.left < window_width/2) ? -260 : 0,
+      })
+      tip.addClass((window_width-offset.left < window_width/2) ? "right" : "left");
+
+      tip.append(tip_icon);
+      tip.append(tip_text);
+      tip.append(tip_close);
+      target.append(tip_container);
+
       <% session["tip#{tip['id']}".to_sym] = true %>
     <% end %>
   <% end %>
@@ -22,8 +53,8 @@
   var help = h_help[t[1]];
   $('#popup_container').html(help);
    $("#popup_window").css({
-        left: (window_width -e.pageX < window_width/2) ? e.pageX-310 : e.pageX + 10 ,
-        width: 300,
+        left: (window_width -e.pageX < window_width/2) ? e.pageX-310 : e.pageX + 10,
+        width:"300px",
         top: e.pageY + 10
     }).stop().show(100);
   });

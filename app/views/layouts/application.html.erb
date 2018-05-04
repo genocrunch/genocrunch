@@ -59,21 +59,17 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarTogglerTop">
     <a class="navbar-brand" href="<%= (current_user) ? jobs_path() : root_path() %>"><%= Rails.application.class.parent_name %></a>
-    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-      <li class="nav-item">
-	<%= link_to 'Examples', examples_path, {:class => 'nav-link'} %>
+    <ul id="home-pages-list" class="navbar-nav mr-auto mt-2 mt-lg-0">
+      <li id="examples" class="nav-item">
+	<%= link_to 'Examples', examples_path, class: "nav-link" %>
       </li>
-<!--        <li class="nav-item">
-<%= session[:current_key] %>
-      </li>-->
-
-      <li class="nav-item">
+      <li id="tutorial" class="nav-item">
         <a class="nav-link" href="<%= tutorial_home_index_path %>">Tutorial</a>
       </li>
-      <li class="nav-item">
+      <li id="reference" class="nav-item">
         <a class="nav-link" href="<%= reference_home_index_path %>">Reference</a>
       </li>
-       <li class="nav-item dropdown">
+       <li id="infos" class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Infos
         </a>
@@ -111,7 +107,9 @@
         <% else %>
           <%= link_to 'New Analysis', new_job_path, class: "btn btn-primary navbar-btn" %>
         <% end %>
-        <%= link_to "Sign In", new_user_session_path, class: "btn btn-secondary navbar-btn" %>
+        <div id="sign-in" class="btn btn-secondary navbar-btn custom-btn-container">
+          <%= link_to "Sign In", new_user_session_path, class: "btn" %>
+        </div>
         <%= link_to "Register", new_user_registration_path, class: "btn btn-secondary navbar-btn" %>
       <% end %>
     </div>      

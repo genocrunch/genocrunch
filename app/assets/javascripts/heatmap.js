@@ -1,7 +1,7 @@
-function heatMap(id, legend_id, json, W = 750, H = 750, font_family = "verdana, arial, helvetica, sans-serif") {
+function heatMap(id, legend_id, json, W = 600, H = 600, font_family = "verdana, arial, helvetica, sans-serif") {
 
   // Size
-  var margin = {top: 10, right: 150, bottom: 150, left: 10},
+  var margin = {top: 10, right: 200, bottom: 200, left: 10},
       width = W - margin.left - margin.right,
       height = H - margin.top - margin.bottom,
       dendrogram_space = 30,
@@ -158,13 +158,10 @@ function heatMap(id, legend_id, json, W = 750, H = 750, font_family = "verdana, 
 
 
     //////////////// Draw the figure ////////////////
-    var legendContainer = d3.select("#"+legend_id).append("div")
-      .attr('class', 'columns-1')
+    var legendContainer = d3.select("#"+legend_id)
+      .classed('columns-1', true)
 
-    var svgContainer = d3.select("#"+id)
-      .style("height", (height + margin.top + margin.bottom)+"px")
-
-    var svg = svgContainer.append("svg")
+    var svg = d3.select("#"+id).append("svg")
       .attr("id", "svg-figure")
       .attr("class", "svg-figure")
       .attr("width", (width + margin.left + margin.right)+"px")
@@ -274,17 +271,20 @@ function heatMap(id, legend_id, json, W = 750, H = 750, font_family = "verdana, 
         })
 
     // Add legend
-    var legend = legendContainer.append("div")
+    var legend = legendContainer.append("ul")
       .attr("id", "svg-legend")
+      .style("list-style-type", "none")
+      .style("padding", 0)
       .style("font-family", font_family)
 
     // Add color scale to legend
-    var colorScale = legend.append("div")
+    var colorScale = legend.append("li")
+        .style("padding-bottom", "1rem")
         .attr("title", "Color scale")
         .attr("class", "legend  legend-no-interaction")
-      .style("margin-bottom", (color_scale_font_size+15)+"px")
+        .style("margin-bottom", (color_scale_font_size+15)+"px")
 
-    colorScale.append("p")
+    colorScale.append("p").append("b")
       .html("Color scale")
 
     var colorScaleSvg = colorScale.append("svg")
@@ -346,65 +346,52 @@ function heatMap(id, legend_id, json, W = 750, H = 750, font_family = "verdana, 
       .attr("font-family", font_family)
 	    .text("z-score");
 
-    legend.append("div")
-      .style("border-top", "solid #ccc 1px")
-      .style("height", "6px")
-      .style("border-bottom", "solid #ccc 1px")
-
     // Add topbar legend
-    var topbarLegend = legend.append("div")
+    var topbarLegend = legend.append("li")
+        .style("border-top", "1px solid #ccc")
+        .style("padding-top", "1rem")
+        .style("padding-bottom", "1rem")
         .attr("title", "Topbar color key")
 
-    topbarLegend.append("p")
+    topbarLegend.append("p").append("b")
       .html("Topbar color key")
 
     for (var i = 0; i < json.topbar.category.length; i++) {
 
       var topbarData = unique(json.topbar.category[i].value);
 
-      topbarLegend.append("span")
-        .attr("class", "sidebar-sub-title")
+      var topbarLegendList = topbarLegend.append("div")
         .html(json.topbar.category[i].name)
+        .append("ul")
+        .style("list-style-type", "none")
+        .style("padding", 0)
+        .selectAll("ul")
+        .data(topbarData)
+        .enter().append("li")
+        .style("word-wrap", "break-word")
+        .attr("id", function(d) { return d;})
+        .attr("title", function(d) { return d;})
 
-      var legendSpan = topbarLegend.append("ul")
-      .style("list-style-type", "none")
-      .selectAll("ul")
-      .data(topbarData)
-      .enter().append("li")
-      .attr("id", function(d) { return d;})
-      .attr("title", function(d) { return d;})
-      .append("span")
-
-      legendSpan.append("svg")
+      topbarLegendList.append("svg")
+        .style("margin-right", "1rem")
         .attr("width", "10px")
         .attr("height", "10px")
-        .style("margin-right", "5px")
         .append("rect")
         .attr("width", "10px")
         .attr("height", "10px")
         .attr("fill", function(d) { return topbarColors(d); })
 
-      legendSpan.append("span")
-        .html(function(d) {
-            return d;
-        });
-
-      if (i < json.topbar.category.length-1) {
-        topbarLegend.append("div")
-          .style("border-top", "solid #e6e6e6 1px")
-      }
+      topbarLegendList.append("span")
+        .html(function(d) {return d;});
     }
 
-    legend.append("div")
-      .style("border-top", "solid #ccc 1px")
-      .style("height", "6px")
-      .style("border-bottom", "solid #ccc 1px")
-
     // Add sidebar legend
-    var sidebarLegend = legend.append("div")
-        .attr("title", "Sidebar color key")
-        .attr("class", "legend  legend-no-interaction")
-        .style("margin-bottom", (color_scale_font_size+5)+"px")
+    var sidebarLegend = legend.append("li")
+        .style("border-top", "1px solid #ccc")
+        .style("padding-top", "1rem")
+        .style("padding-bottom", "1rem")
+        .attr("title", "Sidebar colors")
+
 
 
     //////////////// Restart function ////////////////
@@ -629,7 +616,7 @@ function heatMap(id, legend_id, json, W = 750, H = 750, font_family = "verdana, 
             selected_sidebar_range = sidebarColors[selected_sidebar].range();
 
         sidebarLegend
-          .append("p")
+          .append("p").append("b")
             .html("Sidebar color scale")
 
         var sideBarColorScaleSvg = sidebarLegend.append("svg")
@@ -689,7 +676,7 @@ function heatMap(id, legend_id, json, W = 750, H = 750, font_family = "verdana, 
 
         sidebarLegend.style("margin-left", "0px")
         .style("margin-top", "0px")
-        .append("p")
+        .append("p").append("b")
           .html("Sidebar color key")
 
         for (var i = 0; i < json.sidebar[selected_sidebar].length; i++) {
@@ -697,37 +684,30 @@ function heatMap(id, legend_id, json, W = 750, H = 750, font_family = "verdana, 
           var sideBarData = unique(json.sidebar[selected_sidebar][i].value);
           sidebarColors[selected_sidebar].domain(sideBarData);
 
-          sidebarLegend.append("span")
-            .attr("class", "sidebar-sub-title")
+          var sidebarLegendList = sidebarLegend.append("div")
             .html(json.sidebar[selected_sidebar][i].name)
-
-          var legendSpan = sidebarLegend.append("ul")
+            .append("ul")
             .style("list-style-type", "none")
+            .style("padding", 0)
             .selectAll("ul")
             .data(sideBarData)
             .enter().append("li")
-            .attr("id", function(d) { return d;})
-            .attr("title", function(d) { return d;})
-            .append("span")
+            .style("word-wrap", "break-word")
+            .attr("id", function(d) {return d;})
+            .attr("title", function(d) {return d;})
 
-            legendSpan.append("svg")
+
+            sidebarLegendList.append("svg")
+              .style("margin-right", "1rem")
               .attr("width", "10px")
               .attr("height", "10px")
-              .style("margin-right", "5px")
               .append("rect")
               .attr("width", "10px")
               .attr("height", "10px")
               .attr("fill", function(d) { return sidebarColors[selected_sidebar](d); })
 
-           legendSpan.append("span")
-             .html(function(d) {
-                return d;
-             });
-
-           if (i < json.sidebar[selected_sidebar].length-1) {
-             sidebarLegend.append("div")
-               .style("border-top", "solid #e6e6e6 1px")
-           }
+            sidebarLegendList.append("span")
+             .html(function(d) {return d;});
      }
 
 

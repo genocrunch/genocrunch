@@ -63,16 +63,20 @@
   </div>
 </div>
 
-  <div id="infos" class="container-fluid topbar-padding align-items-center">
+  <div id="session-intro" class="container-fluid topbar-padding align-items-center">
 
-    <%# INFOS %>
+    <%# SESSION INTRO %>
     <%= render :partial => "infos" %>
 
   </div>
 
 </div>
 
-<script>
+<%= javascript_tag do %>
+  $('#move-down').on('click', function(){
+    document.getElementById('session-intro').scrollIntoView({ behavior: 'smooth' });
+  });
+
   var notice = '<%= notice %>',
       is_firefox = typeof InstallTrigger !== 'undefined';
 /*
@@ -85,7 +89,5 @@
     };
   });
 */
-  $('#move-down').on('click', function(){
-    document.getElementById('infos').scrollIntoView({ behavior: 'smooth' });
-  });
-</script>
+
+<% end %>

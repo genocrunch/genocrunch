@@ -19,3 +19,8 @@ function scrollTo(source, target) {
                              easing: 'swing'});
   });
 }
+
+function selectBtn(id1, id2) {
+  $(id2).addClass("selected");
+  $(id1).not(id2).removeClass("selected");
+}

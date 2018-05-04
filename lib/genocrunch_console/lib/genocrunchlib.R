@@ -2366,7 +2366,7 @@ BuildHeatMap <- function(table=NULL, map=NULL, stats='anova',
 
   names(data) <- names(table)
   row.names(data) <- row.names(table)
-  PrintMsg('"description":"Scale on standard deviation and center on mean abundance per row (variables)."',
+  PrintMsg('"description":"Scale on standard deviation and center on mean abundance per row."',
            verbose=verbose)
 
   # keep only columns of map that are used in the model
@@ -2474,7 +2474,7 @@ BuildHeatMap <- function(table=NULL, map=NULL, stats='anova',
       for (j in 1:nrow) {
         stat <- ComputeStats(response=as.vector(unlist(data[j, ])), map=map,
                              method=method, model=model[i], pairwise=FALSE,
-                             verbose=TRUE)$summary
+                             verbose=v)$summary
 
         stat.rownames <- row.names(stat)[row.names(stat) != 'Residuals']
         stat <- as.data.frame(stat[row.names(stat) != 'Residuals', ])

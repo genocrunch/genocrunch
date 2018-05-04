@@ -37,7 +37,10 @@
   <label class="control-label">By registering, you agree with the <%= link_to 'terms of service', terms_home_index_path, target: "_blank" %>.</label>
   </div>
 
-  <div class="form"><%= f.submit "Register", data: { confirm: File.read('public/app/TERMS_OF_SERVICE.txt') }, :class => "btn btn-success btn-lg full-width", tabindex: 5 %></div>
+  <div class="form-group">
+    <%= f.submit "Register", data: { confirm: File.read('public/app/TERMS_OF_SERVICE.txt') }, :class => "btn btn-success btn-lg full-width", tabindex: 5 %>
+  </div>
+
 <% end %>
 
 </div>

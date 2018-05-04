@@ -1,7 +1,7 @@
 function correlationNetwork(id, legend_id, json, W = 600, H = 600, font_family = "verdana, arial, helvetica, sans-serif", color_palette = d3.schemeCategory10) {
 
   // Size
-  var margin = {top: 10, right: 10, bottom: 40, left: 10},
+  var margin = {top: 10, right: 10, bottom: 10, left: 10},
       width = W - margin.left - margin.right,
       height = H - margin.top - margin.bottom;
 
@@ -146,16 +146,14 @@ function correlationNetwork(id, legend_id, json, W = 600, H = 600, font_family =
         }
 
 
-    //////////////// Draw links and nodes ////////////////
-    var legendContainer = d3.select("#"+legend_id).append("div")
-      .attr('class', 'columns-2')
+    //////////////// Draw the figure ////////////////
+    var legendContainer = d3.select("#"+legend_id)
+      .classed('columns-1', true)
 
-    var svgContainer = d3.select("#"+id)
-      .style("height", (height + margin.top + margin.bottom)+"px")
-
-    var svg = svgContainer.append("svg")
+    var svg = d3.select("#"+id).append("svg")
       .attr("id", "svg-figure")
-      .attr("class", "svg-figure network-well")
+      .attr("class", "svg-figure")
+      .style("border", "1px solid #ccc")
       .attr("width", (width + margin.left + margin.right)+"px")
       .attr("height",(height + margin.top + margin.bottom)+"px")
       .style("pointer-events", "all")
@@ -185,28 +183,39 @@ function correlationNetwork(id, legend_id, json, W = 600, H = 600, font_family =
       .selectAll("g");
 
     // Add legend
-    var legend = legendContainer.append("div")
+    var legend = legendContainer.append("ul")
       .attr("id", "svg-legend")
+      .style("list-style-type", "none")
+      .style("padding", 0)
       .style("font-family", font_family)
 
-    var colorLegend = legend.append("ul")
-      .style("list-style-type", "none")
-      .style("padding-top", "25px")
-      .selectAll("ul");
+    var colorLegend = legend.append("li")
+        .style("padding-bottom", "1rem")
+        .attr("title", "Color key")
 
-    legend.append("div")
-      .style("border-top", "solid #ccc 1px")
+    colorLegend.append("p").append("b")
+        .html("Color key")
 
-    var symbolLegend = legend.append("ul")
-      .style("list-style-type", "none")
-      .selectAll("ul");
+    colorLegendList = colorLegend.append("div")
+        .append("ul")
+        .style("list-style-type", "none")
+        .style("padding", 0)
+        .selectAll("ul")
 
-    legend.append("div")
-      .style("border-top", "solid #ccc 1px")
+    var symLegend = legend.append("li")
+        .style("border-top", "1px solid #ccc")
+        .style("padding-top", "1rem")
+        .style("padding-bottom", "1rem")
+        .attr("title", "Symbol key")
 
-    var linkLegend = legend.append("ul")
-      .style("list-style-type", "none")
-      .selectAll("ul");
+    symLegend.append("p").append("b")
+        .html("Symbol key")
+
+    symLegendList = symLegend.append("div")
+        .append("ul")
+        .style("list-style-type", "none")
+        .style("padding", 0)
+        .selectAll("ul")
 
 
     //////////////// NODES COLORS ////////////////
@@ -231,62 +240,65 @@ function correlationNetwork(id, legend_id, json, W = 600, H = 600, font_family =
         });
 
       // Update color legend
-      colorLegend = colorLegend.data([]);
-      colorLegend.exit().remove();
+      colorLegendList = colorLegendList.data([]);
+      colorLegendList.exit().remove();
 
-      colorLegend = colorLegend
+      colorLegendList = colorLegendList
         .data(color_domain)
         .enter().append("li")
+        .style("word-wrap", "break-word")
         .attr("id", function(d) { return d;})
-        .attr("class", "legend  legend-no-interaction")
-        .attr("selected", 0)
         .attr("title", function(d) { return d;})
-
-      colorLegendSpan = colorLegend.append("span")
+        .attr("selected", 0)
 
       var legend_svg_width = legend_svg_symsize*p_value_legend_data.length;
 
-      colorLegendSpanSvg = colorLegendSpan.append("svg")
+      colorLegendSvg = colorLegendList.append("svg")
+        .style("margin-top", function(d, i) {
+          if (i == 0)
+            return "1rem";
+          return 0;
+        })
         .attr("width", legend_svg_width+"px")
         .attr("height", legend_svg_symsize+"px")
-        .style("margin-right", "5px")
+        .style("margin-right", "0.5rem")
         .style("overflow", "visible")
 
       for (var i = 0; i < p_value_legend_data.length; i++) {
         // (V)(°,,,°)(V)
 
-        colorLegendSpanSvg.append("g")
+        colorLegendSvg.append("g")
           .attr("transform", "translate("+(i*legend_svg_width/p_value_legend_data.length)+", -2)")
           .append("text")
           .attr("transform", "rotate(-90)")
+          .attr("font-size", legend_svg_symsize+"px")
           .attr("y", legend_svg_symsize)
           .text(function(d, j){
             if (j == 0 && color_domain.length > 0)
              return p_value_legend_data[i][1];
           })
 
-        colorLegendSpanSvg.append("rect")
+        colorLegendSvg.append("rect")
           .attr("transform", "translate("+(i*legend_svg_width/p_value_legend_data.length)+", 0)")
           .attr("width", legend_svg_symsize)
           .attr("height", legend_svg_symsize)
-        .attr("stroke", "none")
-        .attr("fill", function (d, j){
-          if (p_value_legend_data[i][0] == "NA") {
-            return "lightgrey";
-          };
-          return colors(d);
-        })
-        .attr("fill-opacity", function (d, j){
-          if (p_value_legend_data[i][0] == "NA") {
-            return 1;
-          };
-          return opacity(p_value_legend_data[i][0]);
-        })
+          .attr("stroke", "none")
+          .attr("fill", function (d, j){
+            if (p_value_legend_data[i][0] == "NA") {
+              return "lightgrey";
+            };
+            return colors(d);
+          })
+          .attr("fill-opacity", function (d, j){
+            if (p_value_legend_data[i][0] == "NA") {
+              return 1;
+            };
+            return opacity(p_value_legend_data[i][0]);
+          })
 
       };
 
-
-      colorLegendSpan.append("span")
+      colorLegendList.append("span")
         .html(function(d) { return d;})
     };
 
@@ -344,32 +356,30 @@ function correlationNetwork(id, legend_id, json, W = 600, H = 600, font_family =
               }));
 
       // Update symbol legend
-      symbolLegend = symbolLegend.data([]);
-      symbolLegend.exit().remove();
+      symLegendList = symLegendList.data([]);
+      symLegendList.exit().remove();
 
-      symbolLegend = symbolLegend
+      symLegendList = symLegendList
         .data(symbols_domain)
         .enter().append("li")
+        .style("word-wrap", "break-word")
         .attr("id", function(d) { return d;})
-        .attr("class", "legend  legend-no-interaction")
-        .attr("selected", 0)
         .attr("title", function(d) { return d;})
-
-      symbolLegendSpan = symbolLegend.append("span")
+        .attr("selected", 0)
 
       var legend_svg_width = legend_svg_symsize*size_legend_data.length;
 
-      symbolLegendSpanSvg = symbolLegendSpan.append("svg")
+      symLegendSvg = symLegendList.append("svg")
         .attr("width", legend_svg_width+"px")
         .attr("height", legend_svg_symsize+"px")
-        .style("margin-right", "5px")
+        .style("margin-right", "0.5rem")
         .style("overflow", "visible")
 
       for (var i = 0; i < size_legend_data.length; i++) {
         // (V)(°,,,°)(V)
 
-        symbolLegendSpanSvg.append("path")
-          .attr("transform", "translate("+(i*legend_svg_width/size_legend_data.length)+", "+legend_svg_symsize/2+")")
+        symLegendSvg.append("path")
+          .attr("transform", "translate("+((2*legend_svg_symsize-size_legend_data[i])/2+i*legend_svg_width/size_legend_data.length)+", "+legend_svg_symsize/2+")")
           .attr("d", d3.symbol()
             .type(function (d){ return symbols(d);})
             .size(size_legend_data[i]*size_legend_data[i]))
@@ -379,7 +389,7 @@ function correlationNetwork(id, legend_id, json, W = 600, H = 600, font_family =
       };
 
 
-      symbolLegendSpan.append("span")
+      symLegendList.append("span")
         .html(function(d) { return d;})
 
     }

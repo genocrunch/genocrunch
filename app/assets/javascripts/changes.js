@@ -49,14 +49,11 @@ function foldChange(id, legend_id, json, W = 600, H = 600, font_family = "verdan
         axis_choice_y = axis_choice_x.slice();
         axis_choice_y.push('');
 
-    //////////////// Draw plot ////////////////
-    var legendContainer = d3.select("#"+legend_id).append("div")
-      .attr('class', 'columns-1')
+    //////////////// Draw the figure ////////////////
+    var legendContainer = d3.select("#"+legend_id)
+      .classed('columns-1', true)
 
-    var svgContainer = d3.select("#"+id)
-      .style("height", (height + margin.top + margin.bottom)+"px")
-
-    var svg = svgContainer.append("svg")
+    var svg = d3.select("#"+id).append("svg")
       .attr("id", "svg-figure")
       .attr("class", "svg-figure")
       .attr("width", (width + margin.left + margin.right)+"px")
@@ -81,49 +78,60 @@ function foldChange(id, legend_id, json, W = 600, H = 600, font_family = "verdan
       .attr("transform", "translate("+ -axis_margin +", "+ height/2 +")")
 
     // Add legend
-    var legend = legendContainer.append("div")
+    var legend = legendContainer.append("ul")
       .attr("id", "svg-legend")
+      .style("list-style-type", "none")
+      .style("padding", 0)
       .style("font-family", font_family)
 
-    legend.append("p")
-      .html("Color key")
+    var colorLegend = legend.append("li")
+        .style("padding-bottom", "1rem")
+        .attr("title", "Color key")
 
-    var colorLegend = legend.append("ul")
-      .style("list-style-type", "none")
-      .style("padding-top", "25px")
-      .selectAll("ul")
-      .data(["pos", "neg"])
-        .enter().append("li")
-        .attr("id", function(d) { return d;})
-        .attr("class", "legend  legend-no-interaction")
-        .attr("selected", 0)
-        .attr("title", function(d) { return d;})
+    colorLegend.append("p").append("b")
+        .html("Color key")
 
-      colorLegendSpan = colorLegend.append("span")
+    colorLegendList = colorLegend.append("div")
+        .append("ul")
+        .style("list-style-type", "none")
+        .style("padding", 0)
+        .selectAll("ul")
+        .data(["pos", "neg"])
+          .enter().append("li")
+          .style("word-wrap", "break-word")
+          .attr("id", function(d) { return d;})
+          .attr("title", function(d) { return d;})
+          .attr("selected", 0)
 
       var legend_svg_symsize = 15,
           legend_svg_width = legend_svg_symsize*signThres.length;
 
-      colorLegendSpanSvg = colorLegendSpan.append("svg")
+      colorLegendSvg = colorLegendList.append("svg")
+        .style("margin-top", function(d, i) {
+          if (i == 0)
+            return "1rem";
+          return 0;
+        })
         .attr("width", legend_svg_width+"px")
         .attr("height", legend_svg_symsize+"px")
-        .style("margin-right", "5px")
+        .style("margin-right", "0.5rem")
         .style("overflow", "visible")
 
       for (var i = 0; i < signThres.length; i++) {
         // (V)(°,,,°)(V)
 
-        colorLegendSpanSvg.append("g")
+        colorLegendSvg.append("g")
           .attr("transform", "translate("+(i*legend_svg_width/signThres.length)+", -2)")
           .append("text")
           .attr("transform", "rotate(-90)")
+          .attr("font-size", legend_svg_symsize+"px")
           .attr("y", legend_svg_symsize)
           .text(function(d, j){
             if (j == 0)
              return signThres[i]["text"];
           })
 
-        colorLegendSpanSvg.append("rect")
+        colorLegendSvg.append("rect")
           .attr("transform", "translate("+(i*legend_svg_width/signThres.length)+", 0)")
           .attr("width", legend_svg_symsize)
           .attr("height", legend_svg_symsize)
@@ -138,7 +146,7 @@ function foldChange(id, legend_id, json, W = 600, H = 600, font_family = "verdan
 
       };
  
-      colorLegendSpan.append("span")
+      colorLegendList.append("span")
         .attr("id", function(d) { return "color-legend-text-"+d;})
         .html(function(d) { return d;})
 

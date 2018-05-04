@@ -1,16 +1,22 @@
-<div class='row p-1'>
+<div class='row p-1 mb-2'>
 
   <%# PIPELINE %>
-  <div class='col-xl-6 col-lg-6 col-md-6 col-sm-12 image-container align-self-center'>
-    <%= image_tag('genocrunch_workflow.png', width:'100%', alt: 'Genocrunch workflow') %>
+  <div class='col-xl-6 col-lg-6 col-md-6 col-sm-12 align-justify'>
+
+    <p>
+      Genocrunch is a web-based data analysis platform dedicated to metagenomics and metataxonomics. It is tailored to process counts datasets derived from high-throughput nucleic acids sequencing of microbial communities <%= image_tag('genocrunch_pipeline-1.png', height:'14px') %>, such as gene counts or counts of operational taxonomic units (OTUs) <%= image_tag('genocrunch_pipeline-2.png', height:'14px') %>. In addition to such <b>primary dataset</b>, it also allows the integration of a <b>secondary dataset</b> (e.g. metabolites levels) <%= image_tag('genocrunch_pipeline-3.png', height:'14px') %>.
+    </p>
+    <p>
+      Genocrunch provides tools covering data <b>pre-processing</b> and <b>transformation</b>, <b>diversity</b> analysis, <b>multivariate statistics</b>, <b>dimensionality reduction</b>, <b>differential analysis</b>, <b>clustering</b> as well as <b>similarity network</b> analysis and <b>associative analysis</b>.
+The results of clustering are automatically inferred as additional models into other analyses <%= image_tag('genocrunch_pipeline-4.png', height:'14px') %>.
+    </p>
+    <p>
+      <b>Interactive visualization</b> is offered for all figures.
+    </p>
   </div>
 
-  <%# TUTORIAL VIDEO %>
-  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 align-center">
-    <h2>Tutorial <small>(coming soon)</small></h2>
-    <div class='video-wrapper'>
-      <iframe width="560" height="315" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-    </div>
+  <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 p-3">
+    <%= image_tag('genocrunch_pipeline.png', width:'100%', alt: 'Genocrunch pipeline') %>
   </div>
 
 </div>

@@ -2,18 +2,41 @@
   width:100%;
   margin-top:5px;
   margin-bottom:5px;
+  border-color:#ccc;
 }
 
-.menu.selected {
-  margin-left: 3px;
+.menu.selected>.btn:before,
+.menu.selected>.btn:after {
+    position:absolute;
+    content:"";
+    width:0;
+    height:0;
+    top:0.5rem;
+}
+.menu.selected>.btn:before {
+    right:-5px;
+    border-bottom:5px solid transparent;
+    border-left:5px solid #ccc;
+    border-top:5px solid transparent;
+}
+.menu.selected>.btn:after {
+    right:-4px;
+    z-index:1;
+    border-bottom:5px solid transparent;
+    border-left:5px solid #e6e6e6;
+    border-top:5px solid transparent;
 }
 
 .menu.selected a {
+  position:relative;
   background-color:#e6e6e6;
+  color:inherit;
+  border-color:inherit;
 }
 
 .menu a {
   width:100%;
+  border-color:inherit;
 }
 
 #job_header_right {

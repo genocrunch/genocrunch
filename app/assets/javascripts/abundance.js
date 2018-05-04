@@ -1,7 +1,7 @@
 function barchart(id, legend_id, json, W = 600, H = 600, font_family = "verdana, arial, helvetica, sans-serif", color_palette = d3.schemeCategory20c) {
 
   // Size
-  var margin = {top: 20, right: 20, bottom:150, left: 50},
+  var margin = {top: 20, right: 20, bottom:100, left: 50},
       width = W - margin.left - margin.right,
       height = H - margin.top - margin.bottom,
       left_label_space = 30,
@@ -62,14 +62,11 @@ function barchart(id, legend_id, json, W = 600, H = 600, font_family = "verdana,
         .order(d3.stackOrderNone)
         .offset(d3.stackOffsetNone);
 
-    //////////////// Draw figure ////////////////
-    var legendContainer = d3.select("#"+legend_id).append("div")
-      .attr('class', 'columns-1')
+    //////////////// Draw the figure ////////////////
+    var legendContainer = d3.select("#"+legend_id)
+      .classed('columns-1', true)
 
-    var svgContainer = d3.select("#"+id)
-      .style("height", (height + margin.top + margin.bottom)+"px")
-
-    var svg = svgContainer.append("svg")
+    var svg = d3.select("#"+id).append("svg")
       .attr("id", "svg-figure")
       .attr("class", "svg-figure")
       .attr("width", (width + margin.left + margin.right)+"px")
@@ -111,9 +108,22 @@ function barchart(id, legend_id, json, W = 600, H = 600, font_family = "verdana,
     // Add legend
     var legend = legendContainer.append("ul")
       .attr("id", "svg-legend")
-      .style("font-family", font_family)
       .style("list-style-type", "none")
-      .selectAll("ul");
+      .style("padding", 0)
+      .style("font-family", font_family)
+
+    var colorLegend = legend.append("li")
+        .style("padding-bottom", "1rem")
+        .attr("title", "Color key")
+
+    colorLegend.append("p").append("b")
+        .html("Color key")
+
+    colorLegendList = colorLegend.append("div")
+        .append("ul")
+        .style("list-style-type", "none")
+        .style("padding", 0)
+        .selectAll("ul")
 
     var filtered_json = [],
         names = [],
@@ -199,29 +209,28 @@ function barchart(id, legend_id, json, W = 600, H = 600, font_family = "verdana,
 
       // Update legend
 
-      legend = legend.data([]);
-      legend.exit().remove();
+      colorLegendList = colorLegendList.data([]);
+      colorLegendList.exit().remove();
 
-      legend = legend
+      colorLegendList = colorLegendList
         .data(keys)
         .enter().append("li")
+        .style("word-wrap", "break-word")
         .attr("id", function(d) { return d;})
-        .attr("class", "legend")
-        .attr("selected", 0)
         .attr("title", function(d) { return d;})
+        .attr("selected", 0)
+        .classed("legend", true)
 
-      legendSpan = legend.append("span")
-
-      legendSpan.append("svg")
+      colorLegendList.append("svg")
+        .style("margin-right", "1rem")
         .attr("width", "10px")
         .attr("height", "10px")
-        .style("margin-right", "5px")
         .append("rect")
         .attr("width", "10px")
         .attr("height", "10px")
         .attr("fill", function(d) { return colors(d); })
 
-      legendSpan.append("span")
+      colorLegendList.append("span")
         .html(function(d) {
           if (d == other_key)
             return "Others (below "+ d3.select("#thresRange").property("value") +"%)";
@@ -231,6 +240,7 @@ function barchart(id, legend_id, json, W = 600, H = 600, font_family = "verdana,
           };
           return name[0];
         });
+
 
       highlightBars("legend");
       //showLegendLabels();

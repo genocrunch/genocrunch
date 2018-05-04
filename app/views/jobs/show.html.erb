@@ -64,8 +64,9 @@
       <span title='Analysis name: <%= @job.name %>'>
         <%= @job.name %>
       </span>
-      
-      <%= link_to 'Edit', edit_job_path(:key => @job.key), :class => 'btn btn-primary float-right' %>
+      <div id="edit-btn" class="btn btn-primary float-right custom-btn-container">
+        <%= link_to 'Edit', edit_job_path(:key => @job.key), :class => 'btn' %>
+      </div>
             
       <%= link_to serve_job_path(@job.key, :filename => @job.key + '.tar.gz'), :id => 'archive-btn', :title => 'Download archive', :class => 'btn btn-secondary float-right mr-1 hidden' do %>
         <i class="fa fa-file-archive-o" aria-hidden="true"></i>
@@ -86,16 +87,6 @@
  </div>
 
 
-<% @h_tips['show'].each_with_index do |tip, index| %>
-  <div id='tip_window<%= index %>' class='hidden tip_window topbar-margin'>
-    <i class="fa fa-info-circle" aria-hidden="true"></i>
-    <div id='tip_window<%= index %>_text'></div>
-    <div class='tip_window_close' onclick="$('#tip_window<%= index %>_text').html('');$('#tip_window<%= index %>').addClass('hidden'); $('#tip_window<%= index %>').css({display: 'none'});">
-      <i class="fa fa-check" aria-hidden="true"></i> Got it!
-    </div>
-  </div>
-<% end %>
-
 </div>
 </div>
 
@@ -111,14 +102,47 @@
   var window_width = $(window).width();
 
   <% @h_tips['show'].each_with_index do |tip, index| %>
-    <% if !current_user and !session["tip#{tip['id']}".to_sym] %>
-      $("#tip_window<%= index %>").removeClass('hidden');
-      $("#tip_window<%= index %>").css({<%= raw tip['css_string'] %>}).stop().show(100);
-      $('#tip_window<%= index %>_text').html("<%= raw tip['html'] %>")
+    <% if !current_user and !session["tip#{tip['id']}".to_sym] and tip['target'] %>
+
+      var target = $("#<%= tip['target'] %>"),
+          offset = target.offset(),
+          tip = $('<div></div>', {
+            id: "tip_window<%= index %>",
+            class: "tip-window"
+          }),
+          tip_container = $("<div></div>", {
+            class: "tip-window-container"
+          }).append(tip),
+          tip_text = $("<p></p>").html("<%= raw tip['html'] %>"),
+          tip_icon = $('<i></i>', {
+            class: "fa fa-info-circle"
+          }),
+          tip_close = $('<div></div>', {
+            class: "tip-window-close"
+          });
+      tip_close.html('<i class="fa fa-check" aria-hidden="true"></i> Got it!')
+      tip_close.click(function() {
+        $("#tip_window<%= index %> p").html('');
+        $("#tip_window<%= index %>").css({display:'none'});
+      })
+
+
+      tip.css({
+        left: (window_width-offset.left < window_width/2) ? -260 : 0,
+      })
+      tip.addClass((window_width-offset.left < window_width/2) ? "right" : "left");
+
+      tip.append(tip_icon);
+      tip.append(tip_text);
+      tip.append(tip_close);
+      target.append(tip_container);
+
       <% session["tip#{tip['id']}".to_sym] = true %>
     <% end %>
   <% end %>
 
+  var selected_view = $("#selected_view").val();
+  $("#menu-"+selected_view).addClass('selected');
 });
 
 

@@ -33,14 +33,11 @@ function pcoa(id, legend_id, json, W = 600, H = 600, font_family = "verdana, ari
       };
     };
 
-    //////////////// Draw plot ////////////////
-    var legendContainer = d3.select("#"+legend_id).append("div")
-      .attr('class', 'columns-2')
+    //////////////// Draw the figure ////////////////
+    var legendContainer = d3.select("#"+legend_id)
+      .classed('columns-1', true)
 
-    var svgContainer = d3.select("#"+id)
-      .style("height", (height + margin.top + margin.bottom)+"px")
-
-    var svg = svgContainer.append("svg")
+    var svg = d3.select("#"+id).append("svg")
       .attr("id", "svg-figure")
       .attr("class", "svg-figure")
       .attr("width", (width + margin.left + margin.right)+"px")
@@ -71,22 +68,39 @@ function pcoa(id, legend_id, json, W = 600, H = 600, font_family = "verdana, ari
       .attr("class", "axis-label");
 
     // Add legend
-    var legend = legendContainer.append("div")
+    var legend = legendContainer.append("ul")
       .attr("id", "svg-legend")
+      .style("list-style-type", "none")
+      .style("padding", 0)
       .style("font-family", font_family)
 
-    legend.append('p')
-      .html('Color key')
-    var colorLegend = legend.append("ul")
-      .style("list-style-type", "none")
-      .selectAll("ul");
+    var colorLegend = legend.append("li")
+        .style("padding-bottom", "1rem")
+        .attr("title", "Color key")
 
-    legend.append('p')
-      .html('Symbol key')
-    var symLegend = legend.append("ul")
-      .style("list-style-type", "none")
-      .selectAll("ul");
+    colorLegend.append("p").append("b")
+        .html("Color key")
 
+    colorLegendList = colorLegend.append("div")
+        .append("ul")
+        .style("list-style-type", "none")
+        .style("padding", 0)
+        .selectAll("ul")
+
+    var symLegend = legend.append("li")
+        .style("border-top", "1px solid #ccc")
+        .style("padding-top", "1rem")
+        .style("padding-bottom", "1rem")
+        .attr("title", "Symbol key")
+
+    symLegend.append("p").append("b")
+        .html("Symbol key")
+
+    symLegendList = symLegend.append("div")
+        .append("ul")
+        .style("list-style-type", "none")
+        .style("padding", 0)
+        .selectAll("ul")
 
     //////////////// Restart function ////////////////
     var restart = function() {
@@ -252,58 +266,48 @@ function pcoa(id, legend_id, json, W = 600, H = 600, font_family = "verdana, ari
 
 
       // Update legend
-      colorLegend = colorLegend.data([]);
-      colorLegend.exit().remove();
 
-      colorLegend = colorLegend
+      colorLegendList = colorLegendList.data([]);
+      colorLegendList.exit().remove();
+
+      colorLegendList = colorLegendList
         .data(color_factors.reverse())
         .enter().append("li")
+        .style("word-wrap", "break-word")
         .attr("id", function(d) { return d;})
-        .attr("class", "legend  legend-no-interaction")
-        .attr("selected", 0)
         .attr("title", function(d) { return d;})
+        .attr("selected", 0)
 
-      colorLegendSpan = colorLegend.append("span")
-
-      colorLegendSpan.append("svg")
+      colorLegendList.append("svg")
+        .style("margin-right", "1rem")
         .attr("width", "10px")
         .attr("height", "10px")
-        .style("margin-right", "5px")
-        .style("overflow", "visible")
-        .append("path")
-        .attr("transform", "translate(5, 5)")
-        .attr("d", d3.symbol()
-          .type(function (d, i){
-            return d3.symbolSquare;
-          })
-          .size(75))
-        .attr("stroke", "none")
-        .attr("fill", function (d, i){
-          return colors(d);
-        })
-        .attr("fill-opacity", 1)
+        .append("rect")
+        .attr("width", "10px")
+        .attr("height", "10px")
+        .attr("fill", function(d) { return colors(d); })
 
-      colorLegendSpan.append("span")
-        .html(function(d) { return d;})
+      colorLegendList.append("span")
+        .html(function(d) {return d;});
 
-      symLegend = symLegend.data([]);
-      symLegend.exit().remove();
 
-      symLegend = symLegend
+
+      symLegendList = symLegendList.data([]);
+      symLegendList.exit().remove();
+
+      symLegendList = symLegendList
         .data(symbol_factors.reverse())
         .enter().append("li")
+        .style("word-wrap", "break-word")
         .attr("id", function(d) { return d;})
-        .attr("class", "legend  legend-no-interaction")
-        .attr("selected", 0)
         .attr("title", function(d) { return d;})
+        .attr("selected", 0)
 
 
-      symLegendSpan = symLegend.append("span")
-
-      symLegendSpan.append("svg")
+      symLegendList.append("svg")
+        .style("margin-right", "1rem")
         .attr("width", "10px")
         .attr("height", "10px")
-        .style("margin-right", "5px")
         .style("overflow", "visible")
         .append("path")
         .attr("transform", "translate(5, 5)")
@@ -322,9 +326,8 @@ function pcoa(id, legend_id, json, W = 600, H = 600, font_family = "verdana, ari
           return 0;
         })
 
-      symLegendSpan.append("span")
+      symLegendList.append("span")
         .html(function(d) { return d;})
-
 
     };
 

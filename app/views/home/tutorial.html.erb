@@ -6,10 +6,14 @@
     <br>
     <small>See the <b><a href="<%= doc_home_index_path %>" target='_self'>Doc</a></b> in the <b>Infos</b> menu for help.</small>
     </h2>
-    <div class='video-wrapper'>
+    <div class='video-wrapper hidden'>
       <iframe width="560" height="315" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
     </div>
   </div>
 
 </div>
 </div>
+
+<%= javascript_tag do %>
+  selectBtn("#home-pages-list.navbar-nav>nav-item", "#home-pages-list.navbar-nav>#tutorial")
+<% end %>

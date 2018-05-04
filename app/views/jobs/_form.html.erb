@@ -1,16 +1,4 @@
 
-<% @h_tips['form'].each_with_index do |tip, index| %>
-
-  <div id='tip_window<%= index %>' class='hidden tip_window topbar-margin'>
-    <i class="fa fa-info-circle" aria-hidden="true"></i>
-    <div id='tip_window<%= index %>_text'></div>
-    <div class='tip_window_close' onclick="$('#tip_window<%= index %>_text').html('');$('#tip_window<%= index %>').addClass('hidden'); $('#tip_window<%= index %>').css({display: 'none'});">
-      <i class="fa fa-check" aria-hidden="true"></i> Got it!
-    </div>
-</div>
-
-<% end %>
-
 <%= form_for(@job, :url => ((action_name == 'edit') ? job_path(@job.key) : jobs_path), :html => {:multipart => true}) do |f| %>
 
 

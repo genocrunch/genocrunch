@@ -98,19 +98,18 @@ function diversity(id, legend_id, json, RfunctionsDiversity, W = 600, H = 600, f
         metric_select_options[d["value"]] = d["label"];
     });
 
-    //////////////// Draw graph ////////////////
-    var legendContainer = d3.select("#"+legend_id).append("div")
+    //////////////// Draw the figure ////////////////
+    var legendContainer = d3.select("#"+legend_id)
+      .classed('columns-1', true)
 
-    var svgContainer = d3.select("#"+id)
-      .style("height", (height + margin.top + margin.bottom)+"px")
-
-    var svg = svgContainer.append("svg")
+    var svg = d3.select("#"+id).append("svg")
       .attr("id", "svg-figure")
       .attr("class", "svg-figure")
       .attr("width", (width + margin.left + margin.right)+"px")
       .attr("height",(height + margin.top + margin.bottom)+"px")
       .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
 
     // Draw lines
     var graph = svg.selectAll();
@@ -141,9 +140,22 @@ function diversity(id, legend_id, json, RfunctionsDiversity, W = 600, H = 600, f
     // Add legend
     var legend = legendContainer.append("ul")
       .attr("id", "svg-legend")
-      .style("font-family", font_family)
       .style("list-style-type", "none")
-      .selectAll("ul");
+      .style("padding", 0)
+      .style("font-family", font_family)
+
+    var colorLegend = legend.append("li")
+        .style("padding-bottom", "1rem")
+        .attr("title", "Color key")
+
+    colorLegend.append("p").append("b")
+        .html("Color key")
+
+    colorLegendList = colorLegend.append("div")
+        .append("ul")
+        .style("list-style-type", "none")
+        .style("padding", 0)
+        .selectAll("ul")
 
     //////////////// Restart function ////////////////
     var restart = function() {
@@ -324,30 +336,28 @@ function diversity(id, legend_id, json, RfunctionsDiversity, W = 600, H = 600, f
 
       // Update legend
 
-      legend = legend.data([]);
-      legend.exit().remove();
+      colorLegendList = colorLegendList.data([]);
+      colorLegendList.exit().remove();
 
-      legend = legend
-        .data(color_factors)
+      colorLegendList = colorLegendList
+        .data(color_factors.reverse())
         .enter().append("li")
+        .style("word-wrap", "break-word")
         .attr("id", function(d) { return d;})
-        .attr("class", "legend legend-no-interaction")
-        .attr("selected", 0)
         .attr("title", function(d) { return d;})
+        .attr("selected", 0)
 
-      legendSpan = legend.append("span")
-
-      legendSpan.append("svg")
+      colorLegendList.append("svg")
+        .style("margin-right", "1rem")
         .attr("width", "10px")
         .attr("height", "10px")
-        .style("margin-right", "5px")
         .append("rect")
         .attr("width", "10px")
         .attr("height", "10px")
         .attr("fill", function(d) { return colors(d); })
 
-      legendSpan.append("span")
-        .html(function(d) { return d;})
+      colorLegendList.append("span")
+        .html(function(d) {return d;});
 
     };
 

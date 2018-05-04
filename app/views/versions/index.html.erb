@@ -45,6 +45,8 @@
 
 <%= javascript_tag do  %>
 
+  selectBtn("#home-pages-list.navbar-nav>nav-item", "#home-pages-list.navbar-nav>#infos")
+
   <% @versions.each do |v| %>
 
     table = $('#tools_<%= v.id %>').dataTable({  
