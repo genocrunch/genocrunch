@@ -474,14 +474,18 @@ class DataSet(object):
             self.appendStderr(sub.stderr.read())
 
           elif fun == 'binning':
+            vstyle = 2 if len(self.bin_levels) > 1 else 1
             for level in self.bin_levels:
               output_fp = fp+'_lvl'+level+'.txt'
               output_fps.append(output_fp)
-              args.extend(['--level', level, '-o', output_fp])
+              args.extend(['--level', level,
+                           '--vstyle', str(vstyle),
+                           '-o', output_fp])
               sub = Popen(args, stdout=PIPE, stderr=PIPE)
               sub.wait()
               self.appendStdout(sub.stdout.read())
               self.appendStderr(sub.stderr.read())
+              vstyle = 3
         if os.path.exists(tmp.name):
           with open(tmp.name, 'r') as t:
             log['messages'].extend(stdoutLog2json(t))
@@ -538,14 +542,18 @@ class DataSet(object):
                   'transformation':'trans',
                   'batch_effect_suppression':'bes'}
         output_fps = []
+        vstyle = 1
         for fp in self.data_fp:
           output_fp = ('.').join(fp.split('.')[:-1])+'_'+suffix[fun]+'.txt'
           output_fps.append(output_fp)
-          args.extend(['-t', fp, '-o', output_fp])
+          args.extend(['-t', fp,
+                       '--vstyle', str(vstyle),
+                       '-o', output_fp])
           sub = Popen(args, stdout=PIPE, stderr=PIPE)
           sub.wait()
           self.appendStdout(sub.stdout.read())
           self.appendStderr(sub.stderr.read())
+          vstyle = 2
         if os.path.exists(tmp.name):
           with open(tmp.name, 'r') as t:
             log['messages'].extend(stdoutLog2json(t))
@@ -872,7 +880,7 @@ class Analysis(object):
             return(0)
 
         elif method == 'heatmap' and self.parameters.params['secondary_dataset'] is not None:
-          args.extend(['--metadata',
+          args.extend(['--secondary',
                        self.secondary_dataset.data_fp[0]])
 
         elif method == 'correlation_network':
@@ -883,7 +891,7 @@ class Analysis(object):
             args.extend(['--fun',
                          correlation_network_fun])
           if self.parameters.params['secondary_dataset'] is not None:
-            args.extend(['--metadata',
+            args.extend(['--secondary',
                          self.secondary_dataset.data_fp[0]])
 
         elif method == 'similarity_network':
@@ -897,7 +905,7 @@ class Analysis(object):
             args.extend(['--clust',
                          self.parameters.params['similarity_network_clust']])
           if self.parameters.params['secondary_dataset'] is not None:
-            args.extend(['--metadata',
+            args.extend(['--secondary',
                          self.secondary_dataset.data_fp[0]])
 
         if len(self.primary_dataset.data_fp) > 1:

@@ -31,6 +31,10 @@ option_list <- list(make_option(c('-t', '--table'),
                                 type='logical',
                                 default=TRUE,
                                 help='Print a description?'),
+                    make_option('--vstyle',
+                                type='numeric',
+                                default=1,
+                                help='Verbose style'),
                     make_option('--map',
                                 type='character',
                                 default=NULL,
@@ -104,6 +108,11 @@ if (! is.null(opt$map)) {
   map <- read.table(file=opt$map, sep='\t', header=1, row.names=1)
 }
 
+verbose <- opt$verbose
+if (as.numeric(opt$vstyle) > 1) {
+  verbose <- FALSE
+}
+
 if (opt$method == 'none') {
 
   table.modified <- table
@@ -128,41 +137,43 @@ if (opt$method == 'none') {
 
 } else if (opt$method == 'VST') {
 
-  table.modified <- ApplyVST(table=table, map=map, verbose=opt$verbose)
+  table.modified <- ApplyVST(table=table, map=map, verbose=verbose)
 
 } else if (opt$method == 'log2cpm') {
 
-  table.modified <- ApplyLog2Cpm(table=table, verbose=opt$verbose)
+  table.modified <- ApplyLog2Cpm(table=table, verbose=verbose)
 
 } else if (opt$method == 'log2') {
 
-  table.modified <- ApplyLog2(table=table, verbose=opt$verbose)
+  table.modified <- ApplyLog2(table=table, verbose=verbose)
 
 } else if (opt$method == 'percent') {
 
-  table.modified <- ApplyCount2Percent(table=table, verbose=opt$verbose)
+  table.modified <- ApplyCount2Percent(table=table, verbose=verbose)
 
 } else if (opt$method == 'batch_effect_suppression') {
 
   table.modified <- SuppressBatchEffect(table=table, map=map, effect=opt$effect,
-                                        fun=opt$fun, verbose=opt$verbose)
+                                        fun=opt$fun, verbose=verbose)
 
 } else if (opt$method == 'rarefaction') {
 
-  table.modified <- RarefyTable(table=table, sample=opt$sample, nsampling=opt$nsampling, verbose=opt$verbose)
+  table.modified <- RarefyTable(table=table, sample=opt$sample, nsampling=opt$nsampling, verbose=verbose)
 
 } else if (opt$method == 'binning') {
 
-  table.modified <- BinTableByCategory(table, opt$column, opt$fun, opt$level, opt$verbose)
+  table.modified <- BinTableByCategory(table=table, category_col=opt$column,
+                                       fun=opt$fun, level=opt$level, verbose=opt$verbose,
+                                       vstyle=as.numeric(opt$vstyle))
 
 } else if (opt$method == 'transpose') {
 
-  table.modified <- Transpose(table=table, verbose=opt$verbose)
+  table.modified <- Transpose(table=table, verbose=verbose)
 
 } else if (opt$method == 'div') {
 
   vect <- read.table(file=opt$vect, sep='\t', header=1, row.names=1)
-  table.modified <- DivTable(table, vect, verbose=opt$verbose)
+  table.modified <- DivTable(table, vect, verbose=verbose)
 
 }
 

@@ -1,4 +1,4 @@
-<div class='card table-container'>
+<div class='card mt-1 p-2'>
 <h3>Analyses</h3>
 <input type="text" id="filter-input" class='form-control filter-table' onkeyup="filterTable()" placeholder="Search">
 
@@ -82,14 +82,14 @@
 </div>
 
 
-<div class='card container-fluid mt-1'>
-  <div class='row'>
-      <div title="Status summary" class="col-xl-2 col-lg-2 col-md-12 col-sm-12"><h3>Status summary</h3></div>
-      <div title="completed" class="col-xl-2 col-lg-2 col-md-12 col-sm-12"><%= @jobs.select{ |i| i.status == "completed" }.length %> completed (<i class="fa fa-check icon-success" aria-hidden="true"></i>)</div>
-      <div title="pending" class="col-xl-2 col-lg-2 col-md-12 col-sm-12"><%= @jobs.select{ |i| i.status == "pending" }.length %> pending (<i class="fa fa-ellipsis-h icon-inactive" aria-hidden="true"></i>)</div>
-      <div title="running" class="col-xl-2 col-lg-2 col-md-12 col-sm-12"><%= @jobs.select{ |i| i.status == "running" }.length %> running (<i class="fa fa-circle-o-notch" aria-hidden="true"></i>)</div>
-      <div title="failed" class="col-xl-2 col-lg-2 col-md-12 col-sm-12"><%= @jobs.select{ |i| i.status == "failed" }.length %> failed (<i class="fa fa-exclamation-triangle icon-warning" aria-hidden="true"></i>)</div>
-      <div title="total" class="col-xl-2 col-lg-2 col-md-12 col-sm-12">Total: <%= @jobs.length %></div>
+<div class='card container-fluid mt-1 mb-1 pb-0 pt-2 pl-2 pr-2'>
+  <div class='row p-0 m-0'>
+      <div title="Status summary" class="p-0 col-xl-2 col-lg-2 col-md-12 col-sm-12"><h3>Status summary</h3></div>
+      <div title="completed" class="p-0 col-xl-2 col-lg-2 col-md-12 col-sm-12"><%= @jobs.select{ |i| i.status == "completed" }.length %> completed (<i class="fa fa-check icon-success" aria-hidden="true"></i>)</div>
+      <div title="pending" class="p-0 col-xl-2 col-lg-2 col-md-12 col-sm-12"><%= @jobs.select{ |i| i.status == "pending" }.length %> pending (<i class="fa fa-ellipsis-h icon-inactive" aria-hidden="true"></i>)</div>
+      <div title="running" class="p-0 col-xl-2 col-lg-2 col-md-12 col-sm-12"><%= @jobs.select{ |i| i.status == "running" }.length %> running (<i class="fa fa-circle-o-notch" aria-hidden="true"></i>)</div>
+      <div title="failed" class="p-0 col-xl-2 col-lg-2 col-md-12 col-sm-12"><%= @jobs.select{ |i| i.status == "failed" }.length %> failed (<i class="fa fa-exclamation-triangle icon-warning" aria-hidden="true"></i>)</div>
+      <div title="total" class="p-0 col-xl-2 col-lg-2 col-md-12 col-sm-12">Total: <%= @jobs.length %></div>
   </div>
 </div>
 

@@ -26,6 +26,36 @@
     left:15px;
 }
 
+.range-displayed-value:before {
+  position:relative;
+  display:table;
+  margin-left:auto;
+  margin-right:auto;
+  content:'';
+  width:0;
+  height:0;
+  margin-bottom:-0.25rem;
+  top:0;
+  border-top:.25rem solid #ccc;
+  border-left:.25rem solid transparent;
+  border-right:.25rem solid transparent;
+}
+
+.range-displayed-value:after {
+  position:relative;
+  display:table;
+  margin-left:auto;
+  margin-right:auto;
+  content:'';
+  width:0;
+  height:0;
+  margin-top:-0.25rem;
+  top:0;
+  border-bottom:.25rem solid #ccc;
+  border-left:.25rem solid transparent;
+  border-right:.25rem solid transparent;
+}
+
 #fig-description-btn:before {
     display:none;
     border-bottom:.5rem solid #333;

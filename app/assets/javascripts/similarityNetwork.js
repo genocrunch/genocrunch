@@ -1,12 +1,12 @@
 function similarityNetwork(id, legend_id, json0, W = 600, H = 600, font_family = "verdana, arial, helvetica, sans-serif", color_palette = d3.schemeCategory10) {
 
   // Size
-  var margin = {top: 10, right: 10, bottom: 40, left: 10},
+  var margin = {top: 10, right: 10, bottom: 10, left: 10},
       width = W - margin.left - margin.right,
       height = H - margin.top - margin.bottom;
 
   // Network selector
-  var networkSelector = ["Data", "Metadata", "Fusion"];
+  var networkSelector = ["Primary dataset", "Secondary dataset", "Fusion (SNF)"];
 
   // Colors, symbols and scaling
   var colors = d3.scaleOrdinal(color_palette),
@@ -64,6 +64,11 @@ function similarityNetwork(id, legend_id, json0, W = 600, H = 600, font_family =
   var buttons = d3.select("#d3-buttons")
   buttons.html("");
 
+    buttons.append("p")
+      .attr("title", "Node settings")
+      .append("b")
+      .html("Node settings")
+
   //$.getJSON(data, function(json0) {
 
     // Set variables depending only on the primary data
@@ -119,16 +124,14 @@ function similarityNetwork(id, legend_id, json0, W = 600, H = 600, font_family =
             d.fy = null;
         }
 
-    //////////////// Draw links and nodes ////////////////
-    var legendContainer = d3.select("#"+legend_id).append("div")
-      .attr('class', 'columns-2')
+    //////////////// Draw the figure ////////////////
+    var legendContainer = d3.select("#"+legend_id)
+      .classed('columns-1', true)
 
-    var svgContainer = d3.select("#"+id)
-      .style("height", (height + margin.top + margin.bottom)+"px")
-
-    var svg = svgContainer.append("svg")
+    var svg = d3.select("#"+id).append("svg")
       .attr("id", "svg-figure")
-      .attr("class", "svg-figure network-well")
+      .attr("class", "svg-figure")
+      .style("border", "1px solid #ccc")
       .attr("width", (width + margin.left + margin.right)+"px")
       .attr("height",(height + margin.top + margin.bottom)+"px")
       .style("pointer-events", "all")
@@ -157,27 +160,64 @@ function similarityNetwork(id, legend_id, json0, W = 600, H = 600, font_family =
       .selectAll("g");
 
     // Add legend
-    var legend = legendContainer.append("div")
+    var legend = legendContainer.append("ul")
       .attr("id", "svg-legend")
+      .style("list-style-type", "none")
+      .style("padding", 0)
       .style("font-family", font_family)
 
-    var colorLegend = legend.append("ul")
-      .style("list-style-type", "none")
-      .selectAll("ul");
+    var colorLegend = legend.append("li")
+        .style("padding-bottom", "1rem")
+        .attr("title", "Node color key")
 
-    legend.append("div")
-      .style("border-top", "solid #ccc 1px")
+    colorLegend.append("p").append("b")
+        .html("Node color key")
 
-    var symbolLegend = legend.append("ul")
-      .style("list-style-type", "none")
-      .selectAll("ul");
+    var colorLegendList = colorLegend.append("div")
 
-    legend.append("div")
-      .style("border-top", "solid #ccc 1px")
+    colorLegendList.append("span").attr("id", "colorlegend-subtitle")
 
-    var linkLegend = legend.append("ul")
-      .style("list-style-type", "none")
-      .selectAll("ul");
+    colorLegendList = colorLegendList.append("ul")
+        .style("list-style-type", "none")
+        .style("padding", 0)
+        .selectAll("ul")
+
+    var symLegend = legend.append("li")
+        .style("border-top", "1px solid #ccc")
+        .style("padding-top", "1rem")
+        .style("padding-bottom", "1rem")
+        .attr("title", "Node symbol key")
+
+    symLegend.append("p").append("b")
+        .html("Node symbol key")
+
+    var symLegendList = symLegend.append("div")
+
+    symLegendList.append("span").attr("id", "symlegend-subtitle")
+
+    symLegendList = symLegendList.append("ul")
+        .style("list-style-type", "none")
+        .style("padding", 0)
+        .selectAll("ul")
+
+    var linkLegend = legend.append("li")
+        .style("border-top", "1px solid #ccc")
+        .style("padding-top", "1rem")
+        .style("padding-bottom", "1rem")
+        .attr("title", "Links")
+
+    linkLegend.append("p").append("b")
+        .html("Links")
+
+    var linkLegendList = linkLegend.append("div")
+
+    linkLegendList.append("span").attr("id", "linklegend-subtitle")
+
+    linkLegendList = linkLegendList.append("ul")
+        .style("list-style-type", "none")
+        .style("padding", 0)
+        .selectAll("ul")
+
 
     //////////////// Nodes color settings ////////////////
     var colorFactors = Object.keys(json.nodes[0]);
@@ -186,7 +226,7 @@ function similarityNetwork(id, legend_id, json0, W = 600, H = 600, font_family =
     colorFactors.push(null);
 
     var setSymbolColor = function() {
-      var color_factor = d3.select("#colorSelect").property("value"),
+      var color_factor = $("#colorSelect").val(),
           color_labels = [];
 
       if (color_factor != "") {
@@ -210,42 +250,36 @@ function similarityNetwork(id, legend_id, json0, W = 600, H = 600, font_family =
 
       // Update legend
 
-      colorLegend = colorLegend.data([]);
-      colorLegend.exit().remove();
+      colorLegendList = colorLegendList.data([]);
+      colorLegendList.exit().remove();
 
-      colorLegend = colorLegend
+      colorLegendList = colorLegendList
         .data(color_labels)
         .enter().append("li")
+        .style("word-wrap", "break-word")
         .attr("id", function(d) { return d;})
-        .attr("class", "legend legend-no-interaction")
-        .attr("selected", 0)
         .attr("title", function(d) { return d;})
+        .attr("selected", 0)
 
-      colorLegendSpan = colorLegend.append("span")
-
-      colorLegendSpan.append("svg")
+      colorLegendList.append("svg")
+        .style("margin-right", "1rem")
         .attr("width", "10px")
         .attr("height", "10px")
-        .style("margin-right", "5px")
-        .style("overflow", "visible")
-        .append("path")
-        .attr("transform", "translate(5, 5)")
-        .attr("d", d3.symbol()
-          .type(d3.symbolSquare)
-          .size(75))
-        .attr("stroke", "none")
-        .attr("fill", function (d, i){
-          return colors(d);
-        })
+        .append("rect")
+        .attr("width", "10px")
+        .attr("height", "10px")
+        .attr("fill", function(d) { return colors(d); })
 
-      colorLegendSpan.append("span")
-        .html(function(d) { return d;})
+      colorLegendList.append("span")
+        .html(function(d) {return d;});
+
+      $("#colorlegend-subtitle").html(color_factor)
 
     };
 
     //////////////// Nodes shape settings ////////////////
     var setSymbolShape = function() {
-      var shape_factor = d3.select("#symbolSelect").property("value"),
+      var shape_factor = $("#symbolSelect").val(),
           shape_labels = [];
 
       if (shape_factor != "") {
@@ -269,38 +303,36 @@ function similarityNetwork(id, legend_id, json0, W = 600, H = 600, font_family =
           .size(radius*radius));
 
 
-      symbolLegend = symbolLegend.data([]);
-      symbolLegend.exit().remove();
+      symLegendList = symLegendList.data([]);
+      symLegendList.exit().remove();
 
       if (shape_labels.length > 0) {
 
-      symbolLegend = symbolLegend
+      symLegendList = symLegendList
         .data(shape_labels)
         .enter().append("li")
+        .style("word-wrap", "break-word")
         .attr("id", function(d) { return d;})
-        .attr("class", "legend legend-no-interaction")
-        .attr("selected", 0)
         .attr("title", function(d) { return d;})
+        .attr("selected", 0)
 
-      symbolLegendSpan = symbolLegend.append("span")
-
-      symbolLegendSpanSvg = symbolLegendSpan.append("svg")
+      symLegendSvg = symLegendList.append("svg")
         .attr("width", "10px")
         .attr("height", "10px")
-        .style("margin-right", "5px")
+        .style("margin-right", "0.5rem")
         .style("overflow", "visible")
         .append("path")
-        .attr("transform", "translate(5, 5)")
-        .attr("d", d3.symbol()
-          .type(function(d) {
-            return symbols(d);
-          })
-          .size(75))
-        .attr("stroke", "#333")
-        .attr("fill-opacity", 0)
+          .attr("transform", "translate(5, 5)")
+          .attr("d", d3.symbol()
+            .type(function (d){ return symbols(d);})
+            .size(75))
+          .attr("stroke", "#333")
+          .attr("fill-opacity", 0)
 
-      symbolLegendSpan.append("span")
+      symLegendList.append("span")
         .html(function(d) { return d;})
+
+      $("#symlegend-subtitle").html(shape_factor)
 
       }
 
@@ -308,51 +340,11 @@ function similarityNetwork(id, legend_id, json0, W = 600, H = 600, font_family =
 
     //////////////// Control buttons ////////////////
 
-    // Select colors
-    var colorSelect = buttons.append("div")
-      .attr("title", "Chose variable to use for colors.")
-      .attr("class", "form-group")
 
-    colorSelect.append("label")
-      .html("Color")
-
-    colorSelect.append("div")
-      .attr("class", "multiselect-btn-container figtool-multiselect-btn-container")
-      .append("select")
-        .attr("id", "colorSelect")
-        .attr("class", "form-control multiselect figtool-multiselect")
-        .on("change", setSymbolColor)
-        .selectAll("option")
-        .data(colorFactors)
-        .enter().append("option")
-          .text(function (d){ return d;});
-
-    document.getElementById("colorSelect").value = colorFactors[0];
-
-    // Button for node size
-    var symbolSelect = buttons.append("div")
-      .attr("title", "Chose variable to use for symbols.")
-      .attr("class", "form-group")
-
-    symbolSelect.append("label")
-      .html("Symbol")
-
-    symbolSelect.append("div")
-      .attr("class", "multiselect-btn-container figtool-multiselect-btn-container")
-      .append("select")
-        .attr("id", "symbolSelect")
-        .attr("class", "form-control multiselect figtool-multiselect")
-        .on("change", setSymbolShape)
-        .selectAll("option")
-        .data(colorFactors)
-        .enter().append("option")
-          .text(function (d){ return d;});
-
-    document.getElementById("symbolSelect").value = colorFactors[colorFactors.length-1];
 
     //////////////// Link width settings ////////////////
     var setLinkWidth = function() {
-      var wIndex = d3.select("#networkSelect").property("value");
+      var wIndex = $("#networkSelect").val();
 
       var newMin = getWeightExtrema(json.links, wIndex, "min", Abs=true),
           newMax = getWeightExtrema(json.links, wIndex, "max", Abs=true);
@@ -377,18 +369,18 @@ function similarityNetwork(id, legend_id, json0, W = 600, H = 600, font_family =
 
     //////////////// Threshold settings ////////////////
     var filterThres = function() {
-      var wIndex = d3.select("#networkSelect").property("value");
+      var network = {index:$("#networkSelect").val(), label:$("#networkSelect option:selected").text()};
 
-      var wMin = getWeightExtrema(json0.links, wIndex, "min"),
-          wMax = getWeightExtrema(json0.links, wIndex, "max");
+      var wMin = getWeightExtrema(json0.links, network.index, "min"),
+          wMax = getWeightExtrema(json0.links, network.index, "max");
 
 
       // Filter links based on weight
       if (wMin > 0 || wMax > 0) {
 
-        var similarity_thres = d3.select("#sThresRange").property("value"),
+        var similarity_thres = Number($("#sThresRange").val()),
             sThres = scale([0, wMax], similarity_thres, [0, 100]),
-            sTxt = ">"+ Math.round(sThres*100)/100;
+            sTxt = Math.round(sThres*wMax*100)/100;
       } else {
         var sThres = 0;
       };
@@ -396,7 +388,7 @@ function similarityNetwork(id, legend_id, json0, W = 600, H = 600, font_family =
       json.links = [];
 
       json0.links.forEach(function (d) {
-        if (Number(d.weight[wIndex]) > Number(sThres)) {
+        if (Number(d.weight[network.index]) > Number(sThres)) {
           json.links.push(JSON.parse(JSON.stringify(d))); 
         };
       });
@@ -404,35 +396,20 @@ function similarityNetwork(id, legend_id, json0, W = 600, H = 600, font_family =
 
       // Update links legend
 
-      linkLegend = linkLegend.data([]);
-      linkLegend.exit().remove();
+      linkLegendList = linkLegendList.data([]);
+      linkLegendList.exit().remove();
 
-      linkLegend = linkLegend
+      linkLegendList = linkLegendList
         .data([sim_color])
         .enter().append("li")
+        .style("word-wrap", "break-word")
         .attr("id", function(d) { return d[1];})
-        .attr("class", "legend  legend-no-interaction")
-        .attr("selected", 0)
         .attr("title", function(d) { return d[1];})
+        .attr("selected", 0)
+        .append("span")
+        .html(function(d, i) { return "<i style='color:"+d[0]+"' class='fa fa-window-minimize icon-sim-link'></i> "+'Similarity > '+sTxt;})
 
-      linkLegendSpan = linkLegend.append("span")
-
-      linkLegendSpanSvg = linkLegendSpan.append("svg")
-        .attr("width", "25px")
-        .attr("height", "10px")
-        .style("margin-right", "5px")
-        .style("overflow", "visible")
-
-      linkLegendSpanSvg.append("rect")
-        .attr("width", 25)
-        .attr("height", 5)
-        .attr("y", 2.5)
-        .attr("stroke", "none")
-        .attr("fill", function(d){return d[0]})
-
-
-      linkLegendSpan.append("span")
-        .html(function(d, i) { return d[1] +" "+sTxt;})
+       $("#linklegend-subtitle").html("Network based on "+network.label)
 
     };
 
@@ -543,7 +520,7 @@ function similarityNetwork(id, legend_id, json0, W = 600, H = 600, font_family =
         label_text.attr("selected", false);
       };
     };
-    
+
     appendLabelCheckBox(buttons, "Show labels", "Labels", "labelButton", showLabels)
     
     // Search in labels
@@ -551,30 +528,58 @@ function similarityNetwork(id, legend_id, json0, W = 600, H = 600, font_family =
       searchLabels2("#labelButton", "#searchInput", ".node-label")
     }
     appendSearchInput(buttons, "Search", "searchInput", searchLabels);
-    
-    /*
-    var searchLabels = function() {
-      $("#labelButton").attr("checked", false);
-      var key = $("#searchInput").val().toUpperCase();
-      if (key != '') {
-        var selected = d3.selectAll(".node-label").filter(function(){return this.__data__.name.toUpperCase().indexOf(key.toUpperCase()) != -1 });
-            non_selected = d3.selectAll(".node-label").filter(function(){return this.__data__.name.toUpperCase().indexOf(key.toUpperCase()) == -1 });
-        selected.select(function(){ return this.childNodes[1];}).attr("display", "inline");
-        selected.select(function(){ return this.childNodes[1];}).attr("selected", true);
-        selected.select(function(){ return this.childNodes[0];}).style("stroke-opacity", 1);
-        non_selected.select(function(){ return this.childNodes[1];}).attr("display", "none");
-        non_selected.select(function(){ return this.childNodes[1];}).attr("selected", false);
-        non_selected.select(function(){ return this.childNodes[0];}).style("stroke-opacity", 0);
-      } else {
-        to_free = d3.selectAll(".node-label");
-        to_free.select(function(){return this.childNodes[1];}).attr("display", "none");
-        to_free.select(function(){return this.childNodes[1];}).attr("selected", false);
-        to_free.select(function(){ return this.childNodes[0];}).style("stroke-opacity", 0);
-      };
-    };
 
-    appendSearchInput(buttons, "Search", "searchInput", searchLabels);
-*/
+
+    // Select colors
+    var colorSelect = buttons.append("div")
+      .attr("title", "Chose variable to use for colors.")
+      .attr("class", "form-group")
+
+    colorSelect.append("label")
+      .html("Color")
+
+    colorSelect.append("div")
+      .attr("class", "multiselect-btn-container figtool-multiselect-btn-container")
+      .append("select")
+        .attr("id", "colorSelect")
+        .attr("class", "form-control multiselect figtool-multiselect")
+        .on("change", setSymbolColor)
+        .selectAll("option")
+        .data(colorFactors)
+        .enter().append("option")
+          .text(function (d){ return d;});
+
+    document.getElementById("colorSelect").value = colorFactors[0];
+
+    // Button for node size
+    var symbolSelect = buttons.append("div")
+      .attr("title", "Chose variable to use for symbols.")
+      .attr("class", "form-group")
+
+    symbolSelect.append("label")
+      .html("Symbol")
+
+    symbolSelect.append("div")
+      .attr("class", "multiselect-btn-container figtool-multiselect-btn-container")
+      .append("select")
+        .attr("id", "symbolSelect")
+        .attr("class", "form-control multiselect figtool-multiselect")
+        .on("change", setSymbolShape)
+        .selectAll("option")
+        .data(colorFactors)
+        .enter().append("option")
+          .text(function (d){ return d;});
+
+    document.getElementById("symbolSelect").value = colorFactors[colorFactors.length-1];
+
+
+
+    buttons.append("p")
+      .classed("pt-2", true)
+      .attr("title", "Link settings")
+      .style("border-top", "1px solid #ccc")
+      .append("b")
+      .html("Link settings")
 
     // Select network
     var networkSelect = buttons.append("div")
@@ -582,7 +587,7 @@ function similarityNetwork(id, legend_id, json0, W = 600, H = 600, font_family =
       .attr("class", "form-group")
 
     networkSelect.append("label")
-      .html("Network")
+      .html("Similarity network based on:")
 
     networkSelect.append("div")
       .attr("class", "multiselect-btn-container figtool-multiselect-btn-container")
@@ -599,22 +604,7 @@ function similarityNetwork(id, legend_id, json0, W = 600, H = 600, font_family =
     document.getElementById("networkSelect").value = 0;
 
     // Button for link weight threshold
-      var sThresRange = buttons.append("span")
-        .attr("title", "Cut-off for similarity links.")
-
-      sThresRange.append("label")
-        .append("p")
-          .html("Similarity link cut-off <span style='white-space: nowrap'>(<i style='color:"+sim_color[0]+"' class='fa fa-window-minimize icon-sim-link'></i>).</span>")
-
-      sThresRange.append("input")
-        .attr("id", "sThresRange")
-        .attr("type", "range")
-        .attr("class", "full-width")
-        .attr("min", 0)
-        .attr("max", 100)
-        .attr("value", 75)
-        .on("change", restart);
-
+    appendRange(buttons, "Cutoff for similarity links.", "Similarity link cutoff (% of max) <span style='white-space: nowrap'>(<i style='color:"+sim_color[0]+"' class='fa fa-window-minimize icon-sim-link'></i>).</span>", "sThresRange", 0, 100, 1, 75, restart)
 
     setMultiselect('.figtool-multiselect');
     //resizeMultiselect('#d3-buttons', 1, '#d3-buttons', false);
@@ -646,30 +636,5 @@ function similarityNetwork(id, legend_id, json0, W = 600, H = 600, font_family =
     };
     
   restart();
-
-    /*
-        function displayLabels (id) {
-          $("."+id).on("mouseenter", function(d) {
-            d3.select(this.childNodes[1]).attr("display", "inline");
-            d3.select(this.childNodes[0]).style("stroke-opacity", 1);
-        });
-        $("."+id).on("mouseleave", function(d) {
-          if (this.childNodes[1].getAttribute("selected") == "false") {
-            d3.select(this.childNodes[1]).attr("display", "none");
-            d3.select(this.childNodes[0]).style("stroke-opacity", 0);
-          };
-        });
-        $("."+id).on("click", function(d) {
-          if (this.childNodes[1].getAttribute("selected") == "false") {    
-            d3.select(this.childNodes[1]).attr("display", "inline");
-            d3.select(this.childNodes[1]).attr("selected", true);
-            d3.select(this.childNodes[0]).style("stroke-opacity", 1);
-          } else {
-            d3.select(this.childNodes[1]).attr("display", "none");
-            d3.select(this.childNodes[1]).attr("selected", false);
-          }
-        });
-      };
-      */
 
 };

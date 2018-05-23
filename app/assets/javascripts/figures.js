@@ -1,7 +1,11 @@
 function exportFigure(id, format, filename) {
 
-  var svgData = d3.select(id).node().outerHTML,
+  var svgData = $(id)[0].outerHTML,
       type = 'txt';
+
+  // A version of Illustrator has trouble with font-family...https://groups.google.com/forum/#!topic/genocrunch/WKYuKGqAClY
+  svgData = svgData.replace(/font-family=\"[a-zA-Z0-9 ,-]*\"/g,"")
+
   if (format == "svg") {
     type = 'image/svg+xml';
   } else if (format == "html") {
@@ -20,7 +24,7 @@ function exportFigure(id, format, filename) {
 };
 
 // FIGURE BUTTONS/CONTROLS
-function appendRange(appendTo, title, label, id, min, max, value, onchange) {
+function appendRange(appendTo, title, label, id, min, max, step, value, onchange) {
 
   var range = appendTo.append("div")
     .attr("title", title)
@@ -35,24 +39,53 @@ function appendRange(appendTo, title, label, id, min, max, value, onchange) {
     .attr("type", "range")
     .attr("min", min)
     .attr("max", max)
+    .attr("step", step)
     .attr("value", value)
     .on("change", onchange);
+
+  var legend = range.append("div")
+    .style("position", "relative")
+    .style("display", "inline-block")
+    .style("width", "100%")
+    .style("color", "#ccc")
+    .style("text-align", "center")
+
+  legend.append("span")
+    .style("display", "inline-block")
+    .style("float", "left")
+    .html(min)
+
+  legend.append("span")
+    .classed("range-displayed-value", true)
+    .style("position", "relative")
+    .style("display", "inline-block")
+    .html($("#"+id).val())
+
+  legend.append("span")
+    .style("display", "inline-block")
+    .style("float", "right")
+    .html(max)
+
+  $("#"+id).change(function(){
+    $("#"+id).closest(".form-group").children("div").children(".range-displayed-value").html($(this).val());
+  })
+
 }
 
 function appendLabelCheckBox(appendTo, title, label, id, onclick) {
 
   var labelCheckBox = appendTo.append("div")
       .attr("title", title)
-      .attr("class", "form-bool")
+      .attr("class", "form-group")
       .append("label")
 
     labelCheckBox.append("input")
       .attr("id", id)
-      .attr('class', 'form-check-input')
       .attr("type", "checkbox")
+      .classed("mr-1", true)
       .on("click", onclick);
 
-    labelCheckBox.append("p")
+    labelCheckBox.append("span")
       .html(label);
 }
 

@@ -1,8 +1,6 @@
 <% if @final_json and @final_json[:status_by_step]['secondary_dataset'] %>
 
-<%= render :partial => 'view_description' %>
-
-<%= render :partial => 'list_messages', :locals => {:k => 'secondary_dataset'} %>
+<%= render :partial => 'list_messages', :locals => {:data => 'secondary_dataset'} %>
 
 <% end %>
 

@@ -271,7 +271,7 @@ function barchart(id, legend_id, json, W = 600, H = 600, font_family = "verdana,
     appendSearchInput(buttons, "Search", "searchInput", searchLegend);
 
     // Abundance Cutoff
-    appendRange(buttons, "Abundance filter", "% cutoff", "thresRange", 0, 20, 0, restart)
+    appendRange(buttons, "Abundance filter (low abundances are binned into to 'Others' group)", "% cutoff for 'Others'", "thresRange", 0, 20, 1, 0, restart)
 
 
     // Highlight functions

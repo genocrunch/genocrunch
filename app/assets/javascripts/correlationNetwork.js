@@ -7,11 +7,18 @@ function correlationNetwork(id, legend_id, json, W = 600, H = 600, font_family =
 
   // Restrictions
   drag_size_limit = 80;
+  display_size_limit = 150;
 
   // Colors, symbols and scaling
   var colors = d3.scaleOrdinal(color_palette),
       link_color = [["#999999", "Pos. correlation"],
                     ["#ff3385", "Neg. correlation"]],
+      neutral_color = "#666666",
+      signThres = [{value:0.001, opacity:0.9, text:'***'},
+                   {value:0.01, opacity:0.7, text:'**'},
+                   {value:0.05, opacity:0.5, text:'*'},
+                   {value:0, opacity:0.1, text:'ns'},
+                   {value:'NA', opacity:0.3, text:'na'}];
       symbols = d3.scaleOrdinal([d3.symbolCircle,
         d3.symbolSquare,
         d3.symbolTriangle,
@@ -32,26 +39,12 @@ function correlationNetwork(id, legend_id, json, W = 600, H = 600, font_family =
         .range([50, 100]),
       chargeScale = d3.scaleLinear()
         .range([-100, -200]),
-      sizeOptions = [{"text":"", "value":"", "title":""},
-                     {"text":"Degree", "value":"degree", "title":"Node degree"},
-                     {"text":"Mean abundance", "value":"mean", "title":"Mean abundance"},
-                     {"text":"Max abundance", "value":"max", "title":"Max abundance"},
-                     {"text":"Min abundance", "value":"min", "title":"Min abundance"}
+      sizeOptions = [{label:"", value:"", "title":""},
+                     {label:"Node degree", value:"degree", title:"Node degree"},
+                     {label:"Mean abundance", value:"mean", title:"Mean abundance"},
+                     {label:"Max abundance", value:"max", title:"Max abundance"},
+                     {label:"Min abundance", value:"min", title:"Min abundance"}
                     ];
-      oRange = [0.1, 0.3],
-      p_value_legend_data = [[0.001, "***"],
-                             [0.01, "**"],
-                             [0.05, "*"],
-                             [1, "ns"],
-                             ["NA", "na"]],
-      stat_settings = {"range":[0.2, 0.6, 0.8, 1],
-                       "domain":[1, 0.05, 0.01, 0.001],
-                       "text":["ns", "*", "**", "***"]},
-      opacity = d3.scaleLinear()
-        .range(stat_settings.range)
-        .domain(stat_settings.domain),
-      colorBarSize = 10;
-
 
   // General functions
   function getSizeExtrema(json, fun, extrema="max", absolute=false) {
@@ -163,7 +156,6 @@ function correlationNetwork(id, legend_id, json, W = 600, H = 600, font_family =
         .translateExtent([[margin.left, margin.top], [width + margin.right, height + margin.top + margin.bottom]])
         .on("zoom", zoomed));
 
-
     var g = svg.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -191,12 +183,12 @@ function correlationNetwork(id, legend_id, json, W = 600, H = 600, font_family =
 
     var colorLegend = legend.append("li")
         .style("padding-bottom", "1rem")
-        .attr("title", "Color key")
+        .attr("title", "Node color key")
 
     colorLegend.append("p").append("b")
-        .html("Color key")
+        .html("Node color key")
 
-    colorLegendList = colorLegend.append("div")
+    var colorLegendList = colorLegend.append("div")
         .append("ul")
         .style("list-style-type", "none")
         .style("padding", 0)
@@ -206,17 +198,37 @@ function correlationNetwork(id, legend_id, json, W = 600, H = 600, font_family =
         .style("border-top", "1px solid #ccc")
         .style("padding-top", "1rem")
         .style("padding-bottom", "1rem")
-        .attr("title", "Symbol key")
+        .attr("title", "Node symbol key")
 
     symLegend.append("p").append("b")
-        .html("Symbol key")
+        .html("Node symbol key")
 
-    symLegendList = symLegend.append("div")
-        .append("ul")
+    var symLegendList = symLegend.append("div")
+
+    symLegendList.append("span").attr("id", "symlegend-subtitle")
+
+    symLegendList = symLegendList.append("ul")
         .style("list-style-type", "none")
         .style("padding", 0)
         .selectAll("ul")
 
+    var linkLegend = legend.append("li")
+        .style("border-top", "1px solid #ccc")
+        .style("padding-top", "1rem")
+        .style("padding-bottom", "1rem")
+        .attr("title", "Link color key")
+
+    linkLegend.append("p").append("b")
+        .html("Link color key")
+
+    var linkLegendList = linkLegend.append("div")
+
+    linkLegendList.append("span").attr("id", "linklegend-subtitle")
+
+    linkLegendList = linkLegendList.append("ul")
+        .style("list-style-type", "none")
+        .style("padding", 0)
+        .selectAll("ul")
 
     //////////////// NODES COLORS ////////////////
     var setSymbolColor = function() {
@@ -233,11 +245,17 @@ function correlationNetwork(id, legend_id, json, W = 600, H = 600, font_family =
             return colors(d.stat[selected_model][selected_effect]['highest-mean']);
           return colors('');
         })
-        .attr("fill-opacity", function (d){
-          if (selected_model != '')
-            return opacity(d.stat[selected_model][selected_effect]['p-value']);
-          return 1;
-        });
+        .style("fill-opacity", function(d) {
+            var p_value = d.stat[selected_model][selected_effect]['p-value'];
+            for (var i = 0; i < signThres.length; i++) {
+              if (isNaN(p_value) && p_value == signThres[i].value) {
+                return signThres[i].opacity;
+              }
+              if (!isNaN(p_value) && p_value <= signThres[i].value) {
+                return signThres[i].opacity;
+              };
+            };
+          })
 
       // Update color legend
       colorLegendList = colorLegendList.data([]);
@@ -251,9 +269,9 @@ function correlationNetwork(id, legend_id, json, W = 600, H = 600, font_family =
         .attr("title", function(d) { return d;})
         .attr("selected", 0)
 
-      var legend_svg_width = legend_svg_symsize*p_value_legend_data.length;
+      var legend_svg_width = legend_svg_symsize*signThres.length;
 
-      colorLegendSvg = colorLegendList.append("svg")
+      var colorLegendSvg = colorLegendList.append("svg")
         .style("margin-top", function(d, i) {
           if (i == 0)
             return "1rem";
@@ -264,54 +282,51 @@ function correlationNetwork(id, legend_id, json, W = 600, H = 600, font_family =
         .style("margin-right", "0.5rem")
         .style("overflow", "visible")
 
-      for (var i = 0; i < p_value_legend_data.length; i++) {
+      for (var i = 0; i < signThres.length; i++) {
         // (V)(°,,,°)(V)
 
         colorLegendSvg.append("g")
-          .attr("transform", "translate("+(i*legend_svg_width/p_value_legend_data.length)+", -2)")
+          .attr("transform", "translate("+(i*legend_svg_width/signThres.length)+", -2)")
           .append("text")
           .attr("transform", "rotate(-90)")
           .attr("font-size", legend_svg_symsize+"px")
           .attr("y", legend_svg_symsize)
           .text(function(d, j){
-            if (j == 0 && color_domain.length > 0)
-             return p_value_legend_data[i][1];
+            if (j == 0)
+             return signThres[i]["text"];
           })
 
         colorLegendSvg.append("rect")
-          .attr("transform", "translate("+(i*legend_svg_width/p_value_legend_data.length)+", 0)")
+          .attr("transform", "translate("+(i*legend_svg_width/signThres.length)+", 0)")
           .attr("width", legend_svg_symsize)
           .attr("height", legend_svg_symsize)
           .attr("stroke", "none")
-          .attr("fill", function (d, j){
-            if (p_value_legend_data[i][0] == "NA") {
-              return "lightgrey";
+          .attr("fill", function (d){
+            if (isNaN(signThres[i]["value"])) {
+              return neutral_color;
             };
             return colors(d);
           })
-          .attr("fill-opacity", function (d, j){
-            if (p_value_legend_data[i][0] == "NA") {
-              return 1;
-            };
-            return opacity(p_value_legend_data[i][0]);
-          })
+          .attr("fill-opacity", signThres[i]["opacity"])
 
       };
 
       colorLegendList.append("span")
-        .html(function(d) { return d;})
+        .attr("id", function(d) { return "color-legend-text-"+d;})
+        .html(function(d) { return "mean abundance higher in "+ d;})
+
     };
 
     //////////////// NODES SHAPE AND SIZE ////////////////
     var setSymbolSize = function() {
-      var selected_size_factor = $("#sizeSelect").val(),
+      var selected_size_factor = {value:$("#sizeSelect").val(), label:$("#sizeSelect option:selected").text()},
           symbols_domain = json.nodes.map(function (d){return d['data-type'];}).filter(unique),
           size = {};
       symbols.domain(symbols_domain);
-      if (selected_size_factor != '') {
+      if (selected_size_factor.value != '') {
 
         for (var i = 0; i < symbols_domain.length; i++) {
-          size[symbols_domain[i]] = {value:json.nodes.filter(function (d){return d['data-type'] == symbols_domain[i];}).map(function(d){return Number(d[selected_size_factor]);})};
+          size[symbols_domain[i]] = {value:json.nodes.filter(function (d){return d['data-type'] == symbols_domain[i];}).map(function(d){return Number(d[selected_size_factor.value]);})};
           size[symbols_domain[i]]['min'] = Math.min.apply(null, size[symbols_domain[i]]['value']);
           size[symbols_domain[i]]['max'] = Math.max.apply(null, size[symbols_domain[i]]['value']);
         }
@@ -323,9 +338,9 @@ function correlationNetwork(id, legend_id, json, W = 600, H = 600, font_family =
         .attr("d", d3.symbol()
           .type(function (d){ return symbols(d['data-type']);})
           .size(function (d){
-            if (selected_size_factor != '') {
+            if (selected_size_factor.value != '') {
               sizeScale.domain([size[d['data-type']]['min'], size[d['data-type']]['max']]);
-              d.r = sizeScale(d[selected_size_factor]);
+              d.r = sizeScale(d[selected_size_factor.value]);
             } else {
               d.r = 20;
             }
@@ -367,7 +382,12 @@ function correlationNetwork(id, legend_id, json, W = 600, H = 600, font_family =
         .attr("title", function(d) { return d;})
         .attr("selected", 0)
 
-      var legend_svg_width = legend_svg_symsize*size_legend_data.length;
+      var n_size = 1,
+          legend_svg_width = legend_svg_symsize;
+      if (selected_size_factor.value != '') {
+        n_size = size_legend_data.length;
+        legend_svg_width = legend_svg_symsize*size_legend_data.length;
+      }
 
       symLegendSvg = symLegendList.append("svg")
         .attr("width", legend_svg_width+"px")
@@ -375,11 +395,11 @@ function correlationNetwork(id, legend_id, json, W = 600, H = 600, font_family =
         .style("margin-right", "0.5rem")
         .style("overflow", "visible")
 
-      for (var i = 0; i < size_legend_data.length; i++) {
+      for (var i = 0; i < n_size; i++) {
         // (V)(°,,,°)(V)
 
         symLegendSvg.append("path")
-          .attr("transform", "translate("+((2*legend_svg_symsize-size_legend_data[i])/2+i*legend_svg_width/size_legend_data.length)+", "+legend_svg_symsize/2+")")
+          .attr("transform", "translate("+((2*legend_svg_symsize-size_legend_data[i])/2+i*legend_svg_width/n_size)+", "+legend_svg_symsize/2+")")
           .attr("d", d3.symbol()
             .type(function (d){ return symbols(d);})
             .size(size_legend_data[i]*size_legend_data[i]))
@@ -388,6 +408,7 @@ function correlationNetwork(id, legend_id, json, W = 600, H = 600, font_family =
 
       };
 
+      $("#symlegend-subtitle").html(selected_size_factor.label)
 
       symLegendList.append("span")
         .html(function(d) { return d;})
@@ -397,18 +418,24 @@ function correlationNetwork(id, legend_id, json, W = 600, H = 600, font_family =
     //////////////// RESTART ////////////////
     var restart = function() {
 
-      var weight_thres = [$("#pThresRange").val(), $("#nThresRange").val()],
+      var weight_thres = [Number($("#pThresRange").val()), Number($("#nThresRange").val())],
           weight_p_value_thres = $("#weightPvalThres").val(),
           link_data = JSON.parse(JSON.stringify(json.links.filter(function(d){
             if (d.weight >= 0) {
               return (d.weight >= weight_thres[0] && d['p-value'] <= weight_p_value_thres);
             }
-            return (d.weight < -weight_thres[1] && d['p-value'] <= weight_p_value_thres);
+            return (d.weight <= weight_thres[1] && d['p-value'] <= weight_p_value_thres);
           })));
           getNodeDegree(link_data, json.nodes);
 
-      var kept_node = link_data.map(function(d){return d['source'];}).concat(link_data.map(function(d){return d['target'];})).filter(unique),
-          node_data = JSON.parse(JSON.stringify(json.nodes.filter(function(d){return kept_node.indexOf(d.id) != -1;}))),
+      var kept_node = link_data.map(function(d){return d['source'];}).concat(link_data.map(function(d){return d['target'];})).filter(unique);
+      if (kept_node.length > display_size_limit) {
+        alert("This network is too large to be displayed:\n\
+The max size is "+display_size_limit+" nodes.")
+        return 0;
+      }
+
+      var node_data = JSON.parse(JSON.stringify(json.nodes.filter(function(d){return kept_node.indexOf(d.id) != -1;}))),
           link_width = {weight:link_data.map(function(d){return d.weight;})};
           link_width['min'] = Math.min.apply(null, link_width.weight.map(Math.abs));
           link_width['max'] = Math.max.apply(null, link_width.weight.map(Math.abs));
@@ -480,7 +507,7 @@ function correlationNetwork(id, legend_id, json, W = 600, H = 600, font_family =
         .attr("selected", false);
 
       // Add interactive option if not too many nodes
-     //if (node_data.length < drag_size_limit) {
+     if (node_data.length < drag_size_limit) {
         node.call(d3.drag()
           .on("start", dragstarted)
           .on("drag", dragged)
@@ -490,7 +517,9 @@ function correlationNetwork(id, legend_id, json, W = 600, H = 600, font_family =
           .on("start", dragstarted)
           .on("drag", dragged)
           .on("end", dragended));
-      //};
+      } else {
+        alert("The node dragging option has been disabled on this network as it has more than "+drag_size_limit+" nodes.")
+      }
 
       setSymbolSize();
       setSymbolColor();
@@ -528,34 +557,21 @@ function correlationNetwork(id, legend_id, json, W = 600, H = 600, font_family =
       simulation.alpha(0.5).restart();
 
       // Update links legend
-      linkLegend = linkLegend.data([]);
-      linkLegend.exit().remove();
+      linkLegendList = linkLegendList.data([]);
+      linkLegendList.exit().remove();
 
-      linkLegend = linkLegend
+      linkLegendList = linkLegendList
         .data(link_color)
         .enter().append("li")
+        .style("word-wrap", "break-word")
         .attr("id", function(d) { return d[1];})
-        .attr("class", "legend  legend-no-interaction")
-        .attr("selected", 0)
         .attr("title", function(d) { return d[1];})
+        .attr("selected", 0)
+        .append("span")
+        .html(function(d, i) { return "<i style='color:"+d[0]+"' class='fa fa-window-minimize icon-sim-link'></i> "+['Corr. coeff. > ', 'Corr. coeff. < '][i]+weight_thres[i];})
 
-      linkLegendSpan = linkLegend.append("span")
+       $("#linklegend-subtitle").html("Corr. p-value <= "+weight_p_value_thres)
 
-      linkLegendSpanSvg = linkLegendSpan.append("svg")
-        .attr("width", "25px")
-        .attr("height", "10px")
-        .style("margin-right", "5px")
-        .style("overflow", "visible")
-
-      linkLegendSpanSvg.append("rect")
-        .attr("width", 25)
-        .attr("height", 5)
-        .attr("y", 2.5)
-        .attr("stroke", "none")
-        .attr("fill", function(d){return d[0]})
-
-      linkLegendSpan.append("span")
-        .html(function(d, i) { return ['Coeff. > ', 'Coeff. < -'][i]+weight_thres[i];})
     }
 
     // Nodes labels functions
@@ -605,6 +621,11 @@ function correlationNetwork(id, legend_id, json, W = 600, H = 600, font_family =
           label_text.attr("selected", false);
         };
       };
+
+    buttons.append("p")
+      .attr("title", "Node settings")
+      .append("b")
+      .html("Node settings")
 
     appendLabelCheckBox(buttons, "Show labels", "Labels", "labelButton", showLabels)
     
@@ -672,13 +693,20 @@ function correlationNetwork(id, legend_id, json, W = 600, H = 600, font_family =
 
     $('#sizeSelect').on('change', setSymbolSize);
 
+    buttons.append("p")
+      .classed("pt-2", true)
+      .attr("title", "Link settings")
+      .style("border-top", "1px solid #ccc")
+      .append("b")
+      .html("Link settings")
+
     // Button for link weight threshold
     var weightPvalThres = buttons.append("div")
       .attr("title", "Set a p-value cutoff for links.")
       .attr("class", "form-group")
 
     weightPvalThres.append("label")
-      .html("Links p-value cutoff")
+      .html("P-value cutoff")
 
     weightPvalThres.append("input")
       .attr("id", "weightPvalThres")
@@ -690,39 +718,9 @@ function correlationNetwork(id, legend_id, json, W = 600, H = 600, font_family =
       .attr("value", 1)
       .on("change", restart);
 
-    var pThresRange = buttons.append("span")
-      .attr("title", "Cut-off for positive correlations.")
+    appendRange(buttons, "Cutoff for positive correlations.", "Pos. corr. cutoff <span style='white-space: nowrap'>(<i style='color:"+link_color[0][0]+"' class='fa fa-window-minimize icon-sim-link'></i>).</span>", "pThresRange", 0, 1, 0.01, 0.95, restart)
 
-    pThresRange.append("label")
-        .append("p")
-          .html("Pos. corr. cut-off <span style='white-space: nowrap'>(<i style='color:"+link_color[0][0]+"' class='fa fa-window-minimize icon-sim-link'></i>).</span>")
-
-    pThresRange.append("input")
-        .attr("id", "pThresRange")
-        .attr("type", "range")
-        .attr("class", "full-width")
-        .attr("min", 0)
-        .attr("max", 1)
-        .attr("step", 0.05)
-        .on("change", restart);
-      $("#pThresRange").val('0.75')
-
-    var nThresRange = buttons.append("span")
-        .attr("title", "Cut-off for negative correlations.")
-
-    nThresRange.append("label")
-        .append("p")
-          .html("Neg. corr. cut-off <span style='white-space: nowrap'>(<i style='color:"+link_color[1][0]+"' class='fa fa-window-minimize icon-sim-link'></i>).</span>")
-
-      nThresRange.append("input")
-        .attr("id", "nThresRange")
-        .attr("type", "range")
-        .attr("class", "full-width")
-        .attr("min", 0)
-        .attr("max", 1)
-        .attr("step", 0.05)
-        .on("change", restart);
-      $("#nThresRange").val('0.75')
+    appendRange(buttons, "Cutoff for negative correlations.", "Neg. corr. cutoff <span style='white-space: nowrap'>(<i style='color:"+link_color[1][0]+"' class='fa fa-window-minimize icon-sim-link'></i>).</span>", "nThresRange", -1, 0, 0.01, -0.95, restart)
 
     setMultiselect('.figtool-multiselect');
     //resizeMultiselect('#d3-buttons', 1, '#d3-buttons', false);

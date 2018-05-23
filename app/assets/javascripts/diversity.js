@@ -151,11 +151,15 @@ function diversity(id, legend_id, json, RfunctionsDiversity, W = 600, H = 600, f
     colorLegend.append("p").append("b")
         .html("Color key")
 
-    colorLegendList = colorLegend.append("div")
-        .append("ul")
+    var colorLegendList = colorLegend.append("div")
+
+    colorLegendList.append("span").attr("id", "colorlegend-subtitle")
+
+    colorLegendList = colorLegendList.append("ul")
         .style("list-style-type", "none")
         .style("padding", 0)
         .selectAll("ul")
+
 
     //////////////// Restart function ////////////////
     var restart = function() {
@@ -192,7 +196,7 @@ function diversity(id, legend_id, json, RfunctionsDiversity, W = 600, H = 600, f
         .y(function(d) { return yScale(d.y); });
 
       // Set color settings
-      var selected_color_factor = d3.select("#colorSelect").property("value"),
+      var selected_color_factor = $("#colorSelect").val(),
           color_factors = [];
 
       json[selected_metric].data.forEach(function (d) {
@@ -340,7 +344,7 @@ function diversity(id, legend_id, json, RfunctionsDiversity, W = 600, H = 600, f
       colorLegendList.exit().remove();
 
       colorLegendList = colorLegendList
-        .data(color_factors.reverse())
+        .data(color_factors)
         .enter().append("li")
         .style("word-wrap", "break-word")
         .attr("id", function(d) { return d;})
@@ -358,6 +362,8 @@ function diversity(id, legend_id, json, RfunctionsDiversity, W = 600, H = 600, f
 
       colorLegendList.append("span")
         .html(function(d) {return d;});
+
+      $("#colorlegend-subtitle").html(selected_color_factor)
 
     };
 

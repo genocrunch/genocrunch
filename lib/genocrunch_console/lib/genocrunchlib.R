@@ -442,7 +442,7 @@ SortTable <- function(table=NULL, map=NULL, verbose=TRUE) {
 #  print(row.names(map))
 #  print(map)
 #  print(map[, column])
-  PrintMsg('"description":"Sort table columns according to map"', verbose)
+  PrintMsg('"description":"The table columns were sorted according to the map."', verbose)
   return(as.data.frame(table[, as.vector(row.names(map))]))
 }
 
@@ -495,14 +495,14 @@ FilterTable <- function(table=NULL, category='taxonomy',
   minmax.a <- paste(min(filter), max(filter), sep='-')
   if (abundance_threshold_type == 'percent') {
     filter <- as.data.frame(apply(filter, 2, Numeric2Percent))
-    msg <- paste(msg, '% ', sep='')
+    msg <- paste(msg, '%', sep='')
     minmax.a <- paste(min(filter), '-', max(filter), '%', sep='')
   }
   max.abundance <- apply(filter, 1, max)
   table.filtered <- table[max.abundance >= abundance_threshold, ]
   nrow.filtered.a <- nrow(table.filtered)
   msg <- paste(msg,
-               'in at least one column: ',
+               ' in at least one column: ',
                nrow.init-nrow.filtered.a,
                ' rows were removed out of ',
                nrow.init,
@@ -564,15 +564,31 @@ FilterTable <- function(table=NULL, category='taxonomy',
 #  A description of the function
 ################
 BinTableByCategory <- function(table=NULL, category_col='taxonomy', fun='sum',
-                               level='NA', verbose=TRUE) {
-  PrintMsg(paste('"description":"Bin table rows by category (column=',
+                               level='NA', verbose=TRUE, vstyle=1) {
+  if (vstyle == 1) {
+    PrintMsg(paste('"description":"Observations were binned by categories (category column:',
+                   category_col,
+                   ', function:',
+                   fun,
+                   ', level:',
+                   level,
+                   ')."',
+                   sep=''), verbose)
+  } else if (vstyle == 2) {
+    PrintMsg(paste('"description":"Observations were binned by categories (category column:',
                  category_col,
-                 ', function=',
+                 ', function:',
                  fun,
-                 ', level=',
-                 level,
-                 ')."',
+                 '):"',
                  sep=''), verbose)
+  }
+  if (vstyle > 1) {
+    PrintMsg(paste('"description-item":"Category level ',
+                 level,
+                 '"',
+                 sep=''), verbose)
+  }
+
 
   category_is_row_names <- FALSE
   if ((category_col == '') || !(category_col %in% names(table)) ) {
@@ -644,7 +660,7 @@ DivTable <- function(table=NULL, vect=NULL, verbose='TRUE') {
 ################
 ApplyLog2Cpm <- function(table=NULL, verbose='TRUE') {
   if (length(table[table < 0]) > 0) {
-    PrintMsg('"error":"Log2Cpm was not applied because negative values were detected."',
+    PrintMsg('"error":"The log2cpm transformation was not applied because negative values were detected."',
              verbose, TRUE)
     return ()
   }
@@ -653,7 +669,7 @@ ApplyLog2Cpm <- function(table=NULL, verbose='TRUE') {
     table <- round(table, digits=0)
   }
 
-  PrintMsg('"description":"Converted values into per-million per column and applied log2(x+1)."',
+  PrintMsg('"description":"Values were converted into per-million per column and a log-transformation was applied (log2(x+1))."',
            verbose)
 
   transformed.table <- as.data.frame(log2(1+(apply(as.matrix(table),
@@ -681,7 +697,7 @@ ApplyLog2 <- function(table=NULL, verbose=TRUE) {
              verbose, TRUE)
     return ()
   }
-  PrintMsg('"description":"Applied log2(x+1)."',
+  PrintMsg('"description":"A log-transformation was applied (log2(x+1))."',
            verbose)
 
   transformed.table <- as.data.frame(log2(1+(as.matrix(table))))
@@ -702,7 +718,7 @@ ApplyLog2 <- function(table=NULL, verbose=TRUE) {
 #  A description of the function
 ################
 ApplyCount2Percent <- function(table, verbose=TRUE) {
-  PrintMsg('"description":"Transformed values into percentages per column."', verbose=verbose)
+  PrintMsg('"description":"Values were converted into percentages per column."', verbose=verbose)
   transformed.table <- as.data.frame(apply(as.matrix(table), 2, Numeric2Percent))
   names(transformed.table) <- names(table)
   row.names(transformed.table) <- row.names(table)
@@ -761,9 +777,9 @@ RarefyTable <- function(table=NULL, sample='max', nsampling=1, verbose=TRUE) {
   rarefied.table <- apply(simplify2array(table.list), c(1, 2), mean)
   # element-wise mean across rarefied tables
 
-  PrintMsg(paste('"description":"Equalized number of observations per samples using the rarefaction method with sampling depth=',
+  PrintMsg(paste('"description":"The number of observations per samples were equalized using the rarefaction method with a sampling depth of ',
                         sample,
-                        ' (random sampling without replacement) (R package vegan). New values were calculated as the means of ',
+                        ' (random sampling without replacement) (R package vegan). The rarefied values were calculated as the means of ',
                         nsampling,
                         ' independent samplings that were rounded to the nearest integer."',
                         sep=''), verbose=verbose)
@@ -929,7 +945,7 @@ PerformClustering <- function(table=NULL, fun=c('kmeans', 'pam', 'pam-bray', 'pa
     }
     package <- paste(' (R package {', unlist(spec$pkg), '})', sep='')
   }
-  PrintMsg(paste('"description":"Performed clustering using ', spec$label,
+  PrintMsg(paste('"description":"Clusters were determined using ', spec$label,
            package, '."', sep=''),
            verbose)
 
@@ -1015,7 +1031,7 @@ AnalyseProportions <- function(table=NULL,
                                verbose=TRUE, graphical=TRUE) {
 
   # Convert to relative abundances per column
-  PrintMsg('"description":"Converted data to relative abundance (%) per sample."',
+  PrintMsg('"description":"Data was converted to proportions (%) per sample."',
            verbose)
   table <- as.data.frame(apply(table, 2, Numeric2Percent))
 
@@ -1073,10 +1089,10 @@ ComputeDiversity <- function(table=NULL, fun='shannon', json=libJson,
     pkg <- ''
   }
 
-  PrintMsg(paste('"description":"Calculated ',
+  PrintMsg(paste('"description":"The ',
                  spec$label,
                  package,
-                 ' per sample."', sep=''), verbose)
+                 ' was calculated for each sample."', sep=''), verbose)
 
   diversity <- NULL
   if (pkg == 'vegan') {
@@ -1130,7 +1146,7 @@ ComputeCorrelation <- function(table=NULL, fun='pearson', test=FALSE,
     package <- paste(' (R package {', unlist(spec$pkg), '})', sep='')
   }
 
-  PrintMsg(paste('"description":"Calculate ', spec$label, package, '."', sep=''),
+  PrintMsg(paste('"description":"Calculated ', spec$label, package, '."', sep=''),
            verbose=verbose)
 
   if (as.logical(test) == TRUE) {
@@ -1187,7 +1203,7 @@ ComputeDistance <- function(table=NULL, fun='bray', json=libJson,
 
   if (fun %in% c('pearson', 'spearman')) {
 
-    PrintMsg(paste('"description":"Calculate distance matrix based on ',
+    PrintMsg(paste('"description":"A distance matrix was calculated based on ',
                           spec$label, package, '."', sep=''), verbose=verbose)
     return (as.dist(as.matrix(ComputeCorrelation(table, fun=fun, json=json,
                                          verbose=FALSE))))
@@ -1198,11 +1214,11 @@ ComputeDistance <- function(table=NULL, fun='bray', json=libJson,
 
       table <- table+abs(min(table))
 
-      PrintMsg(paste('"description":"Apply a Caillez correction and calculate distance matrix based on ',
+      PrintMsg(paste('"description":"A Caillez correction was applied and a distance matrix was calculated based on ',
                spec$label, package, '."', sep=''), verbose=verbose)
 
     } else {
-      PrintMsg(paste('"description":"Calculate distance matrix based on ',
+      PrintMsg(paste('"description":"A distance matrix was calculated based on ',
                             spec$label, package, '."', sep=''), verbose=verbose)
     }
 
@@ -1328,7 +1344,7 @@ ComputeStats <- function(response=NULL, map=NULL, method='anova',
   # If no model is specified, assume all columns in map are fixed variables
   if (is.null(model)) {
     model <- paste(names(map), collapse='+')
-    PrintMsg(paste('"warning":"Model was not specified. Based on the map, the following model will be used by default: ',
+    PrintMsg(paste('"warning":"No model was specified. Based on the map, the following model will be used by default: ',
             model,
             '."',
             sep=''), verbose)
@@ -1376,7 +1392,7 @@ ComputeStats <- function(response=NULL, map=NULL, method='anova',
     # PARAMETRIC, ACCEPTS MODELS WITH >2 FACTORS, MULTIPLE FIXED VARIABLES AND NESTING
     # MODEL CAN BE OF THE FORM "a*b+c"
 
-    PrintMsg(paste('"description":"Fit an analysis of variance (ANOVA) using model: ', model,
+    PrintMsg(paste('"description":"An analysis of variance (ANOVA) was performed using the model: ', model,
              '."', sep=''), verbose)
 
     aov.output <- aov(formula=as.formula(formula), data=data)
@@ -1404,20 +1420,20 @@ ComputeStats <- function(response=NULL, map=NULL, method='anova',
     # MODEL HAS TO BE OF THE FORM "a | b"
     friedman.terms <- unlist(strsplit(model, split=' '))
     if (length(friedman.terms) != 3 || friedman.terms[2] != '|') {
-      PrintMsg(paste('"error":"Model must be of the form a | b when using Friedman test. Please provide an appropriate model. Current model: ',
+      PrintMsg(paste('"error":"The model must be of the form a | b when using Friedman test. Please provide an appropriate model. The current model is: ',
                model, '."', sep=''), verbose, TRUE)
     }
 
     friedman.output <- friedman.test.with.post.hoc(formula=as.formula(formula), data=data)
 
-    PrintMsg(paste('"description":"Performed Friedman test using model: ', model,
+    PrintMsg(paste('"description":"A Friedman test was performed using the model: ', model,
                    '."', sep=''), verbose)
 
     if (pairwise == TRUE) {
       pairwise.output <- list()
       pairwise.output[[term[1]]] <- data.frame(row.names=paste(unique(unlist(map[, term[1]])), collapse='-'),
                                               p=friedman.output$PostHoc.Test)
-      PrintMsg('"description":"Performed post-hoc test with correction for multiple comparisions."', verbose)
+      PrintMsg('"description":"A post-hoc test with correction for multiple comparisions was performed."', verbose)
     }
 
     summary <- data.frame(row.names=term[1],
@@ -1427,21 +1443,21 @@ ComputeStats <- function(response=NULL, map=NULL, method='anova',
     # NON-PARAMETRIC, ACCEPTS MODELS WITH >2 FACTORS BUT ONLY 1 FIXED VARIABLE
     # MODEL CAN BE OF THE FORM "a"
     if (length(term) > 1) {
-      PrintMsg(paste('"error":"Model cannot include more than 1 variable when using Kruskal-Wallis rank sum test. Please provide an appropriate model. Current model: ',
+      PrintMsg(paste('"error":"The model cannot include more than 1 variable when using Kruskal-Wallis rank sum test. Please provide an appropriate model. The current model is: ',
                model, ' (', length(term), ' variables)."', sep=''), verbose, TRUE)
     }
 
     suppressMessages(library('dunn.test'))
     dunn.output <- dunn.test(data[, response.name], g=map[, term[1]], kw=FALSE, table=FALSE, list=FALSE)
 
-    PrintMsg(paste('"description":"Performed Kruskal-Wallis rank sum test using model: ', model,
+    PrintMsg(paste('"description":"A Kruskal-Wallis rank sum test was performed using the model: ', model,
                    '."', sep=''), verbose)
 
     if (pairwise == TRUE) {  
       pairwise.output <- list()
       pairwise.output[[term[1]]] <- data.frame(row.names=paste(unique(unlist(map[, term[1]])), collapse='-'),
                                               p=dunn.output$P)
-      PrintMsg('"description":"Performed post-hoc test with correction for multiple comparisions (R library {dunn.test})."', verbose)
+      PrintMsg('"description":"A post-hoc test with correction for multiple comparisions (R library {dunn.test}) was performed."', verbose)
     }
 
     summary <- data.frame(row.names=term[1],
@@ -1452,17 +1468,17 @@ ComputeStats <- function(response=NULL, map=NULL, method='anova',
     # NON-PARAMETRIC, ACCEPTS MODELS WITH 2 FACTORS ONLY AND ONE FIXED VARIABLES
     # MODEL HAS TO BE OF THE FORM "a"
     if (length(term) > 1) {
-      PrintMsg(paste('"error":"Model cannot include more than 1 variable when using Wilcoxon rank sum test. Please provide an appropriate model. Current model: ',
+      PrintMsg(paste('"error":"The model cannot include more than 1 variable when using Wilcoxon rank sum test. Please provide an appropriate model. The current model is: ',
                model, ' (', length(term), ' variables)."', sep=''), verbose, TRUE)
     }
     samples <- unique(unlist(data[, model]))
     if (length(samples) != 2) {
-      PrintMsg(paste('"error":"Wilcoxon rank sum test can only perform two samples comparison. Please provide an appropriate model. Current model includes following samples: ',
+      PrintMsg(paste('"error":"The Wilcoxon rank sum test can only perform two samples comparison. Please provide an appropriate model. The current model includes the following samples: ',
                sample, '."', sep=''), verbose, TRUE)
     }
 
     wilcox.output <- wilcox.test(formula=as.formula(formula), data=data)
-    PrintMsg(paste('"description":"Performed Wilcoxon rank sum test using model: ', model,
+    PrintMsg(paste('"description":"A Wilcoxon rank sum test was performed using the model: ', model,
                    '."', sep=''), verbose)
 
     summary <- data.frame(row.names=paste(samples, collapse='-'),
@@ -1477,12 +1493,12 @@ ComputeStats <- function(response=NULL, map=NULL, method='anova',
     # NON-PARAMETRIC, ACCEPTS MODELS WITH 2 FACTORS ONLY AND ONE FIXED VARIABLES. NESTING IS ASSUMED FROM THE ORDER OF THE DATA!
     # MODEL HAS TO BE OF THE FORM "a"
     if (length(term) > 1) {
-      PrintMsg(paste('"error":"Model cannot include more than 1 variable when using Wilcoxon signed rank test. Please provide an appropriate model. Current model: ',
+      PrintMsg(paste('"error":"The model cannot include more than 1 variable when using Wilcoxon signed rank test. Please provide an appropriate model. The current model is: ',
                model, ' (', length(term), ' variables)."', sep=''), verbose, TRUE)
     }
     samples <- unique(unlist(data[, model]))
     if (length(samples) != 2) {
-      PrintMsg(paste('"error":"Wilcoxon signed rank test can only perform two samples paired comparison. Please provide an appropriate model. Current model includes following samples: ',
+      PrintMsg(paste('"error":"The Wilcoxon signed rank test can only perform two samples paired comparison. Please provide an appropriate model. the current model includes the following samples: ',
                paste(sample, collapse=', '),
                '."',
                sep=''),
@@ -1491,7 +1507,7 @@ ComputeStats <- function(response=NULL, map=NULL, method='anova',
     x <- data[data[, model] == samples[1], model]
     y <- data[data[, model] == samples[2], model]
     if (length(x) != length(y)) {
-      PrintMsg(paste('"error":"Paired comparison in Wilcoxon signed rank test is possible only if samples have same size. Please provide an appropriate model, correct the map or use different statistics. Current samples: ',
+      PrintMsg(paste('"error":"A paired comparison in Wilcoxon signed rank test is possible only if samples have same size. Please provide an appropriate model, correct the map or use different statistics. Current samples are: ',
                samples[1],
                '(n=',
                length(x),
@@ -1505,7 +1521,7 @@ ComputeStats <- function(response=NULL, map=NULL, method='anova',
     }
 
     wilcox.output <- wilcox.test(formula=as.formula(formula), data=data, paired=TRUE)
-    PrintMsg(paste('"description":"Performed Wilcoxon signed rank test using model: ',
+    PrintMsg(paste('"description":"A Wilcoxon signed rank test was performed using the model: ',
                    model,
                    '. Paires: ',
                    paste(paste(row.names(data)[data[, model] == samples[1]], row.names(data)[data[, model] == samples[2]], sep='-'), collapse=', '),
@@ -1523,12 +1539,12 @@ ComputeStats <- function(response=NULL, map=NULL, method='anova',
     # PARAMETRIC, ACCEPTS MODELS WITH 2 FACTORS ONLY AND ONE FIXED VARIABLES.
     # MODEL HAS TO BE OF THE FORM "a"
     if (length(term) > 1) {
-      PrintMsg(paste('"error":"Model cannot include more than 1 variable when using t-test. Please provide an appropriate model. Current model: ',
+      PrintMsg(paste('"error":"The model cannot include more than 1 variable when using t-test. Please provide an appropriate model. The current model is: ',
                model, ' (', length(term), ' variables)."', sep=''), verbose, TRUE)
     }
     samples <- unique(unlist(data[, model]))
     if (length(samples) != 2) {
-      PrintMsg(paste('"error":"T-test can only perform two samples comparison. Please provide an appropriate model. Current model includes following samples: ',
+      PrintMsg(paste('"error":"A t-test can only perform two samples comparison. Please provide an appropriate model. The current model includes the following samples: ',
                paste(sample, collapse=', '),
                '."',
                sep=''),
@@ -1536,7 +1552,7 @@ ComputeStats <- function(response=NULL, map=NULL, method='anova',
     }
 
     ttest.output <- t.test(formula=as.formula(formula), data=data)
-    PrintMsg(paste('"description":"Performed paired t-test using model: ',
+    PrintMsg(paste('"description":"A paired t-test was performed using the model: ',
                    model,
                    '."',
                    sep=''),
@@ -1554,12 +1570,12 @@ ComputeStats <- function(response=NULL, map=NULL, method='anova',
     # PARAMETRIC, ACCEPTS MODELS WITH 2 FACTORS ONLY AND ONE FIXED VARIABLES. NESTING IS ASSUMED FROM THE ORDER OF THE DATA!
     # MODEL HAS TO BE OF THE FORM "a"
     if (length(term) > 1) {
-      PrintMsg(paste('"error":"Model cannot include more than 1 variable when using t-test. Please provide an appropriate model. Current model: ',
+      PrintMsg(paste('"error":"A model cannot include more than 1 variable when using t-test. Please provide an appropriate model. The current model is: ',
                model, ' (', length(term), ' variables)."', sep=''), verbose, TRUE)
     }
     samples <- unique(unlist(data[, model]))
     if (length(samples) != 2) {
-      PrintMsg(paste('"error":"Paired t-test can only perform two samples comparison. Please provide an appropriate model. Current model includes following samples: ',
+      PrintMsg(paste('"error":"A paired t-test can only perform two samples comparison. Please provide an appropriate model. The current model includes the following samples: ',
                paste(sample, collapse=', '),
                '."',
                sep=''),
@@ -1568,7 +1584,7 @@ ComputeStats <- function(response=NULL, map=NULL, method='anova',
     x <- data[data[, model] == samples[1], model]
     y <- data[data[, model] == samples[2], model]
     if (length(x) != length(y)) {
-      PrintMsg(paste('"error":"Paired comparison in t-test is possible only if samples have same size. Please provide an appropriate model, correct the map or use different statistics. Current samples: ',
+      PrintMsg(paste('"error":"A paired comparison in t-test is possible only if samples have same size. Please provide an appropriate model, correct the map or use different statistics. The current samples are: ',
                samples[1],
                '(n=',
                length(x),
@@ -1582,7 +1598,7 @@ ComputeStats <- function(response=NULL, map=NULL, method='anova',
     }
 
     ttest.output <- t.test(formula=as.formula(formula), data=data, paired=TRUE)
-    PrintMsg(paste('"description":"Performed paired t-test using model: ',
+    PrintMsg(paste('"description":"A paired t-test was performed using the model: ',
                    model,
                    '. Paires: ',
                    paste(paste(row.names(data)[data[, model] == samples[1]], row.names(data)[data[, model] == samples[2]], sep='-'), collapse=', '),
@@ -1666,7 +1682,9 @@ AnalyseDiversity <- function(table=NULL, map=NULL, fun=c('richness', 'shannon'),
     rarefied.table[[i]] <- rrarefy(t(table), sample=apply(rbind(sample[i, ], colsums), 2, min))
   }
 
-  PrintMsg(paste('"description":"Generated rarefactions to compute diversity until ', min.colsum, ' counts per sample"', sep=''), verbose)
+  PrintMsg('"description":"This is a diversity analysis."', verbose)
+
+  PrintMsg(paste('"description":"The dataset was rarefied until ', min.colsum, ' counts per sample."', sep=''), verbose)
 
   data.json <- c(1:length(fun))
   for (i in 1:length(fun)) {
@@ -1692,7 +1710,6 @@ AnalyseDiversity <- function(table=NULL, map=NULL, fun=c('richness', 'shannon'),
 
     # Calculate statistics
     if (compare_diversity == TRUE) {
-      PrintMsg(paste('"description":"Compared diversity between groups at a rarefaction depth of ', min.colsum, ' counts per sample"', sep=''), verbose)
       p.value <- list()
       for (j in 1:length(model)) {
         if (length(stats) == length(model)) {
@@ -1710,6 +1727,7 @@ AnalyseDiversity <- function(table=NULL, map=NULL, fun=c('richness', 'shannon'),
         row.names(p) <- fun[i]
         p.value[[j]] <- p
       }
+      PrintMsg(paste('"description":"The statistics were performed at a rarefaction depth of ', min.colsum, ' counts per sample."', sep=''), verbose)
     } else {
       p.value <- NULL
     }
@@ -1816,10 +1834,10 @@ PerformAdonis <- function(table=NULL, map=NULL, fun='bray',
     package <- paste(' (R package {', unlist(spec$pkg), '})', sep='')
   }
 
-  PrintMsg(paste('"description":"Performed a permutational multivariate analysis of variance based on the ',
+  PrintMsg(paste('"description":"This is a permutational multivariate analysis of variance using the Adonis method (R package {vegan}) based on the ',
            spec$label,
            package,
-           ' using the Adonis method (R package {vegan})."',
+           '."',
            sep=''),
            verbose)
 
@@ -1828,7 +1846,7 @@ PerformAdonis <- function(table=NULL, map=NULL, fun='bray',
     c <- abs(min(table))
     table <- table+c
 
-    PrintMsg(paste('"description":"Corrected for negative values using a Caillez correction (',
+    PrintMsg(paste('"description":"Negative values were corrected using a Caillez correction (',
              c,
              ' added to all values)."',
              sep=''),
@@ -1958,7 +1976,7 @@ PerformPCA <- function(table=NULL, map=NULL, biplot=TRUE,
                   sep='')
   }
 
-  PrintMsg('"description":"Performed principal component analysis (PCA) (R package {FactoMineR})."',
+  PrintMsg('"description":"This is a principal component analysis (PCA) (R package {FactoMineR})."',
            verbose)
 
   return (data.json)
@@ -2020,7 +2038,7 @@ PerformCA <- function(table=NULL, map=NULL,
                   '}}',
                   sep='')
 
-  PrintMsg('"description":"Performed correspondence analysis (CA) (R package {FactoMineR})."',
+  PrintMsg('"description":"This is a correspondence analysis (CA) (R package {FactoMineR})."',
            verbose)
 
   return (data.json)
@@ -2067,7 +2085,7 @@ PerformPCoA <- function(table=NULL, map=NULL, fun='bray',
   data.json <- PerformPCA(table=dist, map=map, biplot=FALSE,
                           verbose=FALSE, graphical=graphical)
 
-  PrintMsg(paste('"description":"Performed principal coordinate analysis (PCoA) (R package {FactoMineR}) based on ',
+  PrintMsg(paste('"description":"This is a principal coordinate analysis (PCoA) (R package {FactoMineR}) based on ',
                  spec$label,
                  package,
                  '."',
@@ -2126,7 +2144,7 @@ PerformCCA <- function(table=NULL, map=NULL, column=NULL,
                   '}',
                   sep='')
 
-  PrintMsg(paste('"description":"Performed a canonical correspondence analysis (CCA) (R package {vegan}) with the following constraining variable(s):',
+  PrintMsg(paste('"description":"This is a canonical correspondence analysis (CCA) (R package {vegan}) with the following constraining variable(s):',
            column,
            '."',
            sep=''),
@@ -2156,11 +2174,11 @@ ComputeFoldChange <- function(group1=NULL, group2=NULL, names=NULL, verbose=TRUE
   out[['logfc']] <- log2(mean(group2))-log2(mean(group1))
   out[['ab']] <- mean(c(group2, group1))
 
-  PrintMsg(paste('"description":"Calculated fold-change as log2(mean(',
+  PrintMsg(paste('"description":"Fold-change is calculated as log2(mean(',
                  names[2],
                  '))-log2(mean(',
                  names[1],
-                 ')) and abundance as (mean(',
+                 ')) and abundance is calculated as (mean(',
                  names[1],
                  ')+mean(',
                  names[2],
@@ -2211,7 +2229,7 @@ AnalyseChange <- function(table=NULL, map=NULL,
                           json=libJson, verbose=TRUE,
                           graphical=FALSE) {
 
-  PrintMsg('"description":"Analysed changes (fold-changes and p-values)."',
+  PrintMsg('"description":"This is a differential analysis (fold-changes and statistical tests)."',
            verbose)
   # Calculate statistics
   if (is.null(model)) {
@@ -2345,13 +2363,13 @@ AnalyseChange <- function(table=NULL, map=NULL,
 #  A description of the function
 ################
 BuildHeatMap <- function(table=NULL, map=NULL, stats='anova',
-                         model=NULL, metadata=NULL,
+                         model=NULL, secondary=NULL,
                          fun='spearman',
                          json=libJson, verbose=TRUE, graphical=TRUE) {
 
   suppressMessages(library('gplots'))
 
-  PrintMsg('"description":"Build a heatmap of proportions."',
+  PrintMsg('"description":"This is a heat-map of abundances."',
            verbose=verbose)
 
   # Check that there is no constant data
@@ -2366,7 +2384,7 @@ BuildHeatMap <- function(table=NULL, map=NULL, stats='anova',
 
   names(data) <- names(table)
   row.names(data) <- row.names(table)
-  PrintMsg('"description":"Scale on standard deviation and center on mean abundance per row."',
+  PrintMsg('"description":"Abundances are scaled on standard deviation and centered on mean per row."',
            verbose=verbose)
 
   # keep only columns of map that are used in the model
@@ -2415,8 +2433,8 @@ BuildHeatMap <- function(table=NULL, map=NULL, stats='anova',
   names <- names(map)
   map <- as.data.frame(map[heatmap.out$colInd, ])
   names(map) <- names
-  if (!is.null(metadata)) {
-    metadata <- metadata[, heatmap.out$colInd]
+  if (!is.null(secondary)) {
+    secondary <- secondary[, heatmap.out$colInd]
   }
 
   # Store heatmap data into a json string
@@ -2509,13 +2527,13 @@ BuildHeatMap <- function(table=NULL, map=NULL, stats='anova',
                                  '}',
                                  sep='')
 
-  # Add correlations with metadata to sidebar
-  if (! is.null(metadata)) {
+  # Add correlations with secondary dataset to sidebar
+  if (! is.null(secondary)) {
 
-    PrintMsg('"description":"Calculate Spearman rank correlation with metadata."',
+    PrintMsg('"description":"The correlations between the primary and secondary datasets were calculated using the Spearman rank correlation."',
              verbose=verbose)
 
-    correlation <- as.data.frame(cor(x=t(data), y=t(metadata), use='na.or.complete', method ="spearman"))
+    correlation <- as.data.frame(cor(x=t(data), y=t(secondary), use='na.or.complete', method ="spearman"))
 
     ncor <- ncol(correlation)
     cor.json <- c(1:ncor)
@@ -2615,7 +2633,7 @@ getGroupWithHighestMean <- function(data=NULL, map=NULL, column=NULL, verbose=TR
 #  A description of the function
 ################
 BuildCorrelationNetwork <- function(table=NULL, map=NULL, stats='anova',
-                                    model=NULL, metadata=NULL, fun='spearman',
+                                    model=NULL, secondary=NULL, fun='spearman',
                                     json=libJson, verbose=TRUE) {
 
   spec <- as.data.frame(do.call('rbind', json$correlation))
@@ -2629,7 +2647,7 @@ BuildCorrelationNetwork <- function(table=NULL, map=NULL, stats='anova',
     package <- paste(' (R package {', unlist(spec$pkg), '})', sep='')
   }
 
-  PrintMsg(paste('"description":"Build network of variables based on ',
+  PrintMsg(paste('"description":"This is a correlation network. It was built using ',
                         spec$label, package, '."', sep=''),
                         verbose=verbose)
 
@@ -2639,11 +2657,11 @@ BuildCorrelationNetwork <- function(table=NULL, map=NULL, stats='anova',
   # keep only columns of map that are used in the model
   map <- FilterMap(map=map, model=model)
 
-  # Combine with metadata
-  data <- rbind(table, metadata)
-  data.type <- rep('data', nrow(data))
-  if (!is.null(metadata)) {
-    data.type[(nrow(table)+1):nrow(data)] <- "metadata"
+  # Combine with secondary dataset
+  data <- rbind(table, secondary)
+  data.type <- rep('primary dataset', nrow(data))
+  if (!is.null(secondary)) {
+    data.type[(nrow(table)+1):nrow(data)] <- "secondary dataset"
   }
 
   # Check that there is no constant data
@@ -2792,7 +2810,7 @@ BuildSimilarityNetwork <- function(table=NULL, map=NULL, funs=NULL,
       package <- paste(' (R package {', unlist(spec$pkg), '})', sep='')
     }
 
-    PrintMsg(paste('"description":"Build similarity network based on ',
+    PrintMsg(paste('"description":"This is a similarity network. It was built using ',
              spec$label, package, '."', sep=''),
              verbose=verbose)
   }
@@ -2832,7 +2850,7 @@ BuildSimilarityNetwork <- function(table=NULL, map=NULL, funs=NULL,
       package <- paste(' (R package {', unlist(spec$pkg), '})', sep='')
     }
 
-    PrintMsg(paste('"meassage":"Apply clustering using the ',
+    PrintMsg(paste('"description":"Clusters were determined using the ',
                           spec$label, package, '."', sep=''),
                           verbose=verbose)
 

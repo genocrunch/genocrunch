@@ -26,9 +26,7 @@ function pca(id, legend_id, json, W = 600, H = 600, font_family = "verdana, aria
     var color_select_options = [],
         json_keys = Object.keys(json[Object.keys(json)[0]][0]),
         axisValues = Object.keys(json[Object.keys(json)[0]][0].data),
-        nArrowMax = json[Object.keys(json)[0]].length;
-        //space_options = Object.keys(json);
-        //space_options.splice(space_options.indexOf("eig"), 1);
+        nEigenMax = json[Object.keys(json)[1]].length;
 
     for ( var i = 0; i < json_keys.length; i++) {
       if (["data", "id"].indexOf(json_keys[i]) == -1) {
@@ -54,7 +52,7 @@ function pca(id, legend_id, json, W = 600, H = 600, font_family = "verdana, aria
     // Add plot labels
     var plotLabel = svg.selectAll();
 
-    // Draw bi-plot (arrows)
+    // Draw bi-plot
     var biPlot = svg.selectAll();
 
     // Add bi-plot labels
@@ -90,8 +88,11 @@ function pca(id, legend_id, json, W = 600, H = 600, font_family = "verdana, aria
     colorLegend.append("p").append("b")
         .html("Color key")
 
-    colorLegendList = colorLegend.append("div")
-        .append("ul")
+    var colorLegendList = colorLegend.append("div")
+
+    colorLegendList.append("span").attr("id", "colorlegend-subtitle")
+
+    colorLegendList = colorLegendList.append("ul")
         .style("list-style-type", "none")
         .style("padding", 0)
         .selectAll("ul")
@@ -105,8 +106,11 @@ function pca(id, legend_id, json, W = 600, H = 600, font_family = "verdana, aria
     symLegend.append("p").append("b")
         .html("Symbol key")
 
-    symLegendList = symLegend.append("div")
-        .append("ul")
+    var symLegendList = symLegend.append("div")
+
+    symLegendList.append("span").attr("id", "symlegend-subtitle")
+
+    symLegendList = symLegendList.append("ul")
         .style("list-style-type", "none")
         .style("padding", 0)
         .selectAll("ul")
@@ -116,25 +120,20 @@ function pca(id, legend_id, json, W = 600, H = 600, font_family = "verdana, aria
 
       // Set coordinates settings
       var space = "ind",
-          X = d3.select("#xSelect").property("value"),
-          Y = d3.select("#ySelect").property("value"),
-          x = [],
-          y = [];
-
-      json[space].forEach(function (d) {
-        x.push(d.data[X]);
-        y.push(d.data[Y]);
-      });
-
-      var xMin = Math.min.apply(null, x),
+          X = $("#xSelect").val(),
+          xValue = function(d) { return d.data[X];},
+          x = json[space].map(function(d){return xValue(d);}),
+          xMin = Math.min.apply(null, x),
           xMax = Math.max.apply(null, x),
           xPadding = [0.05, 0.03],
           xRange = xMax-xMin,
           xScale = d3.scaleLinear()
             .range([0, width])
             .domain([xMin-xPadding[0]*xRange, xMax+xPadding[1]*xRange]).nice(),
-          xValue = function(d) { return d.data[X];},
           xMap = function(d) { return xScale(xValue(d));},
+          Y = $("#ySelect").val(),
+          yValue = function(d) { return d.data[Y];},
+          y = json[space].map(function(d){return yValue(d);});
           yMin = Math.min.apply(null, y),
           yMax = Math.max.apply(null, y),
           yPadding = [0.05, 0.03],
@@ -142,12 +141,11 @@ function pca(id, legend_id, json, W = 600, H = 600, font_family = "verdana, aria
           yScale = d3.scaleLinear()
             .range([height, 0])
             .domain([yMin-yPadding[0]*yRange, yMax+yPadding[1]*yRange]).nice()
-          yValue = function(d) { return d.data[Y];},
           yMap = function(d) { return yScale(yValue(d));};
 
       // Set color settings
-      var selected_color_factor = d3.select("#colorSelect").property("value"),
-          selected_symbol_factor = d3.select("#symbolSelect").property("value"),
+      var selected_color_factor = $("#colorSelect").val(),
+          selected_symbol_factor = $("#symbolSelect").val(),
           color_factors = [],
           symbol_factors = [];
 
@@ -225,29 +223,27 @@ function pca(id, legend_id, json, W = 600, H = 600, font_family = "verdana, aria
           };
         });
 
-      // Draw arrows (bi-plot)
-      var arrow_space = "var", //space_options,
-          nArrows = d3.select("#nArrow").property("value"),
-          minDx = Math.min(xScale(0), width-xScale(0)),
-          minDy = Math.min(yScale(0), height-yScale(0)),
-          minD = Math.min(minDx, minDy),
-          xRadius = Math.abs(xScale.invert(xScale(0)+minD)/1.5),
-          yRadius = Math.abs(yScale.invert(yScale(0)+minD)/1.5),
-          norm = function (d) {return Math.sqrt(Math.pow(xValue(d), 2)+Math.pow(yValue(d), 2));},
+      // Draw eigenvectors (bi-plot)
+      var eigen_space = "var", //space_options,
+          nEigen = $("#nEigen").val(),
+          eigen_data = JSON.parse(JSON.stringify(json[eigen_space])),
+          exValue = function(d) { return d.data[X];},
+          ex = eigen_data.map(function(d){return exValue(d);}),
+          exMap = function(d) { return xScale(exValue(d));},
+          eyValue = function(d) { return d.data[Y];},
+          ey = eigen_data.map(function(d){return eyValue(d);}),
+          eyValue = function(d) { return d.data[Y];},
+          eyMap = function(d) { return yScale(eyValue(d));},
+          norm = function (d) {return Math.sqrt(Math.pow(exValue(d), 2)+Math.pow(eyValue(d), 2));},
           angle = function (d) {
-            var a = Math.atan(xValue(d)/yValue(d))*180/Math.PI;
-            if (yValue(d) < 0) {
+            var a = Math.atan(exValue(d)/eyValue(d))*180/Math.PI;
+            if (eyValue(d) < 0) {
               a = a-180;  // apply some majik...
             }
             return a;
-          },
-          xMapArrow = function (d) {return xScale(xRadius*xValue(d)/norm(d));},
-          yMapArrow = function (d) {return yScale(yRadius*yValue(d)/norm(d));};
+          };
 
-          //arrow_space.splice(arrow_space.indexOf(space), 1);
-
-      var arrow_data = JSON.parse(JSON.stringify(json[arrow_space]));
-          nArrowMax = arrow_data.length;
+          nEigenMax = eigen_data.length;
 
          function sortByNorm(e1, e2) {
            var v1 = norm(e1),
@@ -255,14 +251,14 @@ function pca(id, legend_id, json, W = 600, H = 600, font_family = "verdana, aria
            return v2-v1;
          };
 
-      arrow_data.sort(sortByNorm);
-      arrow_data = arrow_data.splice(0, nArrows);
+      eigen_data.sort(sortByNorm);
+      eigen_data = eigen_data.splice(0, nEigen);
 
       biPlot = biPlot.data([]);
       biPlot.exit().remove();
 
       biPlot = biPlot
-        .data(arrow_data)
+        .data(eigen_data)
         .enter()
         .append("g");
 
@@ -270,12 +266,12 @@ function pca(id, legend_id, json, W = 600, H = 600, font_family = "verdana, aria
         .attr("class", "arrow-line")
         .attr("x1", xScale(0))
         .attr("y1", yScale(0))
-        .attr("x2", function (d) {return xMapArrow(d);})
-        .attr("y2", function (d) {return yMapArrow(d);})
+        .attr("x2", function (d) {return exMap(d);})
+        .attr("y2", function (d) {return eyMap(d);})
         .attr("stroke", "#333");
 
       var arrowHead = biPlot.append("g")
-        .attr("transform", function (d) { return "translate(" + xMapArrow(d) + ", " + yMapArrow(d) + ") rotate("+angle(d)+")"; });
+        .attr("transform", function (d) { return "translate(" + exMap(d) + ", " + eyMap(d) + ") rotate("+angle(d)+")"; });
 
       arrowHead.append("path")
         .attr("class", "arrow-head")
@@ -283,16 +279,16 @@ function pca(id, legend_id, json, W = 600, H = 600, font_family = "verdana, aria
           .type(d3.symbolTriangle)
           .size(50));
 
-      // Add bi-plot (arrows) labels
+      // Add eigenvectors labels
       biPlotLabel = biPlotLabel.data([]);
       biPlotLabel.exit().remove();
 
       biPlotLabel = biPlotLabel
-        .data(arrow_data)
+        .data(eigen_data)
         .enter()
         .append("g")
         .attr("class", "plot-label")
-        .attr("transform", function (d) { return "translate(" + xMapArrow(d) + ", " + yMapArrow(d) + ")"; });
+        .attr("transform", function (d) { return "translate(" + exMap(d) + ", " + eyMap(d) + ")"; });
 
       biPlotLabel.append("path")
         .attr("class", "arrow-head")
@@ -381,7 +377,7 @@ function pca(id, legend_id, json, W = 600, H = 600, font_family = "verdana, aria
       colorLegendList.exit().remove();
 
       colorLegendList = colorLegendList
-        .data(color_factors.reverse())
+        .data(color_factors)
         .enter().append("li")
         .style("word-wrap", "break-word")
         .attr("id", function(d) { return d;})
@@ -400,17 +396,19 @@ function pca(id, legend_id, json, W = 600, H = 600, font_family = "verdana, aria
       colorLegendList.append("span")
         .html(function(d) {return d;});
 
+      $("#colorlegend-subtitle").html(selected_color_factor)
+
+
       symLegendList = symLegendList.data([]);
       symLegendList.exit().remove();
 
       symLegendList = symLegendList
-        .data(symbol_factors.reverse())
+        .data(symbol_factors)
         .enter().append("li")
         .style("word-wrap", "break-word")
         .attr("id", function(d) { return d;})
         .attr("title", function(d) { return d;})
         .attr("selected", 0)
-
 
       symLegendList.append("svg")
         .style("margin-right", "1rem")
@@ -436,6 +434,8 @@ function pca(id, legend_id, json, W = 600, H = 600, font_family = "verdana, aria
 
       symLegendList.append("span")
         .html(function(d) { return d;})
+
+      $("#symlegend-subtitle").html(selected_symbol_factor)
 
     };
 
@@ -530,7 +530,7 @@ function pca(id, legend_id, json, W = 600, H = 600, font_family = "verdana, aria
       .attr("class", "form-group")
 
     symbolSelect.append("label")
-      .html("Symbols")
+      .html("Symbol")
 
     symbolSelect.append("div")
       .attr("class", "multiselect-btn-container figtool-multiselect-btn-container")
@@ -545,23 +545,7 @@ function pca(id, legend_id, json, W = 600, H = 600, font_family = "verdana, aria
 
     document.getElementById("symbolSelect").value = color_select_options[color_select_options.length-1];
 
-    // Select number of arrows
-    var nArrow = buttons.append("div")
-      .attr("title", "Set the number of variables (arrows) to display on the bi-plot.")
-      .attr("class", "form-group")
-
-    nArrow.append("label")
-      .html("Arrows nb")
-
-    nArrow.append("input")
-      .attr("id", "nArrow")
-      .attr("type", "number")
-      .attr("class", "form-control form-number-field")
-      .attr("min", 0)
-      .attr("max", nArrowMax)
-      .attr("value", Math.min(5, nArrowMax))
-      .on("change", restart);
-
+    appendRange(buttons, "Set the number of eigenvectors to display on the bi-plot.", "Eigenvectors", "nEigen", 0, nEigenMax, Math.max(1, Math.round(nEigenMax/100)), Math.min(5, nEigenMax), restart)
 
     setMultiselect('.figtool-multiselect');
  //   resizeMultiselect('#d3-buttons', 1, '#d3-buttons', false);

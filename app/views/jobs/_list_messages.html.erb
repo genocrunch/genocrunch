@@ -1,5 +1,5 @@
-<% if @final_json[:status_by_step][k] %>
-<% @final_json[:status_by_step][k].select{|e| e[:status] != 'skipped'}.each do |e| %>
+<% if @final_json[:status_by_step][data] %>
+<% @final_json[:status_by_step][data].select{|e| e[:status] != 'skipped'}.each do |e| %>
 
 <div class='card mb-1'>
   <div class='card-header'>
@@ -10,7 +10,7 @@
   <%= e[:name].capitalize %>
 </div>
 
-<% step_key = "primary_dataset_" + e[:name] %>
+<% step_key = data +"_"+ e[:name] %>
 <% if @final_json[:messages_by_step][step_key] and @final_json[:messages_by_step][step_key].select{|e| e[:messages] and e[:messages].select{|h| h.keys.size > 0}.compact.size > 0}.size > 0  %>
 <div class='card-block'>
 
@@ -29,7 +29,7 @@
 <% e2[:messages].each do |e3| %>
 <% k = e3.keys.first %>
 <p>
-<i class='fa fa-<%= @h_icons[k] %>'></i>
+<i class='<%= @h_icons[k] %>'></i>
 <% if k != 'output' %>
 <%= e3[k] %>
 <% else %>

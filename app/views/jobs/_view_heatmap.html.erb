@@ -2,9 +2,15 @@
 
 <%= javascript_tag do %>
 
-  var fig_data = <%= raw @data_json %>;
-
-heatMap('fig', 'fig-legend', fig_data,  W = 750, H = 750, font_family = "verdana, arial, helvetica, sans-serif");
-
+  var fig_data = <%= raw @data_json %>,
+      cmax = 200,
+      rmax = 200;
+  if (fig_data.colnames.length > cmax || fig_data.rownames.length > rmax) {
+    alert("Sorry, the heatmap is too big to be displayed:\n\
+Its size is "+fig_data.colnames.length+"x"+fig_data.rownames.length+" but the max is "+cmax+"x"+rmax+"\n\n\
+You can still download the PDF file from the Export button.")
+  } else {
+    heatMap('fig', 'fig-legend', fig_data,  W = 750, H = 750, font_family = "verdana, arial, helvetica, sans-serif");
+  }
 <% end %>
 

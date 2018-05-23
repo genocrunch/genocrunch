@@ -81,8 +81,11 @@ function pcoa(id, legend_id, json, W = 600, H = 600, font_family = "verdana, ari
     colorLegend.append("p").append("b")
         .html("Color key")
 
-    colorLegendList = colorLegend.append("div")
-        .append("ul")
+    var colorLegendList = colorLegend.append("div")
+
+    colorLegendList.append("span").attr("id", "colorlegend-subtitle")
+
+    colorLegendList = colorLegendList.append("ul")
         .style("list-style-type", "none")
         .style("padding", 0)
         .selectAll("ul")
@@ -96,8 +99,11 @@ function pcoa(id, legend_id, json, W = 600, H = 600, font_family = "verdana, ari
     symLegend.append("p").append("b")
         .html("Symbol key")
 
-    symLegendList = symLegend.append("div")
-        .append("ul")
+    var symLegendList = symLegend.append("div")
+
+    symLegendList.append("span").attr("id", "symlegend-subtitle")
+
+    symLegendList = symLegendList.append("ul")
         .style("list-style-type", "none")
         .style("padding", 0)
         .selectAll("ul")
@@ -106,25 +112,20 @@ function pcoa(id, legend_id, json, W = 600, H = 600, font_family = "verdana, ari
     var restart = function() {
 
       // Set coordinates settings
-      var X = d3.select("#xSelect").property("value"),
-          Y = d3.select("#ySelect").property("value"),
-          x = [],
-          y = [];
-
-      json.data.forEach(function (d) {
-        x.push(d.data[X]);
-        y.push(d.data[Y]);
-      });
-
-      var xMin = Math.min.apply(null, x),
+      var X = $("#xSelect").val(),
+          xValue = function(d) { return d.data[X];},
+          x = json.data.map(function(d){return xValue(d);}),
+          xMin = Math.min.apply(null, x),
           xMax = Math.max.apply(null, x),
           xPadding = [0.05, 0.03],
           xRange = xMax-xMin,
           xScale = d3.scaleLinear()
             .range([0, width])
             .domain([xMin-xPadding[0]*xRange, xMax+xPadding[1]*xRange]).nice(),
-          xValue = function(d) { return d.data[X];},
           xMap = function(d) { return xScale(xValue(d));},
+          Y = $("#ySelect").val(),
+          yValue = function(d) { return d.data[Y];},
+          y = json.data.map(function(d){return yValue(d);});
           yMin = Math.min.apply(null, y),
           yMax = Math.max.apply(null, y),
           yPadding = [0.05, 0.03],
@@ -132,12 +133,12 @@ function pcoa(id, legend_id, json, W = 600, H = 600, font_family = "verdana, ari
           yScale = d3.scaleLinear()
             .range([height, 0])
             .domain([yMin-yPadding[0]*yRange, yMax+yPadding[1]*yRange]).nice()
-          yValue = function(d) { return d.data[Y];},
           yMap = function(d) { return yScale(yValue(d));};
 
+
       // Set color settings
-      var selected_color_factor = d3.select("#colorSelect").property("value"),
-          selected_symbol_factor = d3.select("#symbolSelect").property("value"),
+      var selected_color_factor = $("#colorSelect").val(),
+          selected_symbol_factor = $("#symbolSelect").val(),
           color_factors = [],
           symbol_factors = [];
 
@@ -175,7 +176,7 @@ function pcoa(id, legend_id, json, W = 600, H = 600, font_family = "verdana, ari
         .style("stroke-opacity", 0)
         .style("fill-opacity", 0.8);
 
-      // Add dots labels
+      // Add labels
       plotLabel = plotLabel.data([]);
       plotLabel.exit().remove();
 
@@ -271,7 +272,7 @@ function pcoa(id, legend_id, json, W = 600, H = 600, font_family = "verdana, ari
       colorLegendList.exit().remove();
 
       colorLegendList = colorLegendList
-        .data(color_factors.reverse())
+        .data(color_factors)
         .enter().append("li")
         .style("word-wrap", "break-word")
         .attr("id", function(d) { return d;})
@@ -290,13 +291,13 @@ function pcoa(id, legend_id, json, W = 600, H = 600, font_family = "verdana, ari
       colorLegendList.append("span")
         .html(function(d) {return d;});
 
-
+      $("#colorlegend-subtitle").html(selected_color_factor)
 
       symLegendList = symLegendList.data([]);
       symLegendList.exit().remove();
 
       symLegendList = symLegendList
-        .data(symbol_factors.reverse())
+        .data(symbol_factors)
         .enter().append("li")
         .style("word-wrap", "break-word")
         .attr("id", function(d) { return d;})
@@ -328,6 +329,8 @@ function pcoa(id, legend_id, json, W = 600, H = 600, font_family = "verdana, ari
 
       symLegendList.append("span")
         .html(function(d) { return d;})
+
+      $("#symlegend-subtitle").html(selected_symbol_factor)
 
     };
 
@@ -422,7 +425,7 @@ function pcoa(id, legend_id, json, W = 600, H = 600, font_family = "verdana, ari
       .attr("class", "form-group")
 
     symbolSelect.append("label")
-      .html("Symbols")
+      .html("Symbol")
 
     symbolSelect.append("div")
       .attr("class", "multiselect-btn-container figtool-multiselect-btn-container")

@@ -3,17 +3,17 @@
     {
      "id":"1",
      "target":"sign-in",
-     "html":"You are currently <b>signed out</b>. Your analysis will be accessible only from this web session. Please first <b style='white-space:nowrap'>Register/Sign In</b> if you wish to, <b>recover and edit</b> your work in future sessions."
+     "html":"Your analysis will be accessible throughout the current web session.<br><br>You have the option to <b>Register</b> and <b>Sign In</b> if you wish to store your analyses across independent web sessions."
     },
     {
      "id":"2",
      "css_string":"right:window_width/2-150, width:'300px',top:0",
-     "html":"You can find some help by clicking on a help icon (<i class='help-icon fa fa-question-circle-o', aria-hidden='true'></i>) and on the <b style='white-space:nowrap'>Infos<i class='fa fa-arrow-right' aria-hidden='true'></i>Doc</b> page."
+     "html":"You can find some help by clicking on the help icons (<i class='help-icon fa fa-question-circle-o', aria-hidden='true'></i>) and on the <b style='white-space:nowrap'>Infos<i class='fa fa-arrow-right' aria-hidden='true'></i>Doc</b> page."
     },
     {
      "id":"3",
      "target":"examples",
-     "html":"You can load examples from here."
+     "html":"You can load and edit examples here."
     }
   ],
   "show":[
@@ -24,7 +24,7 @@
     {
      "id":"5",
      "target":"edit-btn",
-     "html":"You can update your job here."
+     "html":"You can edit your analysis here."
     }
   ]
 }

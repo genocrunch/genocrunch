@@ -7,7 +7,8 @@ function heatMap(id, legend_id, json, W = 600, H = 600, font_family = "verdana, 
       dendrogram_space = 30,
       dendrogram_margin = 3,
       color_bar_size = 12,
-      color_bar_margin = 3;
+      color_bar_margin = 3,
+      max_sidebars = 10;
 
   // Colors and symbols
   var heatmapColorRange = ["#3366ff", "#f2ffe6", "#ff0066"],
@@ -414,6 +415,11 @@ function heatMap(id, legend_id, json, W = 600, H = 600, font_family = "verdana, 
         }
       };
 
+      if (nsidebar > max_sidebars) {
+        alert("Sorry, the sidebar is too big to be displayed:\nThere are "+nsidebar+" bars but max "+max_sidebars+" can be displayed.")
+        selected_sidebar = '';
+        nsidebar = 0;
+      }
       var left_space = dendrogram_space+dendrogram_margin+color_bar_size*nsidebar+color_bar_margin;
 
       // Update the heatmap

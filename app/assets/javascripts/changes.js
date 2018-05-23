@@ -12,7 +12,6 @@ function foldChange(id, legend_id, json, W = 600, H = 600, font_family = "verdan
   var colors = {pos:"#FF0039",
                 neg:"#0031FF",
                 neutral:"#666666"},
-      baseline_opacity = 0.5,
       signThres = [{value:-Math.log2(0.001), opacity:0.9, text:'***'},
                    {value:-Math.log2(0.01), opacity:0.7, text:'**'},
                    {value:-Math.log2(0.05), opacity:0.5, text:'*'},
@@ -593,8 +592,8 @@ function foldChange(id, legend_id, json, W = 600, H = 600, font_family = "verdan
       // Update legend text
       var color_legend_text = selected_comp.split("-");
 
-      $("#color-legend-text-pos").html("more abundant in "+color_legend_text[1]);
-      $("#color-legend-text-neg").html("more abundant in "+color_legend_text[0]);
+      $("#color-legend-text-pos").html("mean abundance higher in "+color_legend_text[1]);
+      $("#color-legend-text-neg").html("mean abundance higher in "+color_legend_text[0]);
 
     }
 

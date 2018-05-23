@@ -14,8 +14,8 @@ function adonisPieChart(id, legend_id, json, W = 600, H = 600, font_family = "ve
                    {value:0.01, opacity:0.7, text:'**'},
                    {value:0.05, opacity:0.5, text:'*'},
                    {value:1, opacity:0.1, text:'ns'},
-                   {value:'NA', opacity:0.3, text:'na'}];
-
+                   {value:'NA', opacity:0.3, text:'na'}],
+      legend_svg_symsize = "15";
   // General functions
 	  function getMidAngle(d){
 		  return d.startAngle + (d.endAngle - d.startAngle)/2;
@@ -43,22 +43,17 @@ function adonisPieChart(id, legend_id, json, W = 600, H = 600, font_family = "ve
 
   //$.getJSON(data, function(json) {
 
-
     //////////////// Draw the figure ////////////////
-    var legendContainer = d3.select("#"+legend_id).append("div")
-      .attr('class', 'columns-1')
+    var legendContainer = d3.select("#"+legend_id)
+      .classed('columns-1', true)
 
-    var svgContainer = d3.select("#"+id)
-      .style("height", (height + margin.top + margin.bottom)+"px")
-
-    var svg = svgContainer.append("svg")
+    var svg = d3.select("#"+id).append("svg")
       .attr("id", "svg-figure")
       .attr("class", "svg-figure")
       .attr("width", (width + margin.left + margin.right)+"px")
       .attr("height",(height + margin.top + margin.bottom)+"px")
       .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
 
     // Figure title
 	  svg.append("text")
@@ -82,28 +77,35 @@ function adonisPieChart(id, legend_id, json, W = 600, H = 600, font_family = "ve
 		  .text(""); 
 
     // Add legend
-    var legend = legendContainer.append("div")
+    var legend = legendContainer.append("ul")
       .attr("id", "svg-legend")
+      .style("list-style-type", "none")
+      .style("padding", 0)
       .style("font-family", font_family)
 
+    var colorLegend = legend.append("li")
+        .style("padding-bottom", "1rem")
+        .attr("title", "Color scale")
 
-    var legend_svg_symsize = 18,
-        legend_svg_height = legend_svg_symsize*signThres.length;
+    colorLegend.append("p").append("b")
+        .html("Color scale")
 
-    legend.append('p')
-      .html('Color key')
+    var legend_svg_height = legend_svg_symsize*signThres.length;
 
-    var colorLegend = legend.append("svg")
-      .attr("width", '100%')
-      .attr("height", legend_svg_height+'px')
-      .style("overflow", "visible")
-      .selectAll()
-      .data(signThres)
-        .enter().append('g')
-        .attr("transform", function(d, i){return "translate(0,"+(i*legend_svg_height/signThres.length)+")";})
+    var colorLegendSvg = colorLegend.append("svg")
+        .style("margin-top", "0.5rem")
+        .attr("width", "100%")
+        .attr("height", legend_svg_height)
+        .style("margin-right", "0.5rem")
+        .style("overflow", "visible")
+        .selectAll()
+        .data(signThres)
+          .enter().append('g')
+          .attr("transform", function(d, i){return "translate(0,"+(i*legend_svg_height/signThres.length)+")";})
 
-      colorLegend.append("text")
-          .attr("x", legend_svg_symsize+2)
+      colorLegendSvg.append("text")
+          .attr("x", legend_svg_symsize)
+          .attr("dx", 2)
           .attr("y", legend_svg_symsize)
           .text(function(d, i){
             if(isNaN(d.value)) {
@@ -115,7 +117,7 @@ function adonisPieChart(id, legend_id, json, W = 600, H = 600, font_family = "ve
             return 'p<'+d.value+'('+signThres[i]["text"]+')';
           })
 
-        colorLegend.append("rect")
+        colorLegendSvg.append("rect")
           .attr("width", legend_svg_symsize)
           .attr("height", legend_svg_symsize)
           .attr("stroke", "none")
@@ -127,23 +129,26 @@ function adonisPieChart(id, legend_id, json, W = 600, H = 600, font_family = "ve
           })
           .attr("fill-opacity", function(d, i){return signThres[i]["opacity"];})
 
-    legend.append("span")
-      .attr('class', 'btn-sep')
+    var dataLegend = legend.append("li")
+        .style("border-top", "1px solid #ccc")
+        .style("padding-top", "1rem")
+        .style("padding-bottom", "1rem")
+        .attr("title", "Factors")
 
-    legend.append('p')
-      .html('Factors')
+    dataLegend.append("p").append("b")
+        .html("Factors")
 
-    var dataLegend = legend.append("ul")
-      .style("list-style-type", "none")
-      .selectAll("ul");
-
-
+    var dataLegendList = dataLegend.append("div")
+        .append("ul")
+        .style("list-style-type", "none")
+        .style("padding", 0)
+        .selectAll("ul")
 
 
     //////////////// Restart function ////////////////
     var restart = function() {
 
-      var selected_model = d3.select("#modelSelect").property("value");
+      var selected_model = $("#modelSelect").val();
 
       pie = pie.data([]);
       pie.exit().remove();
@@ -204,10 +209,10 @@ function adonisPieChart(id, legend_id, json, W = 600, H = 600, font_family = "ve
 
       // Update legend
 
-      dataLegend = dataLegend.data([]);
-      dataLegend.exit().remove();
+      dataLegendList = dataLegendList.data([]);
+      dataLegendList.exit().remove();
 
-      dataLegend = dataLegend
+      dataLegendList = dataLegendList
         .data(json[selected_model])
         .enter().append("li")
         .attr("id", function(d) { return d.name;})

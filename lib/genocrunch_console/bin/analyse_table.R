@@ -108,10 +108,10 @@ option_list <- list(make_option(c('-t', '--table'),  # General options
                                 type='character',
                                 default=NULL,
                                 help='Strata parameter for adonis. IF multiple models are specified, then multiple comma-separated strata are accepted.'),
-                    make_option('--metadata',
+                    make_option('--secondary',
                                 type='character',
                                 default=NULL,
-                                help='Path to metadata table'),
+                                help='Path to secondary data table'),
                     make_option('--nrar',
                                 type='numeric',
                                 default=50,
@@ -176,10 +176,10 @@ if (!is.null(opt$fun)) {
   fun <- NULL
 }
 
-if (!is.null(opt$metadata)) {
-  metadata <- read.table(file=opt$metadata, sep='\t', header=1, row.names=1)
+if (!is.null(opt$secondary)) {
+  secondary.data <- read.table(file=opt$secondary, sep='\t', header=1, row.names=1)
 } else {
-  metadata <- NULL
+  secondary.data <- NULL
 }
 
 # Set graphical output
@@ -271,7 +271,7 @@ if (opt$method == 'clustering') {
 
   data[['json']] <- BuildHeatMap(table=table, map=map,
                        stats=stats,
-                       model=model, metadata=metadata, fun=fun, json=json,
+                       model=model, secondary=secondary.data, fun=fun, json=json,
                        verbose=opt$verbose, graphical=opt$graphical)
 
 } else if (opt$method == 'correlation_network') {
@@ -279,16 +279,16 @@ if (opt$method == 'clustering') {
   data[['json']] <- BuildCorrelationNetwork(table=table, map=map,
                        stats=stats,
                        model=model,
-                       json=json, metadata=metadata, fun=fun,
+                       json=json, secondary=secondary.data, fun=fun,
                        verbose=opt$verbose)
 
 } else if (opt$method == 'similarity_network') {
-  if (!is.null(metadata)) {
-    tables <- list(table, metadata)
-    clust.names <- c('data', 'metadata', 'fusion')
+  if (!is.null(secondary.data)) {
+    tables <- list(table, secondary.data)
+    clust.names <- c('primary_dataset', 'secondary_dataset', 'snf')
   } else {
     tables <- list(table)
-    clust.names <- 'data'
+    clust.names <- 'primary_dataset'
   }
   data <- BuildSimilarityNetwork(table=tables, map=map,
                                  clust=opt$clust,

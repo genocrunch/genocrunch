@@ -274,11 +274,12 @@ class JobsController < ApplicationController
       }
       
       @h_icons={
-        'description' => 'info-circle',
-        'comment' => 'info-circle',
-        'output' => 'file-text-o',
-        'warning' => 'exclamation-triangle icon-warning',
-        'error' => 'exclamation-triangle icon-danger'
+        'description' => 'fa fa-info-circle',
+        'description-item' => 'ml-3',
+        'comment' => 'fa fa-info-circle',
+        'output' => 'fa fa-file-text-o',
+        'warning' => 'fa fa-exclamation-triangle icon-warning',
+        'error' => 'fa fa-exclamation-triangle icon-danger'
       }
       
       @test = ""
