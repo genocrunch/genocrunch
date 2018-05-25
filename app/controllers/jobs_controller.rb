@@ -426,7 +426,7 @@ class JobsController < ApplicationController
     @i = 0
     @log = ''
 
-    if !['primary_dataset', 'secondary_dataset', 'map'].include?(params[:partial])
+    if !['details', 'primary_dataset', 'secondary_dataset', 'map'].include?(params[:partial])
       
       e = @log_json.select{|el| el['type'] == 'analysis'}.first['log'].select{|el| el['name'] == params[:partial]}.first
       if e['levels'] #and @form_json['bin_levels']

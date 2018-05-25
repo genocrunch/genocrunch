@@ -1,6 +1,3 @@
-<div class="container-fluid">
-  <div class="row">
-    <div class=" col-xl-12 col-lg-12 col-md-12 col-sm-12">
 
       <% if  @form_json['bin_levels'] %>
         <div class='form-group'>
@@ -18,12 +15,12 @@
 
       <% end %>
 
+            <div class='card' title='Clustering details'>
+              <div class='card-header'>
+                <%= @form_json['bin_levels'] ? 'Clustering details (level '+session[:current_level].to_s+')' : 'Clustering details' %>
+              </div>
+              <div class='card-block'>
           <% if @description and !@description.empty? %>
-            <div class='show-element' title='Figure description'>
-              <span>
-                <i class='help-icon fa fa-info-circle fa-2x'></i>
-              </span>
-              <span id='fig-description'>
                 <% if @description.length() > 1 %>
                   <ul>
                     <% @description.each do |d| %>
@@ -33,14 +30,15 @@
                 <% else %>
                   <%= @description.first %>
                 <% end %>
-              </span>
-            </div>
           <% end %>
+              </div>
+            </div>
+
         
-  </div>
-</div>
 
 <%= javascript_tag do %>
+
+$("#view-title").html("Clustering")
 
 $("#current_level").change(function(){
 var div = $('#show_content');

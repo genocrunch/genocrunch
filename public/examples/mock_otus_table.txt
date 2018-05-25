@@ -1,3 +1,4 @@
+# Comment
 #OTU ID	Smpl1	Smpl2	Smpl3	Smpl4	Smpl5	Smpl6	Smpl7	Smpl8	Smpl9	Smpl10	Smpl11	Smpl12	Smpl13	Smpl14	Smpl15	Smpl16	Smpl17	Smpl18	Smpl19	Smpl20	taxonomy
 16186	0	0	0	0	0	0	0	0	0	0	32	48	37	36	15	45	12	21	15	23	k__Bacteria; p__Firmicutes; c__Clostridia; o__Clostridiales; f__Clostridiaceae; g__Clostridium; s__
 183681	60	36	49	31	25	115	5	44	0	9	88	1	41	89	96	55	30	50	49	54	k__Bacteria; p__Firmicutes; c__Clostridia; o__Clostridiales; f__Ruminococcaceae; g__Ruminococcus; s__

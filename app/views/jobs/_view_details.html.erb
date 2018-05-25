@@ -1,0 +1,25 @@
+
+<ul class='no-bullets p-0'>
+  <li>Creation: <%= @job.created_at.year.to_s[-2..-1].to_s + "-" + @job.created_at.month.to_s.rjust(2, '0') + "-" + @job.created_at.day.to_s.rjust(2, '0') + " " + @job.created_at.hour.to_s.rjust(2, '0') + ":" + @job.created_at.min.to_s.rjust(2, '0') + " " + @job.created_at.zone.to_s %>
+  </li>
+  <li>Last update: <%= @job.updated_at.year.to_s[-2..-1].to_s + "-" + @job.updated_at.month.to_s.rjust(2, '0') + "-" + @job.updated_at.day.to_s.rjust(2, '0') + " " + @job.updated_at.hour.to_s.rjust(2, '0') + ":" + @job.updated_at.min.to_s.rjust(2, '0') + " " + @job.updated_at.zone.to_s %>
+  </li>
+  <li>Owner: <%= @job.user.username %></li>
+  <li title="Analysis key"><i class="fa fa-key"></i> <%= @job.key %></li>
+</ul>
+
+<div class='card'>
+  <div class='card-header'>Description</div>
+  <div class='card-block'>
+    <%= (@job.description != '') ? @job.description : 'You did not enter any description for this analysis' %>
+  </div>
+</div>
+
+<%= link_to serve_job_path(@job.key, :filename => 'output/stderr.log'), :title => 'Bugs report', :class => 'p-1 float-right' do %>
+  <i class="fa fa-bug" aria-hidden="true"></i>
+<% end %>
+
+
+<%= javascript_tag do %>
+  $("#view-title").html("Details")
+<% end %>

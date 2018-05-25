@@ -1,4 +1,4 @@
-#Scontrol_dietmpleID	Diet
+#SampleID	Diet
 Smpl1	control_diet
 Smpl2	control_diet
 Smpl3	control_diet

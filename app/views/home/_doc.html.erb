@@ -34,7 +34,7 @@ The results of clustering are automatically inferred as additional models into o
 <h2 id='trying-genocrunch'>Trying Genocrunch</h2>
 <p>The best way to try Genocrunch is to load an example and edit it.</p>
 
-<h3 id='examples'>Examples</h3>
+<h3 id='examples-doc'>Examples</h3>
 <p>Examples of analyses are provided via the <b><a href="<%= examples_path %>" target='_self'>Examples</a></b> link of the top-bar. Loading Example data into a new analysis session is possible via the <span class='btn btn-primary btn-sm'>Load</span> button. This allows to visualize and edit Examples without restriction. For signed-in users, it will also copy the example into their personal analysis index.</p>
 
 <h2 id='analyzing-data'>Analyzing data</h2>
@@ -71,7 +71,7 @@ The results of clustering are automatically inferred as additional models into o
     <ul>
       <a name='primary_dataset_format'></a>
       <li id='data-files-primary-dataset'><b>Primary dataset</b> (mandatory)
-        <p>The primary dataset is the principal data file. It must contain a data table in the tab-delimited text format with columns representing samples and rows representing observations. The first row must contain the names of samples. The first column must contain the names of the observations. Both columns and rows names must be unique. A column containing a description of each observation, in the form of semi-column-delimited categories, can be added. This format can be obtained from the BIOM format using the <a href='#' target='_bank'><code>biom_convert</code></a> command.</p>
+        <p>The primary dataset is the principal data file. It must contain a data table in the tab-delimited text format with columns representing samples and rows representing observations. The first row must contain the names of samples. The first column must contain the names of the observations. Both columns and rows names must be unique. A column containing a description of each observation, in the form of semi-column-delimited categories, can be added at the end. This format can be obtained from the BIOM format using the <a href='#' target='_bank'><code>biom_convert</code></a> command.</p>
         <p>Format example:</p>
 <pre>
 #OTU ID	Spl1	Spl2	Spl3	Spl4	taxonomy
@@ -84,7 +84,7 @@ The results of clustering are automatically inferred as additional models into o
 </pre>
       </li>
       <li id='data-files-category-column'><b>Category column</b> (mandatory)
-        <p>To increase compatibility, the category column specifies which column in the pimary dataset contains a categorical description of the observations.</p>
+        <p>To increase compatibility, the category column specifies which column in the pimary dataset contains a categorical description of the observations. This must be either the first or the last column.</p>
       </li>
 
       <a name='map_format'></a>
@@ -495,11 +495,14 @@ Spl12	Control	F
 <p>Genocrunch data analysis tools are based on R libraries. Used libraries are mentionned in the analysis report. The version of the libraries are available on the <b><a href="<%= versions_path %>" target='_self'>Versions</a></b> page via the <b>Infos</b> menu of the topbar).</p>
 
 
-<h2 id='analysis-report'>Analysis report <i class='fa fa-eye'></i></h2>
+<h2 id='analysis-report'>Analysis report</h2>
   <p>A detailed analysis report is generated for each analysis. It is available directly after creating/updating a new analysis via the <span class='btn btn-secondary btn-sm'>My Analysis</span> button of the topbar or via the corresponding icon (<i class='fa fa-eye'></i>) in the analysis index (for signed-in users only). The analysis report includes detailed descriptions of the tools and methods used, possible warning and error logs as well as intermediate files, final files and interactive figures as they become available. Information for the pre-processing and data transformation are available for the primary dataset and the optional secondary dataset in their respective sections. Figures and descriptions for each analysis are available in separate sections. If multiple binning levels were specified, figures for each levels can be accessed via the associated <b>Level</b> button.</p>
 
 <h3 id='exporting-figures'>Exporting figures</h3>
 <p>Figures can be exported via the associated <span class='btn btn-success btn-sm dropdown-toggle'>Export</span> menu. All figures can be exported as a vector image in the SVG format. Some figures are also available in the PDF format, but PDFs are generated in the same time as the figure raw data and cannot be edited with the interactive visualization tools. Raw figure data are also available either in the JSON format, the TXT format or both. Figure legends are currently only available in the HTML format.</p>
 
-<h3 id='archive'>Archive <i class="fa fa-file-archive-o" aria-hidden="true"></i></h3>
+<h3 id='archive'>Archive</h3>
 <p>Files containing initial, intermediate and final data as well as the analysis log and logs for standard output and standard error are automatically included into a .tar.gz archive. This archive can be downloaded via the <span class='btn btn-secondary btn-sm'><i class="fa fa-file-archive-o" aria-hidden="true"></i></span> button of the analysis report page or via the corresponding icon (<i class="fa fa-file-archive-o" aria-hidden="true"></i>) in the analysis index (for signed-in users only). Although some figures may be automatically included in the archive in the form of a minimal PDF file, the archive does generally not contain figure images. These should be exported separately via the <span class='btn btn-success btn-sm dropdown-toggle'>Export</span> menu.</p>
+
+<h3 id='bugs-report'>Bugs report</h3>
+<p>During computation (while the analysis is running), the standard error (stderr) stream is redirected into a bugs report that can be downloaded using the <i class="fa fa-bug" aria-hidden="true"></i> link located at the bottom-right of the details page in the analysis report.</p>

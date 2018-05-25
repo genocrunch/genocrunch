@@ -3,3 +3,9 @@
 <%= render :partial => 'list_messages', :locals => {:data => 'map'} %>
 
 <% end %>
+
+<%= javascript_tag do %>
+
+  $("#view-title").html("Map")
+
+<% end %>

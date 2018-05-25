@@ -2,6 +2,8 @@
 
 <%= javascript_tag do %>
 
+  $("#view-title").html("Heatmap")
+
   var fig_data = <%= raw @data_json %>,
       cmax = 200,
       rmax = 200;

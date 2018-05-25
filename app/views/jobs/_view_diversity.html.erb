@@ -2,6 +2,8 @@
 
 <%= javascript_tag do %>
 
+  $("#view-title").html("Diversity")
+
   var fig_data = <%= raw @data_json %>,
       RfunctionsDiversity = <%= @h_form_choices['diversity'].to_json.html_safe %>;
 

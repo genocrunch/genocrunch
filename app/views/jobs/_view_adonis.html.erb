@@ -2,6 +2,8 @@
 
 <%= javascript_tag do %>
 
+  $("#view-title").html("perMANOVA")
+
   var fig_data = <%= raw @data_json %>;
 
   adonisPieChart('fig', 'fig-legend', fig_data,  W = 600, H = 600, font_family = "verdana, arial, helvetica, sans-serif");

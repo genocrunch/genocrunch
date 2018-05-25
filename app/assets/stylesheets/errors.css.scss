@@ -1,47 +1,7 @@
-.error-page {
-  position: static;
-  margin: 0;
-  margin-right: auto;
-  margin-left: auto;
-  display: table;
-  color: #fff;
-  text-align:center;
-  max-width:75%;
-  width:auto;
-  height:100%;
-  transform:translate(0, 50%);
-
-  .error-text {
-    width:auto;
-    height:auto;
-    transform:translate(0, -50%);
-    text-shadow: 3px 3px 3px #333;
-    text-align:center;
-  }
-
-    h1 {
-      font-size: 40px;
-      line-height: 90px;
-    }
-
-    p {
-      font-size: 20px;
-      line-height: 20px;
-    }
-
-}
-
 #notice {
   color: #fff;
   text-align:center;
 }
-
-.field_with_errors {
-  height:100%;
-  padding: 2px;
-  box-shadow: #ff3385 0px 0px 2px, inset #ff3385 0px 0px 2px;
-}
-
 #error_explanation {
   display: table;
   width: 100%;
@@ -52,21 +12,19 @@
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
-
-  h2 {
-    text-align: left;
-    font-weight: bold;
-    padding: 5px 5px 5px 15px;
-    font-size: 16px;
-    margin: -7px;
-    margin-bottom: 0px;
-    background-color: #ff3385;
-    color: #fff;
-  }
-
-  ul li {
-    font-size: 16px;
-    list-style: circle;
-  }
-
 }
+#error_explanation h2 {
+  text-align: left;
+  font-weight: bold;
+  padding: 5px 5px 5px 15px;
+  font-size: 16px;
+  margin: -7px;
+  margin-bottom: 0px;
+  background-color: #ff3385;
+  color: #fff;
+}
+#error_explanation ul>li {
+  font-size: 16px;
+  list-style: circle;
+}
+

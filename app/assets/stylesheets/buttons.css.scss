@@ -7,45 +7,4 @@
   margin:inherit;
 }
 
-.btn-topbar {
-  margin:3px;
-  float:left;
-}
-
-.form-buttons-container {
-  position: fixed;
-  width:150px;
-  top:auto;
-  left:auto;
-  margin-left:-180px;
-}
-
-.form-button {
-  width:100%;
-  font-size: 18px;
-  line-height: 24px;
-  -webkit-box-shadow: -1px 1px 2px 1px #888888;
-  -moz-box-shadow: -1px 1px 2px 1px #888888;
-  box-shadow: -1px 1px 2px 1px #888888;
-}
-
-.figure-button {
-  margin: 3px;
-  display: inline-block;
-}
-
-
-.select-button {
-  color: #fff;
-  text-shadow: 1px 1px 0 #fff;
-  text-shadow: -1px -1px 0 rgba(0,0,0,0.3);
-  border-color: #B33030;
-  border-bottom-color: #A02A2A;
-  background-color: #CF3C3C;
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#E45D5D), to(#B54C4C));
-  background-image: -moz-linear-gradient(#E45D5D, #B54C4C);
-  background-image: -ms-linear-gradient(#E45D5D, #B54C4C);
-  background-image: -o-linear-gradient(#E45D5D, #B54C4C);
-  background-image: linear-gradient(#E45D5D, #B54C4C);
-}
 

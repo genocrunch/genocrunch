@@ -116,7 +116,7 @@
    "optional":false
   },
   {"id":"secondary_dataset",
-   "help":"Optional metadata file. It can include related data from a different type of analysis that was performed on the same samples. Format must be the same as data file (Input) but without any category column and without any comment. Column names must match column names in data file (Input) in spelling and order. [<a href='/home/doc#secondary_dataset_format' target='_blank'>File format</a>]",
+   "help":"Optional metadata file. It can include related data from a different type of analysis that was performed on the same samples. Format must be the same as data file (Input). Column names must match column names in data file (Input) in spelling and order. [<a href='/home/doc#secondary_dataset_format' target='_blank'>File format</a>]",
    "type":"file"
   }
 ],

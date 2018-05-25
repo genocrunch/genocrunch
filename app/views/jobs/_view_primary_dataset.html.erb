@@ -3,3 +3,7 @@
 <%= render :partial => 'list_messages', :locals => {:data => 'primary_dataset'} %>
 
 <% end %>
+
+<%= javascript_tag do %>
+  $("#view-title").html("Primary dataset")
+<% end %>

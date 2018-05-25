@@ -302,7 +302,6 @@ $ rake db:seed
 
 ### Run the Rails server
 
-  * Development mode
 
 ```
 $ rails server

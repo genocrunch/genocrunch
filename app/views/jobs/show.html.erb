@@ -1,20 +1,28 @@
 <div class="container-fluid">
 <div class='row main-container'>
 
-  <nav class="navbar navbar-toggleable-md fixed-top topbar-margin col-xl-2 col-lg-2 col-md-12 col-sm-12 side-index-container">
-    <div class="collapse navbar-collapse border-right">
+  <nav class="navbar navbar-toggleable-md fixed-top topbar-margin col-xl-2 col-lg-2 col-md-12 col-sm-12 side-index-container pr-2 pl-2 show-navbar">
+    <div class="collapse navbar-collapse">
       <div class='side-index'>
 
-        <%= hidden_field_tag 'selected_view', 'primary_dataset' %>
+        <%= hidden_field_tag 'selected_view', 'details' %>
         
-        <ul class='nav flex-column mr-auto mt-2 mt-lg-0 side-index-list'>
+        <ul class='nav flex-column side-index-list'>
+          <li class="nav-item"><h2>Analysis report</h2></li>
           <li class="nav-item">
-            <b>Data</b>
+            <a id='menu-details' class='menu btn btn-sm btn-secondary text-left mt-1 mb-1 full-width' href="#">
+              <span class='float-left'>Details</span>
+              <span class='float-right'>
+                <i class="fa fa-info" aria-hidden="true"></i>
+              </span>
+            </a>
+          </li>
+          <li class="nav-item">
+            Data
 
 <% @inputs#.select{|e| @final_json[:global_status_by_step][e[:id]] }
    .each do |input| %>
-  <div id='menu-<%= input[:id] %>' class='menu'>
-    <a class='btn btn-sm btn-secondary text-left' href="#">
+    <a id='menu-<%= input[:id] %>' class='menu btn btn-sm btn-secondary text-left mt-1 mb-1 full-width' href="#">
       <span class='float-left'>
         <% status = (@final_json) ? @final_json[:global_status_by_step][input[:id]] : 'pending' %>
         <i id="status-<%= input[:id] %>" class="<%= @h_statuses[status || 'pending'].icon %>" aria-hidden="true"></i>
@@ -24,17 +32,15 @@
         <i class="<%= (@h_views[input[:id]]) ? @h_views[input[:id]].icon : '' %>" aria-hidden="true"></i>
       </span>
     </a>
-  </div> 
 <% end %>
 
           </li>
           <li class="nav-item">
-            <b>Analysis</b>
+            Analysis
 
             <% @analyses#.select{|e| @final_json[:global_status_by_step][e[:id]]}
    .each do |analysis| %>
-  <div id='menu-<%= analysis[:id] %>' class='menu'>
-    <a class='btn btn-sm btn-secondary text-left' href="#">
+    <a id='menu-<%= analysis[:id] %>' class='menu btn btn-sm btn-secondary text-left mt-1 mb-1 full-width' href="#">
       <span class='float-left'>
         <% status = (@final_json) ? @final_json[:global_status_by_step][analysis[:id]] : 'pending' %>
         <i  id="status-<%= analysis[:id] %>" class="<%= @h_statuses[status || 'pending'].icon %>" aria-hidden="true"></i>
@@ -43,8 +49,7 @@
       <span class='float-right'>
         <i class="<%= (@h_views[analysis[:id]]) ? @h_views[analysis[:id]].icon : '' %>" aria-hidden="true"></i>
       </span>
-  </a>
-  </div>
+    </a>
 <% end %>
 
           </li>
@@ -60,29 +65,22 @@
  <div class='col-xl-10 col-lg-10 col-md-9 col-sm-12 offset-xl-2 offset-lg-2'>
   <div class='pb-1'>
     <h2>
-      <span id='job-description-btn' class='btn btn-sm btn-secondary' title='Description'><i class='fa fa-bars'></i></span>
       <span title='Analysis name: <%= @job.name %>'>
-        <%= @job.name %>
+        <%= @job.name %> | <span id='view-title'></span>
       </span>
-      <div id="edit-btn" class="btn btn-primary float-right custom-btn-container">
-        <%= link_to 'Edit', edit_job_path(:key => @job.key), :class => 'btn' %>
-      </div>
-            
+
+      <%= link_to 'Edit', edit_job_path(:key => @job.key), :class => 'btn btn-primary float-right', :id => "edit-btn" %>
+
       <%= link_to serve_job_path(@job.key, :filename => @job.key + '.tar.gz'), :id => 'archive-btn', :title => 'Download archive', :class => 'btn btn-secondary float-right mr-1 hidden' do %>
         <i class="fa fa-file-archive-o" aria-hidden="true"></i>
       <% end %>
       
     </h2>
-    <i id="global_status" class="<%= @h_statuses[(@final_json) ? @final_json[:global_status] : 'pending'].icon %>" aria-hidden="true"></i>
-    
-    <div id='job-description' class='hidden'>
-      <%= (@job.description != '') ? @job.description : 'Description: sorry, you did not enter any description for this analysis' %>
-    </div>
   </div>
 
   
   <div id='show_content'>
-    <%= render :partial => 'view_primary_dataset' %>
+    <%= render :partial => 'view_details' %>
   </div>
  </div>
 
@@ -94,10 +92,6 @@
 
 
  $(document).ready(function() {
-
-  $('#job-description-btn').click(function(e) {
-    $('#job-description').toggleClass('hidden');
-  });
 
   var window_width = $(window).width();
 

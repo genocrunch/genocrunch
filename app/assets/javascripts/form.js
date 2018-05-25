@@ -86,6 +86,47 @@ function getColumn(id, file, col_name, value, url) {
     }
 };
 
+function setCategoryColumn(id, file, value = 0, add_blank = null, url = null) {
+    
+    var new_data = [];
+
+    if (!url){
+
+	var reader = new FileReader;
+	reader.onload = function (event) {
+	    var lines = event.target.result.split(/\r\n|\r|\n/g);
+	
+	    var i = 0;
+	    for (i = 0; i < (lines.length-1); i++) {
+		if (lines[i].charAt(0) != '#')
+		    break;
+	    }
+	    i = (i > 0) ? i-1 : 0;
+	    
+	    var content = lines[i].split("\t")
+	    
+            new_data = [{label:([' ', ''].indexOf(content[0]) == -1) ? 'first column ('+content[0]+')': 'first column', value:content[0]},
+                        {label:([' ', ''].indexOf(content[content.length-1]) == -1) ? 'last column ('+content[content.length-1]+')': 'last column', value:content[content.length-1]}];
+	    populate_multiselect(id, new_data, value, url)
+	};
+	reader.readAsText(file);
+    }else{
+	$.ajax({
+	    url: url + ((add_blank == null) ? '' : '&add_blank=1'),
+	    type: "get",
+	    dataType: "html",
+	    beforeSend: function(){
+	    },
+	    success: function(new_data){
+		populate_multiselect(id, JSON.parse(new_data), value, url)
+	    },
+	    error: function(e){
+	    }
+	});
+	
+    }
+};
+
 function setSelectFromFileRow(id, file, value = 0, add_blank = null, url = null) {
     
     var new_data = [];
