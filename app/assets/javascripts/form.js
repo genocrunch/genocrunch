@@ -1,14 +1,15 @@
 function update_bin_levels(col_name, val, url){
-    val = (val) ? val : [1]
     var ori_filename = $("#p2_primary_dataset").val();
     getColumn("bin_levels", $("#p_primary_dataset")[0].files[0], col_name, val, url);
 }
 
 function populate_multiselect(id, new_data, value, url){
     $('#p_'+id).multiselect('enable')
-        .multiselect('dataprovider', new_data)
-        .multiselect('select', value)
-        .multiselect("refresh");
+        .multiselect('dataprovider', new_data);
+    if(value) {
+      $('#p_'+id).multiselect('select', value);
+    }
+    $('#p_'+id).multiselect("refresh");
     
     $('#p_'+id+'-container').removeClass("hidden");
     $('#p_'+id+'-placeholder').addClass("hidden");
@@ -24,47 +25,29 @@ function populate_multiselect(id, new_data, value, url){
 
 function getColumn(id, file, col_name, value, url) {
     
-    var new_data = [];
-
     if (!url){
 
 	var reader = new FileReader;
 	reader.onload = function (event) {
             var lines = event.target.result.split(/\r\n|\r|\n/g);
             
-	    var i=0;
+	    var i = 0;
             for (var i = 0; i < (lines.length-1); i++) {
 		if (lines[i].charAt(0) != '#')
                     break;
             }
             i = (i > 1) ? i-1 : 0;
 	    
-	    var header_els = lines[i].split("\t")
-	    var pos_col = 0
-	    for (var k = 0; k<header_els.length; k++){
-		if (header_els[k] == col_name){
-		    pos_col = k;
-		    break;
-		}
-	    }
-	    max_val=0
-	    for (var j = i; j < (lines.length-1); j++){
-		t = lines[j].split("\t")
-		n = t[pos_col].split(";").length
-		if  (n > max_val){
-		    max_val = n
-		}
-	    }
-	    
+	    var header = lines[i].split("\t")
+	    var col_index = header.indexOf(col_name);
+                col_index = (col_index != -1) ? col_index : 0;
+	    var max_val = Math.max.apply(null, lines.slice(i+1, lines.length-1).map(e => {return e.split("\t")[col_index].split(";").length;}));
 	    if (max_val > 0){
-		
-		var new_data=[];
-		for (var j=1 ; j < max_val+1; j++) {
-		    new_data.push({label: j, value: j});
+		var new_data=[...Array(max_val)];
+		for (var j=0 ; j < new_data.length; j++) {
+		  new_data[j] = {label: j+1, value: j+1};
 		}
-		
 		populate_multiselect(id, new_data, value, url)
-		
 	    }
 	};
 	//    console.log(file);
@@ -77,8 +60,9 @@ function getColumn(id, file, col_name, value, url) {
             dataType: "html",
             beforeSend: function(){
             },
-            success: function(new_data){		
-                populate_multiselect(id, JSON.parse(new_data), value, url)
+            success: function(new_data){
+              new_data = JSON.parse(new_data)
+              populate_multiselect(id, new_data.slice(0, new_data.length-1), value, url)
             },
             error: function(e){
             }
@@ -117,8 +101,12 @@ function setCategoryColumn(id, file, value = 0, add_blank = null, url = null) {
 	    dataType: "html",
 	    beforeSend: function(){
 	    },
-	    success: function(new_data){
-		populate_multiselect(id, JSON.parse(new_data), value, url)
+	    success: function(content){
+            content = JSON.parse(content)
+            new_data = [{label:([' ', ''].indexOf(content[0]["label"]) == -1) ? 'first column ('+content[0]["label"]+')': 'first column', value:content[0]["value"]},
+                        {label:([' ', ''].indexOf(content[content.length-1]["label"]) == -1) ? 'last column ('+content[content.length-1]["label"]+')': 'last column', value:content[content.length-1]["value"]}];
+
+		populate_multiselect(id, new_data, value, url)
 	    },
 	    error: function(e){
 	    }

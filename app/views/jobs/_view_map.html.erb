@@ -1,5 +1,6 @@
 <% if @final_json and @final_json[:status_by_step]['map'] %>
-
+  <i class='fa fa-file-text-o'></i>
+  <%= link_to 'Original file', serve_job_path(@job.key, :filename => 'input/map.txt'), :class => 'btn btn-secondary btn-sm mb-1' %>
 <%= render :partial => 'list_messages', :locals => {:data => 'map'} %>
 
 <% end %>

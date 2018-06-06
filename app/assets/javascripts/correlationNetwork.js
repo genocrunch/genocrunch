@@ -633,7 +633,7 @@ The max size is "+display_size_limit+" nodes.")
     var searchLabels = function() {
       searchLabels2("#labelButton", "#searchInput", ".node-label")
     }
-    appendSearchInput(buttons, "Search", "searchInput", searchLabels);
+    appendSearchInput(buttons, "Search (multiple terms can be searched using the AND separator)", "searchInput", searchLabels);
 
 
     // Select model

@@ -168,7 +168,15 @@ function foldChange(id, legend_id, json, W = 600, H = 600, font_family = "verdan
       }
 
       function filterFc(d) {
-        return Math.abs(d['log2(fold-change)']) >= Math.log2($("#fcThreshold").val())
+        if (!isNaN(d['log2(fold-change)'])) {
+          return Math.abs(d['log2(fold-change)']) >= Math.log2($("#fcThreshold").val())
+        } else if (['-Inf', 'Inf'].indexOf(d['log2(fold-change)']) != -1) {
+          return true;
+        }
+        if ($("#fcThreshold").val() > 0) {
+          return false;
+        }
+        return true;
       }
 
       data = data.filter(filterPval);
@@ -321,7 +329,7 @@ function foldChange(id, legend_id, json, W = 600, H = 600, font_family = "verdan
             .attr("height", flagHeight)
             .attr("y", -flagHeight/2)
             .style("fill", function(d) {
-            if (isNaN(d['-log2(p-value)']) || d['log2(fold-change)'] == 0 || isNaN(d['log2(fold-change)'])) {
+            if (isNaN(d['-log2(p-value)']) || d['log2(fold-change)'] == 0) {
               return colors.neutral;
             } else if (d['log2(fold-change)'] == 'Inf') {
               return colors.pos;
@@ -329,8 +337,10 @@ function foldChange(id, legend_id, json, W = 600, H = 600, font_family = "verdan
               return colors.neg;
             } else if (d['log2(fold-change)'] < 0) {
               return colors.neg;
+            } else if (d['log2(fold-change)'] > 0) {
+              return colors.pos;
             }
-            return colors.pos;
+            return colors.neutral;
             })
           .style("stroke-opacity", 0)
           .style("fill-opacity", function(d) {
@@ -416,7 +426,7 @@ function foldChange(id, legend_id, json, W = 600, H = 600, font_family = "verdan
               return 200;
           }))
           .style("fill", function(d) {
-            if (isNaN(d['-log2(p-value)']) || d['log2(fold-change)'] == 0 || isNaN(d['log2(fold-change)'])) {
+            if (isNaN(d['-log2(p-value)']) || d['log2(fold-change)'] == 0) {
               return colors.neutral;
             } else if (d['log2(fold-change)'] == 'Inf') {
               return colors.pos;
@@ -424,8 +434,10 @@ function foldChange(id, legend_id, json, W = 600, H = 600, font_family = "verdan
               return colors.neg;
             } else if (d['log2(fold-change)'] < 0) {
               return colors.neg;
+            } else if (d['log2(fold-change)'] > 0) {
+              return colors.pos;
             }
-            return colors.pos;
+            return colors.neutral;
           })
           .style("stroke-opacity", 0)
           .style("fill-opacity", function(d) {
@@ -687,7 +699,7 @@ function foldChange(id, legend_id, json, W = 600, H = 600, font_family = "verdan
     var searchLabels = function() {
       searchLabels2("#labelButton", "#searchInput", ".plot-label")
     }
-    appendSearchInput(buttons, "Search", "searchInput", searchLabels);
+    appendSearchInput(buttons, "Search (multiple terms can be searched using the AND separator)", "searchInput", searchLabels);
 
     // Select axis
     var xSelect = buttons.append("div")

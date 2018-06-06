@@ -1,5 +1,5 @@
-<h1>New Version</h1>
+<div class="container-fluid main-container" id="form-container">
 
-<%= render 'form', version: @version %>
+  <%= render partial: 'form', :locals => {version: @version} %>
 
-<%= link_to 'Back', versions_path %>
+</div>

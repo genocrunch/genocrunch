@@ -1,8 +1,7 @@
-<div class='card mt-1 p-2'>
-<h3>Analyses</h3>
-<input type="text" id="filter-input" class='form-control filter-table' onkeyup="filterTable()" placeholder="Search">
+<div class='card p-2'>
+  <h3><%= (@scope == 'global')? 'All analyses' : 'My analyses' %></h3>
 
-<table id="myTable" class="table table-striped table-condensed">
+<table id="jobTable" class="table table-striped table-condensed">
   <thead>
     <tr>
       <th title="Analysis key"><i class="fa fa-key"></i></th>
@@ -13,10 +12,10 @@
 	<th title="type">Type</th>
       <% end %>
       <th title="status">Status</th>
-      <th title="input data">Data</th>
-      <th title="map">Map</th>
+      <th title="primary dataset | map | secondary dataset">Data</th>
       <th title="results">Results</th>
-      <th style="font-weight:normal;"><i title="copy" class="fa fa-clone" aria-hidden="true"></i> | <i title="edit" class="fa fa-pencil-square-o" aria-hidden="true"></i> | <i title="delete" class="fa fa-trash-o" aria-hidden="true"></i></th>
+      <th title="size">Size</th>
+      <th style="font-weight:normal;"><i title="copy" class="fa fa-clone" aria-hidden="true"></i> | <i title="edit" class="fa fa-pencil" aria-hidden="true"></i> | <i title="delete" class="fa fa-trash-o" aria-hidden="true"></i></th>
     </tr>
   </thead>
   <tbody>
@@ -50,25 +49,25 @@
           <% end %>
         </td>
         <td>
-           <%= link_to raw('<i class="fa fa-file-o" aria-hidden="true"></i>'), serve_job_path(job.key, :filename => 'input/primary_dataset.txt'),  title: "primary dataset" %>
-	      <% if File.exist? Pathname.new(APP_CONFIG[:data_dir]) + 'users' + job.user_id.to_s + job.key + 'input' + 'secondary_dataset.txt' %> 
-          | <%= link_to raw('<i class="fa fa-file-o" aria-hidden="true"></i>'), serve_job_path(job.key, :filename => 'input/secondary_dataset.txt'), title: "secondary dataset" %>
+           <%= link_to raw('<i class="fa fa-file-text-o" aria-hidden="true"></i>'), serve_job_path(job.key, :filename => 'input/primary_dataset.txt'),  title: "primary dataset" %>
+	  | <%= link_to raw('<i class="fa fa-file-text-o" aria-hidden="true"></i>'), serve_job_path(job.key, :filename => 'input/map.txt'), title: "map" %>
+	  <% if File.exist? Pathname.new(APP_CONFIG[:data_dir]) + 'users' + job.user_id.to_s + job.key + 'input' + 'secondary_dataset.txt' %> 
+          | <%= link_to raw('<i class="fa fa-file-text-o" aria-hidden="true"></i>'), serve_job_path(job.key, :filename => 'input/secondary_dataset.txt'), title: "secondary dataset" %>
           <% end %>
-        </td>
-        <td title="download mapping file">
-	   <%= link_to raw('<i class="fa fa-file-o" aria-hidden="true"></i>'), serve_job_path(job.key, :filename => 'input/map.txt') %>
         </td>
         <td>
           <%= link_to raw('<i class="fa fa-eye" aria-hidden="true"></i>'), job_path(job.key), :title => 'show' %>
-          <% if (File.exist? Pathname.new(APP_CONFIG[:data_dir]) + 'users' + job.user_id.to_s + job.key + (job.key + '.tar.gz').to_s) and (!['pending', 'running'].include? job.status) %> 
-          | <%= link_to raw('<i class="fa fa-file-archive-o" aria-hidden="true"></i>'), serve_job_path(job.key, :filename => job.key + '.tar.gz'), :title => 'download archive' %>
+          <% if !['pending', 'running'].include? job.status %> 
+          | <%= link_to raw('<i class="fa fa-file-archive-o" aria-hidden="true"></i>'), serve_archive_job_path(job.key), :title => 'download archive' %>
           <% end %>
         </td>
-        <% destroy_text = (['pending', 'running'].include? job.status) ? 'abort' : 'delete' %>
+        <td>
+          <%= number_to_human_size(job.size.to_i, precision: 2, prefix: :si) %>
+        </td>
         <td style='white-space:nowrap'>
 	  <%= link_to raw('<i title="copy" class="fa fa-clone" aria-hidden="true"></i>'), clone_job_path(job.key) %>
 	  |
-<%= link_to raw('<i title="edit" class="fa fa-pencil-square-o" aria-hidden="true"></i>'), edit_job_path(job.key) %>
+<%= link_to raw('<i title="edit" class="fa fa-pencil" aria-hidden="true"></i>'), edit_job_path(job.key) %>
           |
 	  <% destroy_text = (['pending', 'running'].include? job.status) ? 'abort' : 'delete' %>
 	  <%= link_to(job_path(job.key), method: :delete, data: { confirm: 'Are you sure you want to ' + destroy_text + ' "' + (job.name || 'NA') + '" ?'}) do %>
@@ -84,52 +83,47 @@
 
 <div class='card container-fluid mt-1 mb-1 pb-0 pt-2 pl-2 pr-2'>
   <div class='row p-0 m-0'>
-      <div title="Status summary" class="p-0 col-xl-2 col-lg-2 col-md-12 col-sm-12"><h3>Status summary</h3></div>
+      <div title="Summary" class="p-0 col-xl-2 col-lg-2 col-md-12 col-sm-12"><h3>Summary</h3></div>
       <div title="completed" class="p-0 col-xl-2 col-lg-2 col-md-12 col-sm-12"><%= @jobs.select{ |i| i.status == "completed" }.length %> completed (<i class="fa fa-check icon-success" aria-hidden="true"></i>)</div>
       <div title="pending" class="p-0 col-xl-2 col-lg-2 col-md-12 col-sm-12"><%= @jobs.select{ |i| i.status == "pending" }.length %> pending (<i class="fa fa-ellipsis-h icon-inactive" aria-hidden="true"></i>)</div>
       <div title="running" class="p-0 col-xl-2 col-lg-2 col-md-12 col-sm-12"><%= @jobs.select{ |i| i.status == "running" }.length %> running (<i class="fa fa-circle-o-notch" aria-hidden="true"></i>)</div>
       <div title="failed" class="p-0 col-xl-2 col-lg-2 col-md-12 col-sm-12"><%= @jobs.select{ |i| i.status == "failed" }.length %> failed (<i class="fa fa-exclamation-triangle icon-warning" aria-hidden="true"></i>)</div>
       <div title="total" class="p-0 col-xl-2 col-lg-2 col-md-12 col-sm-12">Total: <%= @jobs.length %></div>
+
+      <% if @scope != 'global' %>
+        <div title="<%= @current_user.username %> storage" class="p-0 col-xl-12 col-lg-12 col-md-12 col-sm-12">
+          <span id="storage-limit-bar" class="storage-limit-bar"><span class="progress-bar"></span></span>
+          <span>Storage quota</span>
+          <span class="float-right">
+            <%= (number_to_human_size(@current_user.total_jobs_size.to_i, precision: 2, prefix: :si)  +" / "+ ((@current_user.storage_quota.to_i > 0) ? number_to_human_size(@current_user.storage_quota.to_i, precision: 2, prefix: :si) : 'unlimited')) %>
+          </span>
+        </div>
+      <% else %>
+      <div title="Storage" class="p-0 col-xl-2 col-lg-2 col-md-12 col-sm-12">Storage: <%= number_to_human_size(@jobs.sum(&:size).to_i, precision: 2, prefix: :si) %></div>
+      <% end %>
   </div>
 </div>
 
-</div>
 <%= javascript_tag do  %>
 $(document).ready(function(){
-  var table = $('#myTable').DataTable({
-    sDom: 'ltp',
+  var storage_quota = <%= @current_user.storage_quota.to_i %>;
+
+  if (storage_quota > 0) {
+    var total_jobs_size = <%= @current_user.total_jobs_size.to_i %>,
+        percent_storage_limit = Math.min(100, (100*total_jobs_size/storage_quota)),
+        storage_limit_col = (percent_storage_limit < 90) ? "#0275d8" : ((percent_storage_limit < 95) ? "orange" : "red");
+    $("#storage-limit-bar>.progress-bar").css({"width":percent_storage_limit+"%",
+                                               "border-top-color":storage_limit_col})
+  }
+
+  var table = $('#jobTable').DataTable({
+    "sDom": 'lfrtip',
     "aLengthMenu": [[10, 25, 50, 100, -1],
                    [10, 25, 50, 100, "All"]],
-    "iDisplayLength" : 10,
+    "iDisplayLength" : 25,
     "order": [[ 2, 'desc' ], [ 1, 'asc' ]]
   });
 
-
-
-  $('#filter-input').insertAfter('#myTable_length')
-
 });
-
-  function filterTable() {
-    var input = document.getElementById("filter-input"),
-        filter = input.value.toUpperCase(),
-        table = document.getElementById("myTable"),
-        tr = table.getElementsByTagName("tr"),
-        td, kept;
-    for (var i = 1; i < tr.length; i++) {
-      td = tr[i].getElementsByTagName("td");
-      kept = false;
-      for (var j = 0; j < td.length; j++) {
-        if (td[j].innerHTML.toUpperCase().indexOf(filter) > -1) {
-          tr[i].style.display = "";
-          kept = true;
-          break;
-        }
-      }
-      if (kept == false) {
-        tr[i].style.display = "none";
-      }
-    }
-  }
 
 <% end %>

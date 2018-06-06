@@ -1,4 +1,5 @@
 <% if @final_json[:status_by_step][data] %>
+
 <% @final_json[:status_by_step][data].select{|e| e[:status] != 'skipped'}.each do |e| %>
 
 <div class='card mb-1'>

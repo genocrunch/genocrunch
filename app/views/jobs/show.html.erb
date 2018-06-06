@@ -64,18 +64,17 @@
  
  <div class='col-xl-10 col-lg-10 col-md-9 col-sm-12 offset-xl-2 offset-lg-2'>
   <div class='pb-1'>
-    <h2>
-      <span title='Analysis name: <%= @job.name %>'>
-        <%= @job.name %> | <span id='view-title'></span>
-      </span>
+      <h2 title='Analysis name' class="inline-block">
+        <span id='analysis-name'><%= @job.name %></span> | <span id='view-title'></span>
+      </h2>
 
-      <%= link_to 'Edit', edit_job_path(:key => @job.key), :class => 'btn btn-primary float-right', :id => "edit-btn" %>
+      <span id="edit-btn" class="float-right"><%= link_to raw('Edit <i class="fa fa-pencil" aria-hidden="true"></i>'), edit_job_path(:key => @job.key), :class => 'btn btn-primary' %></span>
 
-      <%= link_to serve_job_path(@job.key, :filename => @job.key + '.tar.gz'), :id => 'archive-btn', :title => 'Download archive', :class => 'btn btn-secondary float-right mr-1 hidden' do %>
+      <%= link_to serve_archive_job_path(@job.key), :id => 'archive-btn', :title => 'Download archive', :class => 'btn btn-secondary float-right mr-1 hidden' do %>
         <i class="fa fa-file-archive-o" aria-hidden="true"></i>
       <% end %>
       
-    </h2>
+
   </div>
 
   
@@ -92,6 +91,11 @@
 
 
  $(document).ready(function() {
+
+  notice = '<%= notice %>'
+  if (notice != '') {
+    alert(notice)
+  }
 
   var window_width = $(window).width();
 
@@ -137,6 +141,16 @@
 
   var selected_view = $("#selected_view").val();
   $("#menu-"+selected_view).addClass('selected');
+
+
+
+
+clearInterval(localStorage.getItem("refresh_timer"))
+var refresh_timer = setInterval(function(){
+//alert("show")
+refresh_data()
+}, 5000);
+localStorage.setItem("refresh_timer", refresh_timer);
 });
 
 
@@ -147,10 +161,6 @@ $(".menu").click(function(){
   $(this).addClass('selected');
 });
 
-var timer = setInterval(function(){
-refresh_data()
-}, 5000);
-
 function refresh_data(){
  var url = '<%= refresh_job_path(:key => @job.key) %>';
  $.ajax({
@@ -159,10 +169,7 @@ function refresh_data(){
   dataType: "script",
   beforeSend: function(){
   },
-  success: function(returnData){
-//    div.empty();
-//    div.html(returnData);
-  },
+  success: function(returnData){},
   error: function(e){
   }
  });

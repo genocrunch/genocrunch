@@ -1,4 +1,11 @@
+<div class="container-fluid">
+<div class="row main-container">
+<div class="col-md-4 offset-md-4">
+
+  <h1>New Example</h1>
+
 <%= form_for(example) do |f| %>
+
   <% if example.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(example.errors.count, "error") %> prohibited this example from being saved:</h2>
@@ -11,12 +18,18 @@
     </div>
   <% end %>
 
-Analysis Key
-<%= f.text_field 'job_key' %>
-
-  <div class="actions">
-
-   
-    <%= f.submit %>
+  <div class="form-group">
+    <label class="control-label">Analysis Key</label>
+    <%= f.text_field :job_key, :autofocus => true, class: "form-control input-lg", tabindex: 1, placeholder: "Enter the analysis key" %>
   </div>
+
+  <div class="form-group">
+    <%= f.submit "Create new Example", :class => "btn btn-info btn-lg full-width", tabindex: 2 %>
+  </div>
+
+
 <% end %>
+
+</div>
+</div>
+</div>

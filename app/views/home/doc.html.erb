@@ -17,5 +17,6 @@
 </div>
 
 <%= javascript_tag do %>
+  clearInterval(localStorage.getItem("refresh_timer"))
   selectBtn("#home-pages-list.navbar-nav>nav-item", "#home-pages-list.navbar-nav>#infos")
 <% end %>

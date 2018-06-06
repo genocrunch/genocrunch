@@ -4,7 +4,7 @@
 
 <h2 id='overview'>Overview</h2>
 
-<p>Genocrunch is a web-based data analysis platform dedicated to metagenomics and metataxonomics. It is tailored to process counts datasets derived from high-throughput nucleic acids sequencing of microbial communities <%= image_tag('genocrunch_pipeline-1.png', height:'14px') %>, such as gene counts or counts of operational taxonomic units (OTUs) <%= image_tag('genocrunch_pipeline-2.png', height:'14px') %>. In addition to such <b>primary dataset</b>, it also allows the integration of a <b>secondary dataset</b> (e.g. metabolites levels) <%= image_tag('genocrunch_pipeline-3.png', height:'14px') %>.
+<p>Genocrunch is a web-based data analysis platform dedicated to metagenomics and metataxonomics. It is tailored to process datasets derived from high-throughput nucleic acids sequencing of microbial communities <%= image_tag('genocrunch_pipeline-1.png', height:'14px') %>, such as gene counts or counts of operational taxonomic units (OTUs) <%= image_tag('genocrunch_pipeline-2.png', height:'14px') %>. In addition to such <b>primary dataset</b>, it also allows the integration of a <b>secondary dataset</b> (e.g. metabolites levels) <%= image_tag('genocrunch_pipeline-3.png', height:'14px') %>.
 <br>
 Genocrunch provides tools covering data <b>pre-processing</b> and <b>transformation</b>, <b>diversity</b> analysis, <b>multivariate statistics</b>, <b>dimensionality reduction</b>, <b>differential analysis</b>, <b>clustering</b> as well as <b>similarity network</b> analysis and <b>associative analysis</b>.
 The results of clustering are automatically inferred as additional models into other analyses <%= image_tag('genocrunch_pipeline-4.png', height:'14px') %>.
@@ -22,7 +22,7 @@ The results of clustering are automatically inferred as additional models into o
 <p>Running an analysis session does not require any registration, however, managing multiple analysis (recovering/editing previous work) is done through a personnal index that requires users to sign in. Before signing in, new users need to register.</p>
 
 <h3 id='registering'>Registering</h3>
-<p>Registering allows users to recover and edit their previous work via a personal index page. Registering is done via the <a class='btn btn-secondary btn-sm' href="<%= new_user_registration_path %>" target='_self'>Register</a> button of the top-bar. The registration process requires new users to chose a password and provide an email address. The email address is only used to recover forgotten passwords.
+<p>Registering is done via the <a class='btn btn-secondary btn-sm' href="<%= new_user_registration_path %>" target='_self'>Register</a> button of the top-bar. The registration process requires new users to chose a password. The email address is only used to recover forgotten passwords.
 <% if APP_CONFIG[:user_confirmable] %>
  In order to complete the registration process, new users need to follow a confirmation link which is automatically sent to the provided email address. In case of issue, this confirmation link can be resent to the provided email address via the <b>Resend confirmation instruction</b> link on the welcome page.
 <% end %>
@@ -502,7 +502,14 @@ Spl12	Control	F
 <p>Figures can be exported via the associated <span class='btn btn-success btn-sm dropdown-toggle'>Export</span> menu. All figures can be exported as a vector image in the SVG format. Some figures are also available in the PDF format, but PDFs are generated in the same time as the figure raw data and cannot be edited with the interactive visualization tools. Raw figure data are also available either in the JSON format, the TXT format or both. Figure legends are currently only available in the HTML format.</p>
 
 <h3 id='archive'>Archive</h3>
-<p>Files containing initial, intermediate and final data as well as the analysis log and logs for standard output and standard error are automatically included into a .tar.gz archive. This archive can be downloaded via the <span class='btn btn-secondary btn-sm'><i class="fa fa-file-archive-o" aria-hidden="true"></i></span> button of the analysis report page or via the corresponding icon (<i class="fa fa-file-archive-o" aria-hidden="true"></i>) in the analysis index (for signed-in users only). Although some figures may be automatically included in the archive in the form of a minimal PDF file, the archive does generally not contain figure images. These should be exported separately via the <span class='btn btn-success btn-sm dropdown-toggle'>Export</span> menu.</p>
+<p>Files containing initial, intermediate and final data as well as the analysis log and logs for standard output and standard error are automatically included into a .<%= APP_CONFIG[:archive_format] %> archive. This archive can be downloaded via the <span class='btn btn-secondary btn-sm'><i class="fa fa-file-archive-o" aria-hidden="true"></i></span> button of the analysis report page or via the corresponding icon (<i class="fa fa-file-archive-o" aria-hidden="true"></i>) in the analysis index (for signed-in users only). Although some figures may be automatically included in the archive in the form of a minimal PDF file, the archive does generally not contain figure images. These should be exported separately via the <span class='btn btn-success btn-sm dropdown-toggle'>Export</span> menu.</p>
 
 <h3 id='bugs-report'>Bugs report</h3>
 <p>During computation (while the analysis is running), the standard error (stderr) stream is redirected into a bugs report that can be downloaded using the <i class="fa fa-bug" aria-hidden="true"></i> link located at the bottom-right of the details page in the analysis report.</p>
+
+<h2 id='usage-limits'>Usage limits</h2>
+  <h3 id=time-limits'>Time limits</h3>
+  <p>Analyses are by default kept for <%= APP_CONFIG[:max_sandbox_job_age] %> days folowing their last update. However, analyses owned by registered users are kept for <%= APP_CONFIG[:max_job_age] %> days folowing their last update. Old analyses are automatically deleted from the server after their reach these limits.</p>
+
+  <h3 id='storage-limits'>Storage limits</h3>
+  <p>The storage quota is set to <%= number_to_human_size(APP_CONFIG[:max_storage].to_i, precision: 2, prefix: :si) %> per user.</p>

@@ -8,16 +8,20 @@
 
 
   <script type="text/javascript">
+
     $(function(){
       skrollr.init();
     });
 
-    $(window).on('page:load', function () {
+
+    window.onload = function () {
       skrollr.init().refresh();
-    });
+    };
 
     var is_mobile = (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
+
     $(document).ready(function() {
+
       if (is_mobile) {
         $('body').html('\
   <div class="align-center">\
@@ -89,7 +93,11 @@
     <div class="btn-group"> 
       <% if current_user %>
         <%= link_to 'New Analysis', new_job_path, class: "btn btn-primary navbar-btn" %>
-	      <%= link_to "My Analyses", jobs_path(), class: "btn btn-secondary navbar-btn" %>
+	<%= link_to "My Analyses", jobs_path(), class: "btn btn-secondary navbar-btn" %>
+        <% if current_user.role == 'admin' %>
+	  <%= link_to "All analyses", jobs_path(scope: 'global'), class: "btn btn-info navbar-btn" %>
+	  <%= link_to "Users", users_path(), class: "btn btn-info navbar-btn" %>
+	<% end %>
         <div class="btn-group"> 
           <a class="btn btn-secondary navbar-btn dropdown-toggle" href="#" id="UserMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 	          <i class="fa fa-user-o" aria-hidden="true"></i>
@@ -138,7 +146,7 @@
     <div class="col-md-4 align-center">
      <a href="http://epfl.ch", target="_blank"><%= image_tag("EPFL_logo.png", width: "100px", alt: "Ecole Polytechnique Fédérale de Lausanne") %></a>
        <p>
-         © All rights reserved. EPFL, Switzerland, <a href="http://harris-lab.epfl.ch/", target="_blank">Laboratory of Intestinal Immunology</a>, 2016-2017
+         © All rights reserved. EPFL, Switzerland, <a href="http://harris-lab.epfl.ch/", target="_blank">Laboratory of Intestinal Immunology</a>, 2016-2018
        </p>
     </div>
     <div class="col-md-4 align-right">

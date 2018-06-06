@@ -31,9 +31,9 @@ if (opt$method == 'validate_dataset') {
   table <- read.table(file=opt$table, sep='\t', header=1, row.names=1)
   map <- read.table(file=opt$map, sep='\t', header=1)
 
-  if (!is.null(opt$category_column) &&  opt$category_column != '') {
+  if (!is.null(opt$category_column) && opt$category_column != '') {
     if (! opt$category_column %in% names(table)) {
-      msg <- append(msg, paste('"error":"', opt$category_column, ' not found in dataset headers"', sep=''))
+      msg <- append(msg, paste('"warning":"', opt$category_column, ' not found in dataset headers. Rows names will be used by default for category binning."', sep=''))
     }
   }
 

@@ -20,6 +20,10 @@ function scrollTo(source, target) {
   });
 }
 
+function stopRefresh(refresh_timer) {
+  clearInterval(localStorage.getItem(refresh_timer));
+}
+
 function selectBtn(id1, id2) {
   $(id2).addClass("selected");
   $(id1).not(id2).removeClass("selected");

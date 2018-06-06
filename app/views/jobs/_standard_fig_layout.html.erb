@@ -30,17 +30,23 @@
         <div class="col-xl-9 col-lg-12 col-md-12 col-sm-12 pl-1 pr-0 mb-1">
 
 
-            <% if @description and !@description.empty? %>
+            <% if (@description and !@description.empty?) or (@warning and !@warning.empty?) or (@error and !@error.empty?) %>
 
               <div id='fig-description-container' title='Figure description' class="p-2 mb-1 card">
 
-                <% if @description.length() > 1 %>
+                <% if (@description.length() + @warning.length() + @error.length()) > 1 %>
 
                   <span id='fig-description-btn'>
                     <i class='fa fa-info fa-2x'></i>
                   </span>
                   <span id='fig-description' class="inactive">
                     <ul>
+                      <% @error.each do |d| %>
+                        <li class="p-0 alert alert-danger"><i class="fa fa-exclamation-triangle icon-danger"></i> <%= d %></li>
+                      <% end %>
+                      <% @warning.each do |d| %>
+                        <li class="p-0 alert alert-warning"><i class="fa fa-exclamation-triangle icon-warning"></i> <%= d %></li>
+                      <% end %>
                       <% @description.each do |d| %>
                         <li><%= d %></li>
                       <% end %>
@@ -50,7 +56,7 @@
                 <% else %>
                   
                   <span id='fig-description'>
-                    <i class='fa fa-info fa-2x'></i> <%= @description.first %>
+                    <i class='fa fa-info fa-2x'></i> <%= @description.concat(@warning.concat(@error))[0] %>
                   </span>
 
                 <% end %>

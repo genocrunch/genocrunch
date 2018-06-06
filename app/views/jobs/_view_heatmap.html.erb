@@ -6,7 +6,7 @@
 
   var fig_data = <%= raw @data_json %>,
       cmax = 200,
-      rmax = 200;
+      rmax = 1500;
   if (fig_data.colnames.length > cmax || fig_data.rownames.length > rmax) {
     alert("Sorry, the heatmap is too big to be displayed:\n\
 Its size is "+fig_data.colnames.length+"x"+fig_data.rownames.length+" but the max is "+cmax+"x"+rmax+"\n\n\

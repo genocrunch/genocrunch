@@ -1,17 +1,25 @@
-<div class="container-fluid main-container">
-
+<div class='main-container container-fluid'>
 <p id="notice"><%= notice %></p>
+<%= link_to 'New Version', new_version_path, class: "btn btn-info mb-1" if admin? %>
+<div id='card-deck'>
+<% @versions.reverse.each do |version| %>
+  <% r_version = JSON.parse(version.tools_json).find{|e| e['name'] == 'R' } || nil %>
+  <% list_tools = JSON.parse(version.tools_json).select{ |e| e['version'] != 'NA' and e['name'] != 'R' } %>
 
-<h1>Versions</h1>
+  <div class="card mb-1">
+    <div class='card-header'>
+    <h3 class='inline-block'>Version <%= version.id %> | <%= version.release_date.year.to_s + "/" + version.release_date.month.to_s.rjust(2, '0') + "/" + version.release_date.day.to_s.rjust(2, '0') %></h3>
+    <% if admin? %>
+      <div class="btn-group float-right">
+        <%= link_to 'Edit', edit_version_path(version), class: "btn btn-info" %>
+        <%= link_to 'Delete', version_path(version), method: :delete, data: { confirm: 'Are you sure you want to remove this version?'}, class: "btn btn-danger" %>
+      </div>
+    <% end %>
+    </div>
+    <div class='card-block'>
+      <p class='card-text'><%= version.description %></p>
 
-    <% @versions.each do |version| %>
-<div class='card'>
-<div class='card-header'>Version <%= version.id %></div>
-<div class='card-block'>
-<p class='card-text'><%= version.description %></p>
-<% list_tools = JSON.parse(version.tools_json).select { |e| e['version'] != 'NA' } %>
-
-
+      <p><%= r_version['version'] if r_version %></p>
 <table id='tools_<%= version.id %>' class='table version-table'>
 <thead  style=' white-space:nowrap;'>
 <th>R package</th>
@@ -22,39 +30,41 @@
 <tbody>
 <% list_tools.each do |t| %>
 <tr>
-<td><a href='<%= @h_tools[t['name']]['man'] %>' target='_blank'><%= t['name'] %></a></td>
-<td><%= @h_tools[t['name']]['categ'] %></td>
-<td><%= @h_tools[t['name']]['description'] %></td>
+<% if @h_tools.keys.include?(t['name']) %>
+  <td><a href='<%= @h_tools[t['name']]['man'] %>' target='_blank'><%= t['name'] %></a></td>
+  <td><%= @h_tools[t['name']]['categ'] %></td>
+  <td><%= @h_tools[t['name']]['description'] %></td>
+<% else %>
+<td><%= t['name'] %></td>
+<td></td>
+<td></td>
+<% end %>
 <td><%= t['version'] %></td>
 </tr>
+
 <% end %>
 </tbody>
 </table>
-<%= link_to "Edit", edit_version_path(version) if admin? %>
+
+    </div>
+  </div>
+
+<% end %>
 </div>
-</div>
 
-
-    <% end %>
-
-<br>
-
-<%= link_to('New Version', new_version_path) if admin? %>
 </div>
 
 
 <%= javascript_tag do  %>
 
-  selectBtn("#home-pages-list.navbar-nav>nav-item", "#home-pages-list.navbar-nav>#infos")
 
   <% @versions.each do |v| %>
 
-    table = $('#tools_<%= v.id %>').dataTable({  
-      sDom: 't',
-      "iDisplayLength" : -1
+    table = $('#tools_<%= v.id %>').dataTable({
+      "sDom": 't',
+      "iDisplayLength" : -1,
+      "order": [[ 1, 'desc' ], [ 0, 'asc']]
     });
-
-    table.fnSort( [ [1,'asc'], [0,'asc'] ] );
 
   <% end %>
 

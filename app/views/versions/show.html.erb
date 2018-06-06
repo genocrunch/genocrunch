@@ -1,4 +1,9 @@
+<%= javascript_tag do %>
+  clearInterval(localStorage.getItem("refresh_timer"))
+<% end %>
+
 <p id="notice"><%= notice %></p>
 
 <%= link_to 'Edit', edit_version_path(@version) %> |
 <%= link_to 'Back', versions_path %>
+

@@ -141,7 +141,7 @@ log_fp <- opt$log
 json <- fromJSON(json_str=opt$json)
 
 # Set general inputs
-table <- read.table(file=opt$table, sep='\t', header=1, row.names=1)
+table <- read.table(file=opt$table, sep='\t', header=1, row.names=1, quote="")
 
 if (opt$category %in% names(table)) {
   if (length(unique(unlist(table[, opt$category]))) == nrow(table)) {
@@ -153,7 +153,7 @@ if (opt$category %in% names(table)) {
 }
 
 if (!is.null(opt$map)) {
-  map <- read.table(file=opt$map, sep='\t', header=1, row.names=1)
+  map <- read.table(file=opt$map, sep='\t', header=1, row.names=1, quote="")
 } else {
   map <- NULL
 }
@@ -177,7 +177,7 @@ if (!is.null(opt$fun)) {
 }
 
 if (!is.null(opt$secondary)) {
-  secondary.data <- read.table(file=opt$secondary, sep='\t', header=1, row.names=1)
+  secondary.data <- read.table(file=opt$secondary, sep='\t', header=1, row.names=1, quote="")
 } else {
   secondary.data <- NULL
 }
@@ -186,6 +186,7 @@ if (!is.null(opt$secondary)) {
 if (graphical[[opt$method]] == TRUE && opt$graphical == TRUE) {
   fig.fp <- paste(opt$output, '.pdf', sep='')
   pdf(file=fig.fp, width=opt$width, height=opt$height)
+  par(mar = c(1, 1, 1, 1), xpd=TRUE)
 }
 
 # Call the analysis function
@@ -198,6 +199,7 @@ if (graphical[[opt$method]] == TRUE && opt$graphical == TRUE) {
 ###################
 data <- list()
 if (opt$method == 'clustering') {
+
   data[['txt']] <- PerformClustering(table=table,
                                      fun=fun,
                                      json=json,

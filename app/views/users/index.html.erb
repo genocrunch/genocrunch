@@ -1,0 +1,19 @@
+<div class="container-fluid">
+<div class='main-container'>
+  <% if current_user.role == "admin" %>
+    <%= render partial: '/users/users' %>
+  <% end %>
+</div>
+</div>
+
+<%= javascript_tag do %>
+  clearInterval(localStorage.getItem("refresh_timer"))
+
+  notice = '<%= notice %>'
+  $(document).ready(function() {
+    if (notice != '') {
+      alert(notice)
+    }
+  });
+
+<% end %>

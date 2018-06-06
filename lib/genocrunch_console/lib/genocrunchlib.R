@@ -565,6 +565,21 @@ FilterTable <- function(table=NULL, category='taxonomy',
 ################
 BinTableByCategory <- function(table=NULL, category_col='taxonomy', fun='sum',
                                level='NA', verbose=TRUE, vstyle=1) {
+
+  if ((category_col == '') || !(category_col %in% names(table)) ) {
+    category_col <- "row names"
+    category <- row.names(table)
+  } else {
+    category <- paste(table[, names(table) == category_col],
+                      '; (',
+                      row.names(table),
+                      ')',
+                      sep='')
+    table <- table[, names(table) != category_col]
+  }
+  category <- strsplit(category, ';')
+
+
   if (vstyle == 1) {
     PrintMsg(paste('"description":"Observations were binned by categories (category column:',
                    category_col,
@@ -590,19 +605,9 @@ BinTableByCategory <- function(table=NULL, category_col='taxonomy', fun='sum',
   }
 
 
-  category_is_row_names <- FALSE
-  if ((category_col == '') || !(category_col %in% names(table)) ) {
-    category_is_row_names <- TRUE
-    category <- row.names(table)
-  } else {
-    category <- paste(table[, names(table) == category_col],
-                      '; (',
-                      row.names(table),
-                      ')',
-                      sep='')
-    table <- table[, names(table) != category_col]
-  }
-  category <- strsplit(category, ';')
+
+
+
 
   for (i in 1:length(category)) {
     category[[i]] <- gsub('^ *.__ *$', '', category[[i]])
@@ -945,7 +950,7 @@ PerformClustering <- function(table=NULL, fun=c('kmeans', 'pam', 'pam-bray', 'pa
     }
     package <- paste(' (R package {', unlist(spec$pkg), '})', sep='')
   }
-  PrintMsg(paste('"description":"Clusters were determined using ', spec$label,
+  PrintMsg(paste('"description":"Clusters were determined using the ', spec$label,
            package, '."', sep=''),
            verbose)
 
@@ -955,7 +960,7 @@ PerformClustering <- function(table=NULL, fun=c('kmeans', 'pam', 'pam-bray', 'pa
 
 
     if (graphical == TRUE) {
-      kmean.out <- kmeansruns(table, criterion='asw', plot=TRUE)$cluster
+      kmean.out <- kmeansruns(table, criterion='asw', plot=F)$cluster  # figure margins too large issue...
     } else {
       kmean.out <- kmeansruns(table, criterion='asw')$cluster
     }
@@ -964,7 +969,7 @@ PerformClustering <- function(table=NULL, fun=c('kmeans', 'pam', 'pam-bray', 'pa
                      sep ='')
 
   } else if (fun == 'pam') {
-    pam.out <- pamk(table, usepam=FALSE)
+    pam.out <- pamk(table, usepam=TRUE)
     if (graphical == TRUE) {
       plot(pam.out$pamobject, which.plots=2)
     }
@@ -1033,6 +1038,11 @@ AnalyseProportions <- function(table=NULL,
   # Convert to relative abundances per column
   PrintMsg('"description":"Data was converted to proportions (%) per sample."',
            verbose)
+  if (min(table) < 0) {
+    PrintMsg('"warning":"Negative values were found! Negative values are not supported by this analysis."',
+             verbose)
+    table <- as.data.frame(abs(table))
+  }
   table <- as.data.frame(apply(table, 2, Numeric2Percent))
 
   # Order by decreasing values
@@ -1756,12 +1766,14 @@ Adonis <- function(table=NULL, model=NULL, strata=NULL, map=NULL,
   if (!is.null(model)) {
     formula <- paste('table ~ ', model, sep='')
   } else {
-    formula <- paste('table ~ ', names(map), sep='*')
-  }
+    formula <- paste('table ~ ', paste(names(map), collapse='*'), sep='')}
 
   if (!is.null(strata)) {
     if (strata == '') {
       strata == NULL
+    } else {
+      #formula <- paste(formula, strata, sep=' / ')
+      strata <- map[, strata]
     }
   }
 
@@ -1869,7 +1881,7 @@ PerformAdonis <- function(table=NULL, map=NULL, fun='bray',
   }
 
   # Perform perMANOVA
-  map <- FilterMap(map=map, model=model)
+  #map <- FilterMap(map=map, model=model)
   data.json <- c(1:length(model))
   for (i in 1:length(model)) {
     stat <- Adonis(table=t(table),

@@ -11,6 +11,7 @@ class ExamplesController < ApplicationController
   # GET /examples/1
   # GET /examples/1.json
   def show
+    @example = Example.where(:job_key => params[:id]).first
   end
 
   # GET /examples/new
@@ -29,8 +30,9 @@ class ExamplesController < ApplicationController
 
     respond_to do |format|
       if @example.save
-        format.html { redirect_to @example, notice: 'Example was successfully created.' }
-        format.json { render :show, status: :created, location: @example }
+
+        format.html { redirect_to examples_path, notice: 'Example was successfully created.' }
+        #format.json { render :show, status: :created, location: @example }
       else
         format.html { render :new }
         format.json { render json: @example.errors, status: :unprocessable_entity }
@@ -43,8 +45,8 @@ class ExamplesController < ApplicationController
   def update
     respond_to do |format|
       if @example.update(example_params)
-        format.html { redirect_to @example, notice: 'Example was successfully updated.' }
-        format.json { render :show, status: :ok, location: @example }
+        format.html { redirect_to examples_path, notice: 'Example was successfully updated.' }
+        #format.json { render :show, status: :ok, location: @example }
       else
         format.html { render :edit }
         format.json { render json: @example.errors, status: :unprocessable_entity }
@@ -65,7 +67,8 @@ class ExamplesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_example
-      @example = Example.find(params[:id])
+      @example = Example.where(:job_key => params[:id]).first
+      #@example = Example.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

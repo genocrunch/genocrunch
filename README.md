@@ -36,7 +36,7 @@ Genocrunch uses the ruby on Rails framework with a PostgreSQL database.
 - **Ruby version 2.3.1**
 - **Rails version 5.0.0**
 - **Python version >=2.7.0 <3.0.0**
-- **R version >3.2.2**
+- **R** (tested with version 3.4.0)
 
 ## Installation (Debian Linux and macOS)
 
@@ -109,11 +109,19 @@ $ python -V
 
 **Debian Linux**
 
+Add the R repository to /etc/apt/sources.list:
+```
+#/etc/apt/sources.list
+...
+deb http://cran.rstudio.com/bin/linux/ubuntu xenial/
+...
+```
+
 ```
 $ sudo apt-get install r-base-core libnlopt-dev libcurl4-openssl-dev libxml2 libxml2-dev
 ```
 
-Open the R environment and check that R version is above 3.2.2:
+Open the R environment and check the R version:
 
 ```
 $ R
@@ -182,30 +190,8 @@ $ bundle install
 
 ### Set application configuration variables
 
-Set the application configuration variables in the `config/config.yml` file to fit the current installation:
-
-```
-#config/config.yml
-
-development:
-  # Genocrunch main directory
-  data_dir: /path/to/genocrunch
-
-  # Additional link(s) that should be included in the Infos menu of the topbar
-  info_links: [{name: 'link_name', href: 'link_url', target: '_blank'}]
-
-  # Webmaster email
-  webmaster_email: 'webmaster_email'
-
-  # Send a validation link to user email to confirm registration?
-  user_confirmable: false
-
-production:
-  data_dir: /path/to/genocrunch
-  info_links: [{name: 'link_name', href: 'link_url', target: '_blank'}]
-  webmaster_email: 'webmaster_email'
-  user_confirmable: false
-```
+Set the application configuration variables in the `config/config.yml` file to fit the current installation needs.
+All variables are documented in the development section of the file.
 
 ### Set genocrunch emails
 
@@ -343,7 +329,7 @@ For this, run the `get_version.py` script:
 $ get_version.py
 ```
 
-This will create a .json file in the genocrunch main directory with a name looking like `version_2017-12-18_18:03:08.898906.json`.
+This will create a .json file in the working directory with a name looking like `version_2017-12-18_18:03:08.898906.json`.
 
 Sign in as admin and navigate to Infos>Versions
 Click on the **New Version** button and fill the form.
@@ -357,6 +343,18 @@ Terms of service can be edited in `public/app/TERMS_OF_SERVICE.txt`.
 ## Usage
 
 See **Infos>Doc** in the application web page (<http://localhost:3000/home/doc>).
+
+## Cleaning up data storage
+
+Old jobs can be deleted using the `rake cleanup` task as following.
+The maximum age allowed for analyses is defined in the `config/config.yml` file uder the fields `max_sandbox_job_age`, for general analyses and `max_job_age` for analyses created by logged in users.
+
+```
+$ rake cleanup
+```
+
+This can be added as a periodic cron task to automate the cleanup process.
+Note that Examples will not be deleted by this process.
 
 ## Running on Docker
 

@@ -459,7 +459,7 @@ function pca(id, legend_id, json, W = 600, H = 600, font_family = "verdana, aria
     var searchLabels = function() {
       searchLabels2("#labelButton", "#searchInput", ".plot-label")
     }
-    appendSearchInput(buttons, "Search", "searchInput", searchLabels);
+    appendSearchInput(buttons, "Search (multiple terms can be searched using the AND separator)", "searchInput", searchLabels);
 
     
     // Select axis

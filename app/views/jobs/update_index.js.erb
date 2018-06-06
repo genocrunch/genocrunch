@@ -1,0 +1,7 @@
+<% if !@previous_jobs.nil? %>
+  <% if @previous_jobs != @jobs.map {|e| e.status.first}.join('') %>
+    $("#job-index").html("<%=j render(:partial => 'jobs', :locals => {:jobs => @jobs}) %>");
+  <% end %>
+<% else %>
+  $("#job-index").html("<%=j render(:partial => 'jobs', :locals => {:jobs => @jobs}) %>");
+<% end %>

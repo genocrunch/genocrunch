@@ -28,7 +28,7 @@
  "man":"https://cran.r-project.org/web/packages/vegan/vegan.pdf",
  "categ":"analysis"},
 {"name":"sva",
- "description":"Provides functions for removing batch effects and other unwanted variation in high-throughput experiment",
+ "description":"Provides functions for removing batch effects and other unwanted variation in high-throughput sequencing experiments",
  "man":"http://bioconductor.org/packages/release/bioc/manuals/sva/man/sva.pdf",
  "categ":"pre-processing"},
 {"name":"optparse",

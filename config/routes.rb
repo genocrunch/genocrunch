@@ -15,13 +15,8 @@ Genocrunch::Application.routes.draw do
     end
   end
 
-  # Manage roles
-  authenticated :user, -> user { user.role == "admin" } do
-    mount Delayed::Web::Engine, at: '/delayed-jobs'
-    get "/admins/:page" => "admins#show"
-  end
-
   # creates routes for users
+  resources :users, only: [:index]
   devise_for :users, controllers: {sessions: "users/sessions",
                                    confirmations: "users/confirmations",
                                    mailer: "users/mailer",
@@ -30,24 +25,25 @@ Genocrunch::Application.routes.draw do
                                    shared: "users/shared",
                                    unlocks: "users/unlocks"}
 
+
+
   resources :jobs, :param => :key do # creates routes for jobs  # '$ rake routes' to see them (or go tohttp://localhost:3000/rails/info/routes)
     member do
-      get :tab
       get :serve
+      get :serve_archive
+      get :serve_stderr
       get :view
       get :refresh
       get :clone
     end
     collection do 
-      get :manage
+      get :update_index
       get :read_file_header
       get :read_file_column
     end
   end
 
   get "jobs/:id/refresh" => "jobs#refresh", :as => :refresh_jobs
-
-  get "/helps/:page" => "helps#show"
 
   # error pages
 

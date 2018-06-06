@@ -194,7 +194,7 @@ class Log(object):
         with open(self.fp, 'w') as f:
           dump(self.data, f, indent=2)
 
-        self.secure(self.fp+'.bkp')
+        self.secure(self.fp+'.safe')
 
 
     def secure(self, fp=None):
@@ -222,7 +222,7 @@ class Log(object):
         f = open(self.fp, 'w')
         f.write(new_content)
         f.close()
-        self.secure(self.fp+'.bkp')
+        self.secure(self.fp+'.safe')
 
 class Archive(object):
     """An archive"""
@@ -626,7 +626,7 @@ class Analysis(object):
                        self.output)
         self.log.data.append({'name':'map', 'type':'map', 'log':self.map.log})
         self.log.update()
-        #self.archive.add(self.log.fp+'.bkp', update=False, generate=False)
+        #self.archive.add(self.log.fp+'.safe', update=False, generate=False)
         log = [e for e in self.map.log if e['name'] == 'validation'][0]
         log['status'] = 'running'
         self.log.update()
@@ -771,7 +771,6 @@ class Analysis(object):
 
         for analysis in analyses:
           eval('self.analysis("'+analysis['name']+'")')
-
         self.cleanup()
 
 
@@ -833,7 +832,7 @@ class Analysis(object):
           append_to_map = True
           if self.parameters.params['clustering_fun'] is not None:
             clustering_fun = self.parameters.params['clustering_fun']
-            if isinstance(clustering_fun, list):
+            if isinstance(clustering_fun, list):  # NOT SUPPORTED BY R SCRIPT YET
               clustering_fun = ','.join(clustering_fun)
             args.extend(['--fun',
                          clustering_fun])
@@ -953,7 +952,7 @@ class Analysis(object):
           sub.wait()
 
           s = sub.stdout.read()
-          print s
+
           if s is not None and s != '':
             stdout.append(s)
           s = sub.stderr.read()

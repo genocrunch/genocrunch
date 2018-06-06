@@ -1,25 +1,51 @@
+<% remaining_life = [APP_CONFIG[((@job.user_id == 1)? 'max_sandbox_job_age' : 'max_job_age').to_sym].to_i-(Date.today-@job.updated_at.to_date).to_i, 0].max %>
 
 <ul class='no-bullets p-0'>
+  <li>
+    <%= form_for(@job, :url => job_path(@job.key), :html => {:class => 'form-inline'}) do |f| %>
+      <%= f.hidden_field :update_only, value: 'name' %>
+      <span>Name: <%= f.text_field :name, value: @job.name, class: 'form-control form-control-sm' %></span>
+
+    <div class="form-group ml-1">
+      <%= f.submit "Save", id: 'save_job_name', class: "btn btn-secondary btn-sm" %>
+    </div>
+    <% end %>
+  </li>
   <li>Creation: <%= @job.created_at.year.to_s[-2..-1].to_s + "-" + @job.created_at.month.to_s.rjust(2, '0') + "-" + @job.created_at.day.to_s.rjust(2, '0') + " " + @job.created_at.hour.to_s.rjust(2, '0') + ":" + @job.created_at.min.to_s.rjust(2, '0') + " " + @job.created_at.zone.to_s %>
   </li>
   <li>Last update: <%= @job.updated_at.year.to_s[-2..-1].to_s + "-" + @job.updated_at.month.to_s.rjust(2, '0') + "-" + @job.updated_at.day.to_s.rjust(2, '0') + " " + @job.updated_at.hour.to_s.rjust(2, '0') + ":" + @job.updated_at.min.to_s.rjust(2, '0') + " " + @job.updated_at.zone.to_s %>
+  <span class="alert alert-<%= (remaining_life > 30) ? "info" : ((remaining_life > 10) ? "warning" : "danger") %> p-1">will be automatically removed in <%= remaining_life %> days</span>
   </li>
-  <li>Owner: <%= @job.user.username %></li>
-  <li title="Analysis key"><i class="fa fa-key"></i> <%= @job.key %></li>
+  <% if @job.user_id > 1 %>
+    <li>Owner: <%= @job.user.username %></li>
+    <li title="Analysis key"><i class="fa fa-key"></i> <%= @job.key %></li>
+  <% end %>
+  <li title="Size">Size: <%= number_to_human_size(@job.size.to_i, precision: 2, prefix: :si) %></li>
 </ul>
 
 <div class='card'>
   <div class='card-header'>Description</div>
   <div class='card-block'>
-    <%= (@job.description != '') ? @job.description : 'You did not enter any description for this analysis' %>
+
+<%= form_for(@job, :url => job_path(@job.key)) do |f| %>
+<%= f.hidden_field :update_only, value: 'description' %>
+<%= f.text_area :description, val: (@job.description != '') ? @job.description : 'You did not enter any description for this analysis', :placeholder => 'Some details', class: 'form-control full-width' %>
+    <div class="form-group float-right mt-1">
+      <%= f.submit "Save", :class => "btn btn-secondary btn-sm" %>
+    </div>
+<% end %>
   </div>
 </div>
 
-<%= link_to serve_job_path(@job.key, :filename => 'output/stderr.log'), :title => 'Bugs report', :class => 'p-1 float-right' do %>
+
+<%= link_to serve_stderr_job_path(@job.key), :id => 'bugs-report-link', :title => 'Bugs report', :class => 'p-1 float-right hidden' do %>
   <i class="fa fa-bug" aria-hidden="true"></i>
 <% end %>
 
 
 <%= javascript_tag do %>
   $("#view-title").html("Details")
+  $("#save_job_name").on("click", function(){
+    $("#analysis-name").html($("#job_name").val())
+  })
 <% end %>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170815081748) do
+ActiveRecord::Schema.define(version: 20180528202114) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -30,20 +30,33 @@ ActiveRecord::Schema.define(version: 20170815081748) do
     t.index ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
   end
 
+  create_table "examples", force: :cascade do |t|
+    t.text     "job_key"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "jobs", force: :cascade do |t|
-    t.boolean  "sandbox",  default: true
-    t.integer  "user_id", default: 1
+    t.boolean  "sandbox",      default: true
+    t.integer  "user_id",      default: 1
     t.string   "name"
     t.string   "key"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "status", default:'pending'
+    t.string   "status",       default: "pending"
     t.integer  "pmid"
     t.text     "description"
     t.text     "read_access"
     t.text     "write_access"
     t.text     "form_json"
     t.text     "output_json"
+    t.integer  "size",         default: 0,         null: false
+  end
+
+  create_table "statuses", force: :cascade do |t|
+    t.text    "name"
+    t.text    "icon"
+    t.integer "precedence"
   end
 
   create_table "users", force: :cascade do |t|
@@ -65,19 +78,17 @@ ActiveRecord::Schema.define(version: 20170815081748) do
     t.string   "current_sign_in_ip"
     t.string   "last_sign_in_ip"
     t.string   "role",                   default: "user"
+    t.integer  "storage_quota",        default: 500000000,
+    t.integer  "total_jobs_size",        default: 0,
     t.index ["username"], name: "index_users_on_username", unique: true, using: :btree
   end
 
-  create_table "examples", force: :cascade do |t|
-    t.text   "job_key"
+  create_table "versions", force: :cascade do |t|
+    t.text     "description"
+    t.datetime "release_date"
+    t.text     "tools_json"
     t.datetime "created_at"
     t.datetime "updated_at"
-  end
-
-  create_table "statuses", force: :cascade do |t|
-    t.text    "name"
-    t.text    "icon"
-    t.integer "precedence"
   end
 
   create_table "views", force: :cascade do |t|
@@ -87,14 +98,6 @@ ActiveRecord::Schema.define(version: 20170815081748) do
     t.integer "position"
     t.boolean "graphical"
     t.text    "data_format"
-  end
-
-  create_table "versions", force: :cascade do |t|
-    t.text     "description"
-    t.datetime "release_date"
-    t.text     "tools_json"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
 end

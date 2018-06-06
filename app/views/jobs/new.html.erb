@@ -1,6 +1,8 @@
-<div class="container-fluid main-container" id="form-container">
-<!--  <div class='alert alert-danger'>Sorry, this application is under construction.</div> -->
+<%= javascript_tag do %>
+  clearInterval(localStorage.getItem("refresh_timer"))
+<% end %>
 
+<div class="container-fluid main-container" id="form-container">
 
   <h3>New job</h3>
 

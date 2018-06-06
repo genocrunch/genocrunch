@@ -1,4 +1,11 @@
+<div class="container-fluid">
+<div class="row main-container">
+<div class="col-md-4 offset-md-4">
+
+  <h1>New Version</h1>
+
 <%= form_for(version) do |f| %>
+
   <% if version.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(version.errors.count, "error") %> prohibited this version from being saved:</h2>
@@ -11,15 +18,29 @@
     </div>
   <% end %>
 
-Description
-<%= f.text_area :description %>
-<br/>
-Date
-<%= f.date_field :release_date %>
-JSON
-<%= f.text_area :tools_json %>
-
-  <div class="actions">
-    <%= f.submit %>
+  <div class="form-group">
+    <label class="control-label">Description</label>
+    <%= f.text_area :description, :autofocus => true, class: "form-control input-lg", tabindex: 1, placeholder: "Enter details" %>
   </div>
+
+  <div class="form-group">
+    <label class="control-label">Date</label>
+    <%= f.date_field :release_date, class: "form-control input-lg", tabindex: 2, placeholder: "Date" %>
+  </div>
+
+  <div class="form-group">
+    <label class="control-label">JSON</label>
+    <%= f.text_area :tools_json, class: "form-control input-lg", tabindex: 3, placeholder: "Paste the content of the JSON file created with get_version.py" %>
+  </div>
+
+
+  <div class="form-group">
+    <%= f.submit "Create new Version", :class => "btn btn-info btn-lg full-width", tabindex: 4 %>
+  </div>
+
+
 <% end %>
+
+</div>
+</div>
+</div>

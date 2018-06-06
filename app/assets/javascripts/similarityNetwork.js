@@ -527,7 +527,7 @@ function similarityNetwork(id, legend_id, json0, W = 600, H = 600, font_family =
     var searchLabels = function() {
       searchLabels2("#labelButton", "#searchInput", ".node-label")
     }
-    appendSearchInput(buttons, "Search", "searchInput", searchLabels);
+    appendSearchInput(buttons, "Search (multiple terms can be searched using the AND separator)", "searchInput", searchLabels);
 
 
     // Select colors

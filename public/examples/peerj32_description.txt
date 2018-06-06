@@ -1,5 +1,0 @@
-The peerj32 dataset from R package {microbiome}.
-"The peerj32 data set contains high-through profiling data from 389 human blood serum lipids and
-130 intestinal genus-level bacteria from 44 samples (22 subjects from 2 time points; before and after
-probiotic/placebo intervention). The data set can be used to investigate associations between intesti-
-nal bacteria and host lipid metabolism. For details, see http://dx.doi.org/10.7717/peerj.32."

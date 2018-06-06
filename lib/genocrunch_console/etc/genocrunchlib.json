@@ -58,20 +58,17 @@
     {"value":"chao", "label":"Chao Index", "pkg":"vegan"}
   ],
   "clustering":[
-    {"value":"none",
-     "label":"",
-     "pkg":""},
     {"value":"pam",
-     "label":"k-medoids",
+     "label":"k-medoids algorithm",
      "pkg":"fpc"},
     {"value":"pam-bray",
-     "label":"k-medoids on Bray-Curtis dissimilarity",
+     "label":"k-medoids algorithm run on Bray-Curtis dissimilarity",
      "pkg":"fpc"},
     {"value":"pam-jaccard",
-     "label":"k-medoids on Jaccard distance",
+     "label":"k-medoids algorithm run on Jaccard distance",
      "pkg":"fpc"},
     {"value":"kmeans",
-     "label":"k-means",
+     "label":"k-means algorithm",
      "pkg":"fpc"}
   ],
   "graph_clustering":[
@@ -108,7 +105,7 @@
    "type":"select",
    "placeholder":"Select Primary dataset first",
    "increment":"3",
-   "optional":false
+   "optional":true
   },
   {"id":"map",
    "help":"Mapping file. It describes the experimental design. Columns represent factors (ex: treatment,sex,etc.) and rows indicates samples. Format must be tab-delimited text. First row must contain column names. At least one column must contain the sample names,matching the first row of data file (Input). [<a href='/home/doc#map_format' target='_blank'>File format</a>]",
@@ -124,8 +121,8 @@
   {"id":"abundance_threshold",
    "help":"Abundance threshold for filtering.",
    "type":"threshold",
-   "default_type":"percent",
-   "default_integer":"10",
+   "default_type":"integer",
+   "default_integer":"1",
    "default_percent":"0.03",
    "placeholder_integer":">0",
    "placeholder_percent":"0-100"
@@ -139,7 +136,7 @@
    "help":"Presence threshold for filtering.",
    "type":"threshold",
    "default_type":"integer",
-   "default_integer":"2",
+   "default_integer":"1",
    "default_percent":"10",
    "placeholder_integer":">0",
    "placeholder_percent":"0-100"
@@ -428,7 +425,7 @@
    "belongs_to":"clustering",
    "help":"Choose clustering algorithm(s).",
    "type":"select",
-   "multiple":true,
+   "multiple":false,
    "values":"clustering",
    "default":"pam"
   },

@@ -1,10 +1,12 @@
 User.create!([{username: 'guest',
                role: 'guest',
+               storage_quota: 0,
                email: 'guest@guestmailbox.com', # <- HERE
                confirmed_at: '2017-01-01 00:00:00.000000',
                password: 'guest_account_password'}, # <- HERE
               {username: 'admin',
                role: 'admin',
+               storage_quota: 0,
                email: 'admin@adminmailbox.com', # <- HERE
                confirmed_at: '2017-01-01 00:00:00.000000',
                password: 'admin_account_password'}]) # <- AND THERE
@@ -96,6 +98,6 @@ View.create!([{name: 'map',
                data_format: 'json'},
               {name: 'clustering',
                category: 'analysis',
-               icon: 'fa fa-align-justify',
+               icon: 'fa fa-info',
                position: 10,
                graphical: false}])

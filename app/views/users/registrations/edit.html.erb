@@ -22,7 +22,7 @@
   <% end %>
 
   <div class="form-group">
-    <label class="control-label">New password <small>(min 5 characters)</small></label>
+    <label class="control-label">New password <small>(min <%= Devise.password_length.min %> characters)</small></label>
     <%= f.password_field :password, :autocomplete => "off", class: "form-control input-lg", tabindex: 3, placeholder: "Define your new password" %>
   </div>
 

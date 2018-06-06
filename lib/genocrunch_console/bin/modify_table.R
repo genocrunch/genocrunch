@@ -98,14 +98,14 @@ opt <- parse_args(opt_parser)
 log_fp <- opt$log
 
 # Set general inputs
-table <- read.table(file=opt$table, sep='\t', header=1, row.names=1)
+table <- read.table(file=opt$table, sep='\t', header=1, row.names=1, quote="")
 ignore <- as.vector(unlist(strsplit(opt$ignore, split=',')))
 table.ignored <- as.data.frame(table[, names(table) %in% ignore])
 names(table.ignored) <- names(table)[names(table) %in% ignore]
 table <- table[, !(names(table) %in% ignore)]
 
 if (! is.null(opt$map)) {
-  map <- read.table(file=opt$map, sep='\t', header=1, row.names=1)
+  map <- read.table(file=opt$map, sep='\t', header=1, row.names=1, quote="")
 }
 
 verbose <- opt$verbose
@@ -172,7 +172,7 @@ if (opt$method == 'none') {
 
 } else if (opt$method == 'div') {
 
-  vect <- read.table(file=opt$vect, sep='\t', header=1, row.names=1)
+  vect <- read.table(file=opt$vect, sep='\t', header=1, row.names=1, quote="")
   table.modified <- DivTable(table, vect, verbose=verbose)
 
 }
