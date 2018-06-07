@@ -1,6 +1,11 @@
 function backToTop() {
+    $('body, html').animate({scrollTop: $('body').position().top},
+                            {duration: 400,
+                             easing: 'swing'});
+/*
   document.body.scrollIntoView({ behavior: 'smooth' });
   document.documentElement.scrollIntoView({ behavior: 'smooth' });
+*/
 }
 
 function randomKey(n) {

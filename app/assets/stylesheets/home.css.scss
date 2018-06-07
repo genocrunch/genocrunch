@@ -2,6 +2,19 @@
   padding:20px;
 }
 
+.bs-firefox {
+  background-image: asset-url("comp_firefox.jpg")
+}
+.bs-edge {
+  background-image: asset-url("comp_edge.jpg")
+}
+.bs-chrome {
+  background-image: asset-url("comp_chrome.jpg")
+}
+.bs-opera {
+  background-image: asset-url("comp_opera.jpg")
+}
+
 #home-pages-list>.nav-item {
   position:relative;
 }

@@ -73,21 +73,27 @@
 </div>
 
 <%= javascript_tag do %>
-  $('#move-down').on('click', function(){
-    document.getElementById('session-intro').scrollIntoView({ behavior: 'smooth' });
-  });
+scrollTo('move-down','session-intro')
 
+/*
+  $('#move-down').on('click', function(){
+    document.getElementById('session-intro').scrollIntoView({
+      behavior: 'smooth',
+      block: 'start'
+      });
+  });
+*/
   var notice = '<%= notice %>',
       is_firefox = typeof InstallTrigger !== 'undefined';
-/*
   $(document).ready(function() {
+/*
     if (!is_firefox) {
       $('#firefox_msg').show();
     };
+*/
     if (notice != '') {
       alert(notice)
     };
   });
-*/
 
 <% end %>

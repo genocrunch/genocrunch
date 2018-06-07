@@ -1,4 +1,4 @@
-<div class='card p-2'>
+<div class='card p-2 full-width'>
   <h3><%= (@scope == 'global')? 'All analyses' : 'My analyses' %></h3>
 
 <table id="jobTable" class="table table-striped table-condensed">
@@ -81,7 +81,7 @@
 </div>
 
 
-<div class='card container-fluid mt-1 mb-1 pb-0 pt-2 pl-2 pr-2'>
+<div class='card container-fluid mt-1 mb-1 pb-0 pt-2 pl-2 pr-2 full-width'>
   <div class='row p-0 m-0'>
       <div title="Summary" class="p-0 col-xl-2 col-lg-2 col-md-12 col-sm-12"><h3>Summary</h3></div>
       <div title="completed" class="p-0 col-xl-2 col-lg-2 col-md-12 col-sm-12"><%= @jobs.select{ |i| i.status == "completed" }.length %> completed (<i class="fa fa-check icon-success" aria-hidden="true"></i>)</div>

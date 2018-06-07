@@ -17,13 +17,16 @@
   
   <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12 m-0 p-0">
     <div class="card m-1">
-      <div class="card-block">
-        <h3 class="card-title"><%= card_title %>
+      <div class="card-header">
+        <h3><%= card_title %>
 	  <% if card_title == 'Inputs' %>
 	  <% l = ['', ''] %>
 	  <% end %>
 	</h3>
-	 <div class="card-text form_card">
+      </div>
+      <div class="card-block p-0">
+
+	 <div class="card-text form-card p-3">
 	   <%= render :partial => 'card_form', :locals => {:list_fields => @h_form['fields'][card_title].reject{|e| e['belongs_to']}} %>
 	 </div>
       </div>

@@ -26,6 +26,9 @@ config/environments/*
 config/initializers/devise.rb
 .env
 
+# Version
+version_[0-9-:.]*.json
+
 # Database
 /db/seeds.rb
 config/database.yml

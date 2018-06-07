@@ -103,6 +103,18 @@ ul.no-bullets li {
   display:none;
 }
 
+.row {
+
+
+display: -webkit-box;
+display: -webkit-flex;
+display: -ms-flexbox;
+display: flex;
+-webkit-flex-wrap: wrap;
+-ms-flex-wrap: wrap;
+flex-wrap: wrap;
+}
+
 .video-wrapper {
 	position: relative;
 	padding-bottom: 56.25%; /* 16:9 */

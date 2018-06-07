@@ -27,9 +27,12 @@ Genocrunch uses the ruby on Rails framework with a PostgreSQL database.
 - **Linux** (tested on Ubuntu 16.04 LTS and CentOS 7)
 - **macOS** (tested on 10.12 Sierra)
 
-## Supported web browsers
+## Browser support
 
-- **Mozilla Firefox** (Mobile versions are not supported)
+- **Mozilla Firefox** tested on version 60.0.1 Quantum (Ubuntu 16.04 LTS/Windows 10/macOS 10.13)
+- **Microsoft Edge** tested on version 42.17134 (Windows 10)
+- **Google Chrome** tested on version 67.0.3396.79 (Ubuntu 16.04 LTS/Windows 10)
+- **Opera** tested on version 53.0 (Ubuntu 16.04 LTS/Windows 10)
 
 ## Requirements
 
