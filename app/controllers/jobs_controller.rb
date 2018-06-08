@@ -1,6 +1,17 @@
 class JobsController < ApplicationController
   before_action :set_job, only: [:show, :edit, :update, :destroy, :serve, :serve_archive, :serve_stderr, :view, :refresh, :clone]
+  before_action :check_storage_limit, :only: [:new, :create]
   #  before_action :authenticate_user!, only: [:show, :edit, :update, :destroy, :serve] 
+
+  def check_storage_limit
+    
+    if (controller_name == 'jobs' and ['create', 'new', 'update'].include? action_name)
+      if current_user and current_user.storage_quota > 0 and current_user.total_jobs_size > current_user.storage_quota
+        flash[:notice] = "Sorry but you exceeded your storage quota. Please clean up old analyses first."
+        redirect_to root_url
+      end
+    end
+  end
 
   def kill_job j
     

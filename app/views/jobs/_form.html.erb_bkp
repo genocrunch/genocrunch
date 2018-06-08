@@ -1,0 +1,67 @@
+<%= form_for(@job) do |f| %>
+
+<div class="row form-container">
+
+  <div class="col-md-3 form-categ-container">
+  <div class="form-categ">
+    <% if Job.exists?(@job) %>
+      <div class="form-group">
+        <%= f.submit "Update Job", {:class => "btn btn-success btn-lg full-width"} %>
+      </div>
+      <div class="form-group">
+        <%= link_to @job, method: :delete, data: { confirm: 'Are you sure you want to delete "' + @job.name + '" ?' }, :class => "btn btn-default btn-lg full-width" do %>
+          <i class="fa fa-trash-o" aria-hidden="true"></i> Delete Job
+        <% end %>
+      </div>
+    <% else %>
+      <div class="form-group">
+        <%= f.submit "Create Job", {:class => "btn btn-success btn-lg full-width"} %>
+      </div>
+    <% end %>
+
+    <% if @user.role == "admin" %>
+          <div class="form-group">
+            <label class="control-label">Rights</label>
+            <div class="multiselect-btn-container">
+              <%= f.select(:rights, options_for_select(User.rights.map {|c| [c["label"], c["value"]]}), {}, multiple: false, include_blank: false, class:"form-control multiselect") %>
+            </div>
+          </div>
+    <% end %>
+        <label class="control-label">* mandatory fields</label>
+    <% if @job.errors.any? %>
+          <div id="error_explanation">
+            <h2><%= pluralize(@job.errors.count, "error") %> prevented this job from being saved:</h2>
+            <ul>
+              <% @job.errors.full_messages.each do |msg| %>
+                <li><%= msg %></li>
+              <% end %>
+            </ul>
+          </div>
+    <% end %>
+  </div>
+  </div>
+
+  <% Job.applicationJson["Inputs"].each do |key, json| %>
+    <%= render partial: 'form_from_json', locals: {f: f, json: json, context: context, default: default} %>
+  <% end %>
+
+</div>
+<% end %>
+
+<script>
+
+  var default_h = <%= default.to_json.html_safe %>,
+      form_items_h = <%= Job.formItems.to_json.html_safe %>,
+      keys = Object.keys(form_items_h);
+
+    displayTestFiles(test_id = "job_test",
+                   test_files = <%= Job.test_files.to_json.html_safe %>.options.choices,
+                   default_name = default_h['name'],
+                   default_basic_model = form_items_h['basic_model'].default,
+                   default_model = form_items_h['model'].default,
+                   default_test_basic_model =  default_h['basic_model'],
+                   default_test_model = default_h['model'],
+                   root_url = '<%= root_url %>');
+
+</script>
+

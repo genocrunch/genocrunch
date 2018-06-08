@@ -1,0 +1,30 @@
+<script>
+  $("#topbar-text").html("Help");
+</script>
+
+<div class="container-fluid">
+  <div class="row form-container">
+    <div class="col-md-10 col-md-offset-1">
+      <h2>Data table</h2>
+      <h3>Format:
+        <small>Tab-delimited text.</small>
+      </h3>
+      <h3>Content:<br><br>
+        <small>
+          <ul>
+            <li>Optional comments can be included at the beginning of the file, after a '#' character.</li><br>
+            <li>The first row of the data table contains unique column names (If they are comments, it must start with the # character).<br>
+            <em>In absence of any comments, the first row could directly start with a tab (empty first element) and no # is needed.</em></li><br>
+            <li>First column contains unique row names.</li><br>
+            <li>Following columns contains numeric values and start with unique sample names as headers. Sample names must match the appropriate column in the mapping file.</li><br>
+            <li>Last column contains categories and start with the 'taxonomy' header.</li><br>
+            <li>Categories are separated by semicolons (";").</li>
+          </ul>
+        </small>
+      </h3>
+      <h3>Example:<br><br><small>OTU table with OTU IDs as row names and taxonomy in the category column.</small></h3>
+      <pre><%= render :file => '/public/examples/otu_table.txt' %></pre>
+    </div>
+  </div>
+</div>
+

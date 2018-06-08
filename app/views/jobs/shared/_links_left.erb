@@ -1,0 +1,7 @@
+<%- if user_signed_in? %>
+  <li>
+    <div class="btn-group">
+      <%= link_to "Sign Out", destroy_user_session_path, method: :delete, class: "btn btn-default navbar-btn" %>
+    </div>
+  </li>
+<%- end %>

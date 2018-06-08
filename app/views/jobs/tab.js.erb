@@ -1,0 +1,26 @@
+$("#<%= params[:div_id] %>").html("<%=j render(:partial => params[:partial], :locals => {:job => @job, :content => params[:content]}) %>");
+
+if ("<%= params[:partial] %>" == "fig_browser") {
+
+  $("#figure-dropdown-label").html("<%= params[:label] %>");
+
+  var elements = document.getElementsByClassName("figure-dropdown-element");
+  for (var i = 0; i < elements.length; i++) {
+    elements[i].classList.remove("active");
+  }
+
+  document.getElementById("figure-dropdown-element-<%= params[:content] %>").classList.add("active");
+
+  document.getElementById("figures-tab").classList.add("active")
+  document.getElementById("edit-tab").classList.remove("active")
+
+} else if ("<%= params[:partial] %>" == "edit") {
+
+  var elements = document.getElementsByClassName("figure-dropdown-element");
+  for (var i = 0; i < elements.length; i++) {
+    elements[i].classList.remove("active");
+  }
+
+  document.getElementById("figures-tab").classList.remove("active")
+  document.getElementById("edit-tab").classList.add("active")
+}

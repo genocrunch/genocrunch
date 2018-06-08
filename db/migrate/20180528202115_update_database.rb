@@ -1,8 +1,8 @@
 class UpdateDatabase < ActiveRecord::Migration[5.0]
   def change
-    #add_column :jobs, :size, :integer, :default => 0
-    #add_column :users, :storage_quota, :integer, :default => 500000000
-    #add_column :users, :total_jobs_size, :integer, :default => 0
+    add_column :jobs, :size, :integer, :default => 0
+    add_column :users, :storage_quota, :integer, :default => 500000000
+    add_column :users, :total_jobs_size, :integer, :default => 0
 
     User.select{|u| u['role'] == 'admin'}.each do |v|
       v.update_attributes(:storage_quota => 0)
@@ -23,7 +23,7 @@ class UpdateDatabase < ActiveRecord::Migration[5.0]
     puts "In Statuses, set "+s.name+" precedence to "+s.precedence.to_s
 
     Job.select{|j| j['status'] != 'running'}.each do |j|
-      user_dir = Pathname.new(APP_CONFIG[:data_dir]) + "users" + j.user.id.to_s
+      user_dir = Pathname.new(APP_CONFIG[:data_dir]) + "users" + j.user_id.to_s
       data_dir = user_dir + j.key.to_s
       js = `du -sb #{data_dir} | cut -f1`.to_i
       if js != j.size.to_i

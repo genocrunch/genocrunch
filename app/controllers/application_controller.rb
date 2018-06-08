@@ -40,8 +40,7 @@ class ApplicationController < ActionController::Base
     return tmp_key
   end
   
-
-  protected
+   protected
 
   def configure_permitted_parameters
 

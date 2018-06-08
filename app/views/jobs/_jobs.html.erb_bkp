@@ -1,0 +1,196 @@
+<table id="myTable" class="table table-striped table-condensed">
+  <thead>
+    <tr>
+      <th title="key">
+        <div class="th-content-container">
+          <div class="form-group has-feedback">
+            <label class="control-label sr-only">key</label>
+            <input type="text" id="keySearch" class="form-control input-sm" onkeyup="searchTable('keySearch', 0)" placeholder="key" onclick="avoidSorting(event)" >
+            <i class="fa fa-search form-control-feedback"></i>
+          </div>
+          <i class="fa fa-sort fa-sort-with-filter" aria-hidden="true"></i>
+        </div>
+      </th>
+      <th title="name">
+        <div class="th-content-container">
+          <div class="form-group has-feedback">
+            <label class="control-label sr-only">name</label>
+            <input type="text" id="nameSearch" class="form-control input-sm" onkeyup="searchTable('nameSearch', 0)" placeholder="name" onclick="avoidSorting(event)" >
+            <i class="fa fa-search form-control-feedback"></i>
+          </div>
+          <i class="fa fa-sort fa-sort-with-filter" aria-hidden="true"></i>
+        </div>
+      </th>
+      <th title="date">
+        <div class="th-content-container">
+          <div class="form-group has-feedback">
+            <label class="control-label sr-only">date</label>
+            <input type="text" id="dateSearch" class="form-control input-sm" onkeyup="searchTable('dateSearch', 1)" placeholder="date" onclick="avoidSorting(event)" >
+            <i class="fa fa-search form-control-feedback"></i>
+          </div>
+          <i class="fa fa-sort fa-sort-with-filter" aria-hidden="true"></i>
+        </div>
+      </th>
+      <% if current_user.role == "admin" %>
+        <th title="rights">
+          <div class="th-content-container">
+            <div class="form-group has-feedback form-group-md">
+              <label class="control-label sr-only">rights</label>
+              <input type="text" id="rightsSearch" class="form-control input-sm" onkeyup="searchTable('rightsSearch', 2)" placeholder="rights" onclick="avoidSorting(event)" >
+              <i class="fa fa-search form-control-feedback"></i>
+            </div>
+            <i class="fa fa-sort fa-sort-with-filter" aria-hidden="true"></i>
+          </div>
+        </th>
+        <th title="user">
+          <div class="th-content-container">
+            <div class="form-group has-feedback form-group-md">
+              <label class="control-label sr-only">user</label>
+              <input type="text" id="userSearch" class="form-control input-sm" onkeyup="searchTable('userSearch', 3)" placeholder="user" onclick="avoidSorting(event)" >
+              <i class="fa fa-search form-control-feedback"></i>
+            </div>
+            <i class="fa fa-sort fa-sort-with-filter" aria-hidden="true"></i>
+          </div>
+        </th>
+      <% end %>
+      <th title="status">
+        <div class="th-content-container">
+          <i class="fa fa-sort" aria-hidden="true"></i>
+        </div>
+      </th>
+      <th title="input">input</th>
+      <th title="map">map</th>
+<!--      <th title="results">results</th>-->
+      <th title="edit|delete"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @jobs.compact.each do |job| %>
+      <% date = job.updated_at.year.to_s[-2..-1].to_s + "-" + job.updated_at.month.to_s + "-" + job.updated_at.day.to_s + " " + job.updated_at.hour.to_s + ":" + job.updated_at.min.to_s + " " + job.updated_at.zone.to_s %>
+      <tr class="<%= job.status == 'failed' ? 'danger' : '' %>">
+	 <td title="<%= job.key %>" style="font-size:<%# [10, 26-[10, job.name.size].max].max %>px;">
+          <div class="td-content-container <%# job.test? ? 'test-name' : '' %>">
+            <% if !["pending", "running"].include? job.status %>
+              <%= link_to job_path(job.key) do %>
+                <%= job.key %>
+              <% end %>
+            <% else %>
+              <%= job.key %>
+            <% end %>
+          </div>
+        </td>
+        <td title="<%= job.name %>" style="font-size:<%# [10, 26-[10, job.name.size].max].max %>px;">
+          <div class="td-content-container <%# job.test? ? 'test-name' : '' %>">
+            <% if !["pending", "running"].include? job.status %>
+              <%= link_to job_path(job.key) do %>
+                <%= job.name %>
+              <% end %>
+            <% else %>
+              <%= job.name %>
+            <% end %>
+          </div>
+        </td>
+        <td title="<%= date %>" class="date">
+          <% if !["pending", "running"].include? job.status %>
+            <%= link_to job_path(job.key) do %>
+              <div class="td-content-container">
+                <%= date %>
+              </div>
+            <% end %>
+          <% else %>
+            <%= date %>
+          <% end %>
+        </td>
+        <% if current_user.role == "admin" %>
+          <td title="<%# job.rights %>">
+            <%# job.rights %>
+          </td>
+          <td title="<%= job.user.username %>">
+            <%= job.user.username %>
+          </td>
+        <% end %>
+        <td title="<%= job.status%>">
+          <% if !["pending", "running"].include? job.status %>
+            <%# link_to job_path(job.key, context: 'figures') do %>
+              <div class="td-content-container">
+                <i class="fa <%= job.status == 'running' ? 'fa-circle-o-notch fa-pulse' : job.status == 'completed' ? 'fa-check icon-success' : job.status == 'pending' ? 'fa-ellipsis-h icon-inactive' : 'fa-exclamation-triangle icon-warning' %>" aria-hidden="true"></i>
+                <p class="hidden"><%= job.status %></p>
+              </div>
+            <%# end %>
+          <% else %>
+            <i class="fa <%= job.status == 'running' ? 'fa-circle-o-notch fa-pulse' : job.status == 'completed' ? 'fa-check icon-success' : job.status == 'pending' ? 'fa-ellipsis-h icon-inactive' : 'fa-exclamation-triangle icon-warning' %>" aria-hidden="true"></i>
+          <% end %>
+        </td>
+        <td title="download input data file">
+          <%# link_to serve_job_path( key: job.key, file: job.send('input'.to_sym).url, disposition: 'attachment', type: 'text/csv'), :data => {:no_turbolink => true}  do %>
+           <i class="fa fa-file-o" aria-hidden="true"></i>
+          <%# end %>
+        </td>
+        <td title="download mapping file">
+          <%# link_to serve_job_path(key: job.key, file: job.send('map'.to_sym).url, disposition: 'attachment', type: 'text/csv'), :data => { :no_turbolink => true } do %>
+            <i class="fa fa-file-o" aria-hidden="true"></i>
+          <%# end %>
+        </td>
+        <td title="Results">
+        <% if job.status == '' %>
+          <div class="td-icon-container">
+            <%# link_to serve_job_path(key: job.key, file: job.send('output'.to_sym).url, disposition: 'attachment', type: 'application/x-tar'), :data => { :no_turbolink => true } do %>
+                <i class="fa fa-file-archive-o" aria-hidden="true"></i>
+            <%# end %>
+            |
+            <%# link_to job_path(job.key, context: 'figures') do %>
+              <i class="fa fa-bar-chart" aria-hidden="true"></i>
+            <% end %>
+          </div>
+        <%# else %>
+         <!-- <i class="fa fa-ellipsis-h icon-inactive" aria-hidden="true"></i>-->
+        <%# end %>
+        </td>
+        <% destroy_text = (['pending', 'running'].include? job.status) ? 'abort' : 'delete' %>
+        <td title="edit|delete">
+          <%# link_to_if false, job_path(job.key, context: 'edit') do %>
+            <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+          <%# end %>
+          |
+          <%# link_to(job_path(job.key), method: :delete, data: { confirm: 'Are you sure you want to ' + destroy_text + ' "' + job.name + '" ?'}) do %>
+            <i class="fa fa-trash-o" aria-hidden="true"></i>
+          <%# end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<table id="myTableStats" class="table table-condensed">
+  <thead>
+    <tr>
+      <th title="jobs">jobs</th>
+      <th title="completed"><i class="fa fa-check icon-success" aria-hidden="true"></i></th>
+      <th title="pending"><i class="fa fa-ellipsis-h icon-inactive" aria-hidden="true"></i></th>
+      <th title="running"><i class="fa fa-circle-o-notch" aria-hidden="true"></i></th>
+      <th title="failed"><i class="fa fa-exclamation-triangle icon-warning" aria-hidden="true"></i></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><%= @jobs.length %></td>
+      <td><%= @jobs.select{ |i| i.status == "completed" }.length %></td>
+      <td><%= @jobs.select{ |i| i.status == "pending" }.length %></td>
+      <td><%= @jobs.select{ |i| i.status == "running" }.length %></td>
+      <td><%= @jobs.select{ |i| i.status == "failed" }.length %></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<%= javascript_tag do  %>
+$(document).ready(function(){
+  var table = $('#myTable').dataTable({
+    "aLengthMenu": [[15, 25, 50, 100, -1],
+                    [15, 25, 50, 100, "All"]],
+    "iDisplayLength" : 15
+  });
+  table.fnSort( [ [2,'desc'] ] );
+});
+
+<% end %>

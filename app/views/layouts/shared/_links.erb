@@ -1,0 +1,42 @@
+<%- if !user_signed_in? %>
+
+  <%- if controller_name == 'sessions' %>
+
+  <li class="dropdown">
+    <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+      Infos
+      <span class="caret"></span>
+    </a>
+    <ul class="dropdown-menu">
+      <li title="Workflow">
+        <a href = "javascript:void(0)" onclick = "document.getElementById('workflow').scrollIntoView({ behavior: 'smooth' });">Workflow</a>
+      </li>
+      <li title="Tutorial">
+        <a href = "javascript:void(0)" onclick = "document.getElementById('tutorial').scrollIntoView({ behavior: 'smooth' });">Tutorial</a>
+      </li>
+      <li title="Credits">
+        <a href = "javascript:void(0)" onclick = "document.getElementById('credits').scrollIntoView({ behavior: 'smooth' });">Credits</a>
+      </li>
+    </ul>
+  </li>
+
+  <%- else %>
+
+  <li title="Infos">
+      <%= link_to 'Infos', "/infos/infos", target: "_self" %>
+  </li>
+    <%- end %> 
+  </li>
+  <li title="Terms of service">
+    <%= link_to 'Terms', "/infos/terms", target: "_self" %>
+  </li>
+  <li title="Software version">
+    <%= link_to 'Version', "/infos/version", target: "_self" %>
+  </li>
+  <li title="Project git repository">
+    <a href="https://c4science.ch/diffusion/1570/genocrunch.git" target="_blank">
+      <i class="git-link fa fa-git-square" aria-hidden="true"></i>
+    </a>
+  </li>
+
+<%- end %>

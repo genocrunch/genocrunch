@@ -1,0 +1,27 @@
+<script>
+  $("#topbar-text").html("Help");
+</script>
+
+<div class="container-fluid">
+  <div class="row form-container">
+    <div class="col-md-10 col-md-offset-1">
+      <h2>Mapping file</h2>
+      <h3>Format:
+        <small>Tab-delimited text.</small>
+      </h3>
+      <h3>Content:<br><br>
+        <small>
+          <ul>
+            <li>First row must contains column names.</li><br>
+            <li>At least one column must include samples names matching headers of the data file ('AnalysisID' in the example below).<br>
+            <em>All samples names specified in the mapping file must be found in the data file but the inverse is not true. You can thus use the mapping file to restrict the analysis to a subset of samples without modifying the data file.</em></li><br>
+            <li>Additional columns define the experimental design.<br>
+            <em>You will be asked which columns are to be considered in the statistical model.</em></li><br>
+          </ul>
+        </small>
+      </h3>
+      <h3>Example:</h3>
+      <pre><%= render :file => '/public/examples/map.txt' %></pre>
+    </div>
+  </div>
+</div>
