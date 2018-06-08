@@ -1,6 +1,6 @@
 class JobsController < ApplicationController
   before_action :set_job, only: [:show, :edit, :update, :destroy, :serve, :serve_archive, :serve_stderr, :view, :refresh, :clone]
-  before_action :check_storage_limit, :only: [:new, :create]
+  before_action :check_storage_limit, only: [:new, :create]
   #  before_action :authenticate_user!, only: [:show, :edit, :update, :destroy, :serve] 
 
   def check_storage_limit
