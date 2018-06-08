@@ -1,7 +1,7 @@
 Genocrunch
 ==========
 
-A web-based platform for mining metagenomic data
+A web-based platform for the analysis of metagenomic and metataxonomic data
 
 **Official web server:** <https://genocrunch.epfl.ch>
 
@@ -261,19 +261,21 @@ host: localhost
 
 ### Initialize the database
 
-Two default users will be created: guest and admin. The guest user is required to try the application without registering/signing-in. The admin user is optional.
-Seting the guest and admin passwords and emails can be done prior to seeding the database, by editing the `db/seeds.rb` file:
+Two default users will be created: guest and admin. The guest user is required to use the application without registering/signing-in. The admin user is optional.
+Setting the guest and admin passwords and emails can be done prior to seeding the database, by editing the `db/seeds.rb` file:
 
 ```
 #db/seeds.rb
 
 User.create!([{username: 'guest',
                role: 'guest',
+               storage_quota: 0, # In bytes (0=illimited)
                email: 'guest@guestmailbox.com', # <- HERE
                confirmed_at: '2017-01-01 00:00:00.000000',
                password: 'guest_account_password'}, # <- HERE
               {username: 'admin',
                role: 'admin',
+               storage_quota: 0, # In bytes (0=illimited)
                email: 'admin@adminmailbox.com', # <- HERE
                confirmed_at: '2017-01-01 00:00:00.000000',
                password: 'admin_account_password'}]) # <- AND THERE

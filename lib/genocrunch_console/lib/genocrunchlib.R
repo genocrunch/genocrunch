@@ -1679,6 +1679,18 @@ AnalyseDiversity <- function(table=NULL, map=NULL, fun=c('richness', 'shannon'),
 
   fun <- fun[fun != '']
 
+
+  # Round counts if not integers
+  if (length(table[table < 0]) > 0) {
+    PrintMsg('"error":"Rarefaction is not applicable because negative values were detected."', verbose, TRUE)
+    return ()
+  }
+  if (length(table[table%%1 > 0]) > 0) {
+    PrintMsg('"warning":"Non-integer values were detected. In order to permit rarefaction, these values were rounded to the nearest integer."', verbose)
+    table <- round(table, digits=0)
+  }
+
+
   # Compute rarefaction curves for diversity
   colsums <- colSums(table)
   min.colsum <- floor(min(colsums))

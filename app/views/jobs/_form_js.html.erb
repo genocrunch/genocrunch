@@ -8,7 +8,6 @@
 
   <% @h_tips['form'].each_with_index do |tip, index| %>
     <% if !current_user and !session["tip#{tip['id']}".to_sym] and tip['target'] %>
-
       var target = $("#<%= tip['target'] %>"),
           offset = target.offset(),
           tip = $('<div></div>', {
@@ -22,10 +21,7 @@
           tip_icon = $('<i></i>', {
             class: "fa fa-info-circle"
           }),
-          tip_close = $('<div></div>', {
-            class: "tip-window-close"
-          });
-      tip_close.html('<i class="fa fa-check" aria-hidden="true"></i> Got it!')
+          tip_close = $('<div class="tip-window-close btn btn-secondary"><i class="fa fa-check" aria-hidden="true"></i> Got it!</div>');
       tip_close.click(function() {
         $("#tip_window<%= index %> p").html('');
         $("#tip_window<%= index %>").css({display:'none'});

@@ -1,12 +1,12 @@
 User.create!([{username: 'guest',
                role: 'guest',
-               storage_quota: 0,
+               storage_quota: 0, # In bytes (0=illimited)
                email: 'guest@guestmailbox.com', # <- HERE
                confirmed_at: '2017-01-01 00:00:00.000000',
                password: 'guest_account_password'}, # <- HERE
               {username: 'admin',
                role: 'admin',
-               storage_quota: 0,
+               storage_quota: 0, # In bytes (0=illimited)
                email: 'admin@adminmailbox.com', # <- HERE
                confirmed_at: '2017-01-01 00:00:00.000000',
                password: 'admin_account_password'}]) # <- AND THERE
