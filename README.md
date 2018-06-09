@@ -16,7 +16,8 @@ A web-based platform for the analysis of metagenomic and metataxonomic data
 - **Git clone URL:** <https://c4science.ch/source/genocrunch-2.1.git>
 - **Documentation:** <https://c4science.ch/source/genocrunch-2.1>
 - **License:** <https://www.gnu.org/licenses/agpl-3.0.md>
-- **Dockerfile:** <https://c4science.ch/source/genocrunch_docker>
+- **Dockerfile:** <https://github.com/genocrunch/genocrunch_docker>
+- **Docker image** <https://hub.docker.com/r/genocrunch/genocrunch_docker>
 
 ## Framework
 
@@ -363,4 +364,4 @@ Note that Examples will not be deleted by this process.
 
 ## Running on Docker
 
-See [here](https://c4science.ch/source/genocrunch_docker).
+See [here](https://github.com/genocrunch/genocrunch_docker).

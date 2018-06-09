@@ -12,9 +12,9 @@
 	<th title="type">Type</th>
       <% end %>
       <th title="status">Status</th>
-      <th title="primary dataset | map | secondary dataset">Data</th>
       <th title="results">Results</th>
       <th title="size">Size</th>
+      <th title="Downloads"><i class='fa fa-download'></i></th>
       <th style="font-weight:normal;"><i title="copy" class="fa fa-clone" aria-hidden="true"></i> | <i title="edit" class="fa fa-pencil" aria-hidden="true"></i> | <i title="delete" class="fa fa-trash-o" aria-hidden="true"></i></th>
     </tr>
   </thead>
@@ -47,22 +47,25 @@
           <% if job.status %>
           <i class="fa <%= job.status == 'running' ? 'fa-circle-o-notch fa-pulse' : job.status == 'completed' ? 'fa-check icon-success' : job.status == 'pending' ? 'fa-ellipsis-h icon-inactive' : 'fa-exclamation-triangle icon-warning' %>" aria-hidden="true"></i>
           <% end %>
-        </td>
-        <td>
-           <%= link_to raw('<i class="fa fa-file-text-o" aria-hidden="true"></i>'), serve_job_path(job.key, :filename => 'input/primary_dataset.txt'),  title: "primary dataset" %>
-	  | <%= link_to raw('<i class="fa fa-file-text-o" aria-hidden="true"></i>'), serve_job_path(job.key, :filename => 'input/map.txt'), title: "map" %>
-	  <% if File.exist? Pathname.new(APP_CONFIG[:data_dir]) + 'users' + job.user_id.to_s + job.key + 'input' + 'secondary_dataset.txt' %> 
-          | <%= link_to raw('<i class="fa fa-file-text-o" aria-hidden="true"></i>'), serve_job_path(job.key, :filename => 'input/secondary_dataset.txt'), title: "secondary dataset" %>
-          <% end %>
-        </td>
         <td>
           <%= link_to raw('<i class="fa fa-eye" aria-hidden="true"></i>'), job_path(job.key), :title => 'show' %>
-          <% if !['pending', 'running'].include? job.status %> 
-          | <%= link_to raw('<i class="fa fa-file-archive-o" aria-hidden="true"></i>'), serve_archive_job_path(job.key), :title => 'download archive' %>
-          <% end %>
         </td>
         <td>
           <%= number_to_human_size(job.size.to_i, precision: 2, prefix: :si) %>
+        </td>
+        </td>
+        <td class='dropdown table-dropdown'>
+          <a class="dropdown-toggle btn btn-secondary btn-sm" href="#" id="jobDataDropdownMenu-<%= job.key %>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+          <ul class="dropdown-menu" aria-labelledby="jobDataDropdownMenu-<%= job.key %>">
+            <li><%= link_to raw('<i class="fa fa-file-text-o"></i> primary dataset'), serve_job_path(job.key, :filename => 'input/primary_dataset.txt'), class: "dropdown-item", title: "primary dataset" %></li>
+            <li><%= link_to raw('<i class="fa fa-file-text-o"></i> map'), serve_job_path(job.key, :filename => 'input/map.txt'), class: "dropdown-item", title: "map" %></li>
+            <% if File.exist? Pathname.new(APP_CONFIG[:data_dir]) + 'users' + job.user_id.to_s + job.key + 'input' + 'secondary_dataset.txt' %> 
+              <li><%= link_to raw('<i class="fa fa-file-text-o"></i> secondary dataset'), serve_job_path(job.key, :filename => 'input/secondary_dataset.txt'), class: "dropdown-item", title: "secondary dataset" %></li>
+            <% end %>
+            <% if !['pending', 'running'].include? job.status %> 
+              <li><%= link_to raw('<i class="fa fa-file-archive-o"></i> archive'), serve_archive_job_path(job.key), class: "dropdown-item", :title => 'archive' %></li>
+            <% end %>
+          </ul>
         </td>
         <td style='white-space:nowrap'>
 	  <%= link_to raw('<i title="copy" class="fa fa-clone" aria-hidden="true"></i>'), clone_job_path(job.key) %>

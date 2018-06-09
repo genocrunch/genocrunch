@@ -8,12 +8,12 @@
     {
      "id":"2",
      "css_string":"right:window_width/2-150, width:'300px',top:0",
-     "html":"You can find some help by clicking on the help icons (<i class='help-icon fa fa-question-circle-o', aria-hidden='true'></i>) and on the <b style='white-space:nowrap'>Infos<i class='fa fa-arrow-right' aria-hidden='true'></i>Doc</b> page."
+     "html":"You can find some help by clicking on the help icons (<i class='help-icon fa fa-question-circle-o', aria-hidden='true'></i>) and on the <b>Doc</b> page."
     },
     {
      "id":"3",
      "target":"examples",
-     "html":"You can load and edit examples here."
+     "html":"You can load and edit <b>examples</b> here."
     }
   ],
   "show":[
@@ -24,7 +24,7 @@
     {
      "id":"5",
      "target":"edit-btn",
-     "html":"You can edit your analysis here."
+     "html":"You can <b>edit</b> your analysis here."
     }
   ]
 }

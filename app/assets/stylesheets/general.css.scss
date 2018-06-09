@@ -67,6 +67,14 @@
   margin-top:56px;
 }
 
+/*.dropdown:hover .dropdown-menu {
+    display: block;
+}*/
+
+.dropdown-menu {
+  overflow:hidden;
+}
+
 .dropdown-item {
   cursor:pointer;
 }

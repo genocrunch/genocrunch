@@ -585,6 +585,7 @@ class Analysis(object):
         # INITIALIZE THE PIPELINE
         self.pipeline = [{'name':'diversity', 'before_step':'transformation', 'status':'pending', 'messages':[]},
                          {'name':'clustering', 'before_step':'analysis', 'status':'pending', 'messages':[]},
+                         {'name':'similarity_network', 'before_step':'analysis', 'status':'pending', 'messages':[]},
                          {'name':'proportions', 'status':'pending', 'messages':[]},
                          {'name':'adonis', 'status':'pending', 'messages':[]},
                          {'name':'pca', 'status':'pending', 'messages':[]},
@@ -593,8 +594,7 @@ class Analysis(object):
                          {'name':'cca', 'status':'pending', 'messages':[]},
                          {'name':'heatmap', 'status':'pending', 'messages':[]},
                          {'name':'change', 'status':'pending', 'messages':[]},
-                         {'name':'correlation_network', 'status':'pending', 'messages':[]},
-                         {'name':'similarity_network', 'status':'pending', 'messages':[]}]
+                         {'name':'correlation_network', 'status':'pending', 'messages':[]}]
 
         # Set parameters from json
         self.parameters = Parameters(json_fp)

@@ -232,11 +232,19 @@ text-align:right
   }
 }
 
+.multiselect {
+  width:auto;
+  max-width:100%;
+  overflow:hidden;
+  text-overflow: ellipsis;
+}
+
 .multiselect-btn-container {
   height:35px;
   position:relative;
   display:block;
 }
+
 
 .form-text {
   width:auto;

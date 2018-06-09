@@ -37,8 +37,8 @@
   </div>
 </div>
 
-
-<%= link_to serve_stderr_job_path(@job.key), :id => 'bugs-report-link', :title => 'Bugs report', :class => 'p-1 float-right hidden' do %>
+<% stderr_dir = Pathname.new(APP_CONFIG[:data_dir]) + "users" + @job.user_id.to_s + @job.key + "output" %>
+<%= link_to serve_stderr_job_path(@job.key), :id => 'bugs-report-link', :title => 'Bugs report', :class => (File.exist?(stderr_dir + "stderr.log.safe") or File.exist?(stderr_dir + "stderr.log.bkp"))? "p-1 float-right" : "p-1 float-right hidden" do %>
   <i class="fa fa-bug" aria-hidden="true"></i>
 <% end %>
 

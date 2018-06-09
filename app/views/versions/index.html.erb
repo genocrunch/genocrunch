@@ -3,8 +3,7 @@
 <%= link_to 'New Version', new_version_path, class: "btn btn-info mb-1" if admin? %>
 <div id='card-deck'>
 <% @versions.reverse.each do |version| %>
-  <% r_version = JSON.parse(version.tools_json).find{|e| e['name'] == 'R' } || nil %>
-  <% list_tools = JSON.parse(version.tools_json).select{ |e| e['version'] != 'NA' and e['name'] != 'R' } %>
+  <% list_tools = JSON.parse(version.tools_json).select{ |e| e['version'] != 'NA' } %>
 
   <div class="card mb-1">
     <div class='card-header'>
@@ -19,10 +18,10 @@
     <div class='card-block'>
       <p class='card-text'><%= version.description %></p>
 
-      <p><%= r_version['version'] if r_version %></p>
 <table id='tools_<%= version.id %>' class='table version-table'>
 <thead  style=' white-space:nowrap;'>
-<th>R package</th>
+<th></th>
+<th>Type</th>
 <th>Category</th>
 <th>Description</th>
 <th>Version</th>
@@ -32,10 +31,12 @@
 <tr>
 <% if @h_tools.keys.include?(t['name']) %>
   <td><a href='<%= @h_tools[t['name']]['man'] %>' target='_blank'><%= t['name'] %></a></td>
-  <td><%= @h_tools[t['name']]['categ'] %></td>
+  <td style='text-align:center'><%= @h_tools[t['name']]['type'] %></td>
+  <td style='text-align:center'><%= @h_tools[t['name']]['categ'] %></td>
   <td><%= @h_tools[t['name']]['description'] %></td>
 <% else %>
 <td><%= t['name'] %></td>
+<td></td>
 <td></td>
 <td></td>
 <% end %>
