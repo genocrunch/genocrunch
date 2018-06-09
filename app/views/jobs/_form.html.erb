@@ -1,6 +1,5 @@
 
-<%= form_for(@job, :url => ((action_name == 'edit') ? job_path(@job.key) : jobs_path), :html => {:multipart => true}) do |f| %>
-
+<%= form_for(@job, :url => ((['edit', 'update'].include?(action_name)) ? job_path(@job.key) : jobs_path), :html => {:multipart => true}) do |f| %>
 
 <% ['primary_dataset', 'map', 'secondary_dataset'].each do |k| %>
   <%= hidden_field_tag "p2[" + k + "]", (params[:p2] && params[:p2][k]) || '' %>

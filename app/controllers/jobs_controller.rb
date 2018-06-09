@@ -1,6 +1,6 @@
 class JobsController < ApplicationController
   before_action :set_job, only: [:show, :edit, :update, :destroy, :serve, :serve_archive, :serve_stderr, :view, :refresh, :clone]
-  before_action :check_storage_limit, only: [:new, :create]
+  before_action :check_storage_limit, only: [:new, :create, :update, :clone]
   #  before_action :authenticate_user!, only: [:show, :edit, :update, :destroy, :serve] 
 
   def check_storage_limit
@@ -108,7 +108,7 @@ class JobsController < ApplicationController
   def serve
     if readable? @job
       sleep 0.5
-      job_dir = Pathname.new(APP_CONFIG[:data_dir]) + 'users' + @job.user.id.to_s + @job.key
+      job_dir = Pathname.new(APP_CONFIG[:data_dir]) + 'users' + @job.user_id.to_s + @job.key
       filename = params[:filename]
       filepath = job_dir + filename
       if File.exist?(filepath)
@@ -124,7 +124,7 @@ class JobsController < ApplicationController
   def serve_archive
     if readable? @job
       `rails make_job_archive[#{@job.key}]`
-      job_dir = Pathname.new(APP_CONFIG[:data_dir]) + 'users' + @job.user.id.to_s + @job.key
+      job_dir = Pathname.new(APP_CONFIG[:data_dir]) + 'users' + @job.user_id.to_s + @job.key
       filename =  "#{@job.key.to_s}.#{APP_CONFIG[:archive_format]}"
       filepath = job_dir + filename
       t = (APP_CONFIG[:archive_format] == 'zip') ? 'zip' : 'tar+gzip'
@@ -137,7 +137,7 @@ class JobsController < ApplicationController
   def serve_stderr
     if readable? @job
       `rails format_job_stderr[#{@job.key}]`
-      job_dir = Pathname.new(APP_CONFIG[:data_dir]) + 'users' + @job.user.id.to_s + @job.key
+      job_dir = Pathname.new(APP_CONFIG[:data_dir]) + 'users' + @job.user_id.to_s + @job.key
       filename =  "stderr.txt"
       filepath = job_dir + filename
       if File.exist?(filepath)
@@ -150,9 +150,8 @@ class JobsController < ApplicationController
     if params[:file_key]
       
       new_data = []
-      
-      user_id = (current_user) ? current_user.id.to_s : "1"
-      dir = Pathname.new(APP_CONFIG[:data_dir]) + "users" + user_id + session[:current_key] + 'input'
+      @job = Job.where(:key => session[:current_key]).first
+      dir = Pathname.new(APP_CONFIG[:data_dir]) + "users" + @job.user_id.to_s + @job.key + 'input'
       filename = params[:file_key] + ".txt"
       filepath = dir + filename
       
@@ -280,15 +279,6 @@ class JobsController < ApplicationController
   def get_statuses
 
     log_file =  Pathname.new(APP_CONFIG[:data_dir]) + "users" + @user.id.to_s + @job.key + 'output' + 'log.json'
-    #stdout_file =  Pathname.new(APP_CONFIG[:data_dir]) + "users" + @user.id.to_s + @job.key + 'output' + 'stdout.log'
-    #stderr_file =  Pathname.new(APP_CONFIG[:data_dir]) + "users" + @user.id.to_s + @job.key + 'output' + 'stderr.log'
-
-    #if File.exist? stdout_file and !File.size(stdout_file) != 0
-    #  @stdout_log = JSON.parse(File.read(stdout_file)).select {|e| e[0] != nil}
-    #end
-    #if File.exist? stderr_file and !File.size(stderr_file) != 0
-    #  @stderr_log = JSON.parse(File.read(stderr_file)).select {|e| e[0] != nil}
-    #end
 
     @h_statuses = {}#'completed' => 1, 'pending' => 2, 'running' => 3, 'failed' => 4}                                                                                                                                          
     Status.all.each do |s|
@@ -480,8 +470,6 @@ class JobsController < ApplicationController
       end
     end
     
-    #end
-    
     if @filename and File.exist? @filename
       @data_json = File.read(@filename)
     end
@@ -498,16 +486,6 @@ class JobsController < ApplicationController
   # ALLOW SESSION VARIABLE UPDATE ON SHOW
   # THIS ALLOW CONDITIONAL RENDERING OF EITHER FIGURES OR EDIT FORM PARTIALS
   def show
-    #    @user = (current_user) ? current_user : User.where(:username => 'guest').first
-    #    if current_user.role == "admin" and session[:which] == "all"
-    #      @jobs = Job.all
-    #      @users = User.all
-    #    else#if current_user
-    #      @jobs = current_user.jobs.all
-    #    end
-    #    session[:context] = params[:context]
-    #  logger.debug("JOB: " + @job.to_json)
-    #check_box belongs_to
     get_basic_info()
     get_statuses()
     get_job_size()
@@ -571,13 +549,6 @@ class JobsController < ApplicationController
   # SET A NEW JOB
   def new
     @user = (current_user) ? current_user : User.where(:username => 'guest').first
-
-    if @user.storage_quota > 0 and @user.total_jobs_size > @user.storage_quota
-      flash[:notice] = 'Sorry, the storage quota is exceeded.\nPlease clean up old analysis first.'
-      redirect_to root_url
-      return
-    end
-
     @job = @user.jobs.new
     session[:current_key] = create_key()
     @job.key = session[:current_key]
@@ -604,7 +575,7 @@ class JobsController < ApplicationController
     if p
       flag=1
 
-      ### check if some parameters are not allowed                                                                                                                                                                             
+      ### check if some parameters are not allowed
       p.each_key do |k|
         if !@h_fields[k] 
           flag = 0
@@ -612,7 +583,7 @@ class JobsController < ApplicationController
         end
       end
       
-      ### check if all parameters required are submitted                                                                                                                                                                       
+      ### check if all parameters required are submitted
       @h_fields.keys.select{|k| @h_fields[k]['optional'] == false}.each do |k|
         #logger.debug("EXPLORE field " + k)
         if (@h_fields[k]['type']== 'file' and ((p[k] and !p[k].blank?
@@ -631,19 +602,15 @@ class JobsController < ApplicationController
 
   def create_dirs
  
-    user_id = (current_user) ? current_user.id.to_s : "1"
-    
-    dir = Pathname.new(APP_CONFIG[:data_dir]) + "users" + user_id
+    dir = Pathname.new(APP_CONFIG[:data_dir]) + "users" + @job.user_id.to_s
     Dir.mkdir dir if !File.exist? dir
-    dir = Pathname.new(APP_CONFIG[:data_dir]) + "users" + user_id + @job.key
+    dir = Pathname.new(APP_CONFIG[:data_dir]) + "users" + @job.user_id.to_s + @job.key
     Dir.mkdir dir if !File.exist? dir
     
   end
   
   def write_files p
-    user_id = @job.user.id.to_s
-    #user_id = (current_user) ? current_user.id.to_s : "1"
-    dir = Pathname.new(APP_CONFIG[:data_dir]) + "users" + user_id + @job.key + 'input'
+    dir = Pathname.new(APP_CONFIG[:data_dir]) + "users" + @job.user_id.to_s + @job.key + 'input'
     Dir.mkdir dir  if !File.exist? dir
     
     form_json = JSON.parse @job.form_json if @job.form_json and !@job.form_json.empty?
@@ -673,7 +640,10 @@ class JobsController < ApplicationController
   def create
 
     @job = Job.new(:key => params[:tmp_key])
-    
+
+    @job.user_id = (current_user) ? current_user.id : 1
+    @job.sandbox = (current_user) ? false : true
+
     create_dirs()
     write_files(params[:p])
 
@@ -684,11 +654,6 @@ class JobsController < ApplicationController
     
     @default = params[:p]
     
-    if current_user
-      @job.user_id = current_user.id
-      @job.sandbox = false
-    end
-
     ## not possible to create a new job with an existing key
     @valid_job = 0 if !@job.key.empty? and Job.where(:key => @job.key).first 
 
@@ -812,16 +777,10 @@ class JobsController < ApplicationController
 
     # Use callbacks to share common setup or constraints between actions.
     def set_job
-#      if current_user.role == "admin"
-#        @job = Job.all.find(params[:key])
-#      else
-#        @job = current_user.jobs.find(params[:key])
-#      end
       @job = Job.where(:key => params[:key] || params[:tmp_key]).first
-      session[:current_key] = @job.key if action_name != 'clone' #if current_user
+      session[:current_key] = @job.key if action_name != 'clone'
       @user = @job.user
       #logger.debug("JOB: " + @job.to_json)
-      #      @job = nil if !readable? @job
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

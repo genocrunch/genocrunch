@@ -65,22 +65,22 @@
     <a class="navbar-brand" href="<%= (current_user) ? jobs_path() : root_path() %>"><%= Rails.application.class.parent_name %></a>
     <ul id="home-pages-list" class="navbar-nav mr-auto mt-2 mt-lg-0">
       <li id="examples" class="nav-item">
-	<%= link_to 'Examples', examples_path, class: "nav-link" %>
+	<%= link_to 'Examples', examples_path, target: "_self", class: "nav-link" %>
       </li>
       <li id="tutorial" class="nav-item">
         <a class="nav-link" href="<%= tutorial_home_index_path %>">Tutorial</a>
       </li>
       <li id="reference" class="nav-item">
-        <a class="nav-link" href="<%= reference_home_index_path %>">Reference</a>
+	<%= link_to 'Doc', doc_home_index_path, target: "_self", class: "nav-link" %>
       </li>
        <li id="infos" class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Infos
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-	  <%= link_to 'Doc', doc_home_index_path, target: "_self", class: "dropdown-item" %>
           <%= link_to 'Terms of service', terms_home_index_path, target: "_self", class: "dropdown-item" %>
           <%= link_to "Versions", versions_path,  target: "_self", class: "dropdown-item" %>
+          <a class="dropdown-item" href="<%= reference_home_index_path %>">Reference</a>
           <% if APP_CONFIG[:info_links] %>
             <% APP_CONFIG[:info_links].each do |link| %>
              <a class='dropdown-item' href="<%= link['href'] %>" target="<%= link['target'] %>"><%= link['name'] %></a>

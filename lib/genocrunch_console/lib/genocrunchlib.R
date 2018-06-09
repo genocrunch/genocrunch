@@ -1481,7 +1481,7 @@ ComputeStats <- function(response=NULL, map=NULL, method='anova',
       PrintMsg(paste('"error":"The model cannot include more than 1 variable when using Wilcoxon rank sum test. Please provide an appropriate model. The current model is: ',
                model, ' (', length(term), ' variables)."', sep=''), verbose, TRUE)
     }
-    samples <- unique(unlist(data[, model]))
+    samples <- as.vector(unlist(unique(unlist(data[, model]))))
     if (length(samples) != 2) {
       PrintMsg(paste('"error":"The Wilcoxon rank sum test can only perform two samples comparison. Please provide an appropriate model. The current model includes the following samples: ',
                sample, '."', sep=''), verbose, TRUE)
@@ -1509,7 +1509,7 @@ ComputeStats <- function(response=NULL, map=NULL, method='anova',
     samples <- unique(unlist(data[, model]))
     if (length(samples) != 2) {
       PrintMsg(paste('"error":"The Wilcoxon signed rank test can only perform two samples paired comparison. Please provide an appropriate model. the current model includes the following samples: ',
-               paste(sample, collapse=', '),
+               paste(samples, collapse=', '),
                '."',
                sep=''),
                verbose, TRUE)
@@ -1555,7 +1555,7 @@ ComputeStats <- function(response=NULL, map=NULL, method='anova',
     samples <- unique(unlist(data[, model]))
     if (length(samples) != 2) {
       PrintMsg(paste('"error":"A t-test can only perform two samples comparison. Please provide an appropriate model. The current model includes the following samples: ',
-               paste(sample, collapse=', '),
+               paste(samples, collapse=', '),
                '."',
                sep=''),
                verbose, TRUE)
@@ -1586,7 +1586,7 @@ ComputeStats <- function(response=NULL, map=NULL, method='anova',
     samples <- unique(unlist(data[, model]))
     if (length(samples) != 2) {
       PrintMsg(paste('"error":"A paired t-test can only perform two samples comparison. Please provide an appropriate model. The current model includes the following samples: ',
-               paste(sample, collapse=', '),
+               paste(samples, collapse=', '),
                '."',
                sep=''),
                verbose, TRUE)
@@ -2708,8 +2708,13 @@ BuildCorrelationNetwork <- function(table=NULL, map=NULL, stats='anova',
   for (i in 1:nnodes) {
     model.json <- c(1:nmodel)
     for (j in 1:nmodel) {
+      if (length(stats) != length(model)) {
+        method = stats[1]
+      } else {
+        method = stats[i]
+      }
       stat <- ComputeStats(response=as.vector(unlist(data[i, ])), map=map,
-                           method=stats, model=model[j], pairwise=FALSE,
+                           method=method, model=model[j], pairwise=FALSE,
                            verbose=FALSE)$summary
       neffect <- length(row.names(stat)[row.names(stat) != 'Residuals'])
       effect.json <- c(1:neffect)

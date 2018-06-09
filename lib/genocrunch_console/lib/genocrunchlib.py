@@ -943,8 +943,14 @@ class Analysis(object):
               m = ','.join(self.parameters.params['advanced_model'])
             else:
               m = self.parameters.params['advanced_model']
+
+            if isinstance(self.parameters.params['advanced_stats'], list):
+              s = ','.join(self.parameters.params['advanced_stats'])
+            else:
+              s = self.parameters.params['advanced_stats']
+
             args_cp.extend(['--stats',
-                            self.parameters.params['advanced_stats'],
+                            s,
                             '--model',
                             m])
 
@@ -952,6 +958,7 @@ class Analysis(object):
           sub.wait()
 
           s = sub.stdout.read()
+          #print s
 
           if s is not None and s != '':
             stdout.append(s)
@@ -987,9 +994,12 @@ class Analysis(object):
                   self.parameters.params['basic_model'] = [self.parameters.params['basic_model']]
                 self.parameters.params['basic_model'].extend(model_to_add)
               else:
-                if not isinstance(self.parameters.params['basic_model'], list):
+                if not isinstance(self.parameters.params['advanced_model'], list):
                   self.parameters.params['advanced_model'] = [self.parameters.params['advanced_model']]
                 self.parameters.params['advanced_model'].extend(model_to_add)
+                if not isinstance(self.parameters.params['advanced_stats'], list):
+                  self.parameters.params['advanced_stats'] = [self.parameters.params['advanced_stats']]
+                self.parameters.params['advanced_stats'].extend(['anova'])
             else:
               Warning(msg='In '+method+': output file not found ('+output_fp+'.txt'+').')
 
