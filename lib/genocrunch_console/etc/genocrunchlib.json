@@ -334,7 +334,7 @@
    "belongs_to":"adonis",
    "help":"Distance metric.",
    "type":"select",
-   "multiple":true,
+   "multiple":false,
    "values":"distance",
    "default":"jaccard"
   },

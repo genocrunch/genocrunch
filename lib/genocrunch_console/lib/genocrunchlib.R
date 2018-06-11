@@ -1481,7 +1481,7 @@ ComputeStats <- function(response=NULL, map=NULL, method='anova',
       PrintMsg(paste('"error":"The model cannot include more than 1 variable when using Wilcoxon rank sum test. Please provide an appropriate model. The current model is: ',
                model, ' (', length(term), ' variables)."', sep=''), verbose, TRUE)
     }
-    samples <- as.vector(unlist(unique(unlist(data[, model]))))
+    samples <- unique(unlist(data[, model]))
     if (length(samples) != 2) {
       PrintMsg(paste('"error":"The Wilcoxon rank sum test can only perform two samples comparison. Please provide an appropriate model. The current model includes the following samples: ',
                sample, '."', sep=''), verbose, TRUE)
@@ -1491,7 +1491,8 @@ ComputeStats <- function(response=NULL, map=NULL, method='anova',
     PrintMsg(paste('"description":"A Wilcoxon rank sum test was performed using the model: ', model,
                    '."', sep=''), verbose)
 
-    summary <- data.frame(row.names=paste(samples, collapse='-'),
+#    summary <- data.frame(row.names=paste(samples, collapse='-'),
+    summary <- data.frame(row.names=model,
                           p.value=wilcox.output$p.value)
 
     pairwise.output <- list()
@@ -1537,7 +1538,8 @@ ComputeStats <- function(response=NULL, map=NULL, method='anova',
                    paste(paste(row.names(data)[data[, model] == samples[1]], row.names(data)[data[, model] == samples[2]], sep='-'), collapse=', '),
                    '."', sep=''), verbose)
 
-    summary <- data.frame(row.names=paste(samples, collapse='-'),
+#    summary <- data.frame(row.names=paste(samples, collapse='-'),
+    summary <- data.frame(row.names=model,
                           p.value=wilcox.output$p.value)
 
     pairwise.output <- list()
@@ -1568,7 +1570,8 @@ ComputeStats <- function(response=NULL, map=NULL, method='anova',
                    sep=''),
                    verbose)
 
-    summary <- data.frame(row.names=paste(samples, collapse='-'),
+#    summary <- data.frame(row.names=paste(samples, collapse='-'),
+    summary <- data.frame(row.names=model,
                           p.value=ttest.output$p.value)
 
     pairwise.output <- list()
@@ -1614,7 +1617,8 @@ ComputeStats <- function(response=NULL, map=NULL, method='anova',
                    paste(paste(row.names(data)[data[, model] == samples[1]], row.names(data)[data[, model] == samples[2]], sep='-'), collapse=', '),
                    '."', sep=''), verbose)
 
-    summary <- data.frame(row.names=paste(samples, collapse='-'),
+#    summary <- data.frame(row.names=paste(samples, collapse='-'),
+    summary <- data.frame(row.names=model,
                           p.value=ttest.output$p.value)
 
     pairwise.output <- list()
@@ -2611,9 +2615,8 @@ BuildHeatMap <- function(table=NULL, map=NULL, stats='anova',
 ################
 getGroupWithHighestMean <- function(data=NULL, map=NULL, column=NULL, verbose=TRUE) {
 
-  PrintMsg('"description":"Determine groups with highest mean abundance."',
+  PrintMsg('"description":"Determined group with highest mean abundance."',
            verbose=verbose)
-
   map <- as.data.frame(map[, unlist(strsplit(column, split=':'))])
   if (ncol(map) == 1) {
     names(map) <- column
@@ -2679,7 +2682,7 @@ BuildCorrelationNetwork <- function(table=NULL, map=NULL, stats='anova',
 
 
   # keep only columns of map that are used in the model
-  map <- FilterMap(map=map, model=model)
+  #map <- FilterMap(map=map, model=model)
 
   # Combine with secondary dataset
   data <- rbind(table, secondary)
@@ -2711,8 +2714,9 @@ BuildCorrelationNetwork <- function(table=NULL, map=NULL, stats='anova',
       if (length(stats) != length(model)) {
         method = stats[1]
       } else {
-        method = stats[i]
+        method = stats[j]
       }
+
       stat <- ComputeStats(response=as.vector(unlist(data[i, ])), map=map,
                            method=method, model=model[j], pairwise=FALSE,
                            verbose=FALSE)$summary
@@ -2788,7 +2792,6 @@ BuildCorrelationNetwork <- function(table=NULL, map=NULL, stats='anova',
       }
     }
   }
-
   return (paste('{"nodes":[',
                 paste(node.json, collapse=','),
                 '],"links":[',

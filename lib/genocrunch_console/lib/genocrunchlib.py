@@ -925,7 +925,6 @@ class Analysis(object):
 
           l['status'] = 'running'
           args_cp = copy(args)
-
           args_cp.extend(['-t',
                           self.primary_dataset.data_fp[i],
                           '-o',
@@ -953,7 +952,6 @@ class Analysis(object):
                             s,
                             '--model',
                             m])
-
           sub = Popen(args_cp, stdout=PIPE, stderr=PIPE)
           sub.wait()
 
