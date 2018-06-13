@@ -21,20 +21,27 @@
     var is_mobile = (typeof window.orientation !== "undefined") || (navigator.userAgent.indexOf('IEMobile') !== -1);
 
     $(document).ready(function() {
-
       if (is_mobile) {
         $('body').html('\
   <div class="align-center">\
-    <h1><%= Rails.application.class.parent_name %><br>\
-    <small>a user-friendly data mining pipeline for metagenomics and metataxonomics</small></h1>\
+    <h1>Welcome to <%= Rails.application.class.parent_name %><br>\
+    <small>a web app for metagenomic and metataxonomic data analysis</small></h1>\
   </div>\
-  <div class="alert alert-danger align-center">\
+  <div class="card alert alert-danger align-center">\
     <h1>Sorry, this app is not supported by mobile devices <i class="fa fa-mobile" aria-hidden="true"></i><br>\
     Try accessing from a computer <i class="fa fa-laptop" aria-hidden="true"></i></h1>\
   </div>\
-  <div class="align-center">\
-    <h2>Tutorial <small>(coming soon)</small></h2>\
-      <iframe width=627 height=353 src="#"></iframe>\
+  <div class="card alert alert-info">\
+    <div>\
+      <h2>Browser support</h2>\
+      <ul class="no-bullets">\
+        <li><i class="fa fa-firefox"></i> <b>Mozilla Firefox</b> <i>tested on version 60.0.1 Quantum (Ubuntu 16.04 LTS/Windows 10/macOS 10.13)</i></li>\
+        <li><i class="fa fa-edge"></i> <b>Microsoft Edge</b> <i>tested on version 42.17134 (Windows 10)</i></li>\
+        <li><i class="fa fa-chrome"></i> <b>Google Chrome</b> <i>tested on version 67.0.3396.79 (Ubuntu 16.04 LTS/Windows 10)</i></li>\
+        <li><i class="fa fa-opera"></i> <b>Opera</b> <i>tested on version 53.0 (Ubuntu 16.04 LTS/Windows 10)</i></li>\
+        <li><i class="fa fa-safari"></i> <b>Safari</b> <i>tested on version 11.1 (macOS 10.13)</i></li>\
+      </ul>\
+    </div>\
   </div>\
         ');
       };
