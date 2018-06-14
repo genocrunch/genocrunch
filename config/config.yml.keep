@@ -6,9 +6,9 @@ development:
   info_links: [{name: 'link_name', href: 'link_url', target: '_blank'}]
 
   # Webmaster email
-  webmaster_email: 'webmaster_email'
+  webmaster_email: webmaster_email
 
-  # Google analytics tag (set to '' to ignore)
+  # Google analytics tag (set to "" to ignore)
   gtag_id: UA-24167610-32
 
   # Send a validation link to user email to confirm registration?
