@@ -50,13 +50,15 @@
   </script>
 
   <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-24167610-32"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'UA-24167610-32', {'anonymize_ip' : true});
-  </script>
+  <% if APP_CONFIG[:gtag_id] != '' %>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=<%= APP_CONFIG[:gtag_id] %>"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '<%= APP_CONFIG[:gtag_id] %>', {'anonymize_ip' : true});
+    </script>
+  <% end %>
 
 
 </head>
