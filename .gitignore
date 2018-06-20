@@ -19,6 +19,9 @@
 /users/*
 !/users/.gitkeep
 
+# Python compiled files
+*.pyc
+
 # Config
 config/config.yml
 config/environments/*
