@@ -169,7 +169,8 @@ $ cd genocrunch \
   && cp config/database.yml.keep config/database.yml \
   && cp config/initializers/devise.rb.keep config/initializers/devise.rb \
   && cp config/environments/development.rb.keep config/environments/development.rb \
-  && cp db/seeds.rb.keep db/seeds.rb
+  && cp db/seeds.rb.keep db/seeds.rb \
+  && cp public/app/TERMS_OF_SERVICE.txt.keep public/app/TERMS_OF_SERVICE.txt
 ```
 
 Run the `install.sh` script (this is not essential for the application):

@@ -32,6 +32,9 @@ config/initializers/devise.rb
 # Version
 version_[0-9-:.]*.json
 
+# Terms of service
+/public/app/TERMS_OF_SERVICE.txt
+
 # Database
 /db/seeds.rb
 config/database.yml
