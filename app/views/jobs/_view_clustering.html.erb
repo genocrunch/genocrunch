@@ -15,8 +15,9 @@
 
       <% end %>
 
-  <i class='fa fa-file-text-o'></i>
-  <%= link_to 'Download file', serve_job_path(@job.key, :filename => 'output/map.txt'), :class => 'btn btn-secondary btn-sm mb-1' %>
+  <%= link_to serve_job_path(@job.key, :filename => 'output/map.txt'), :class => 'btn btn-secondary btn-sm mb-1' do %>
+    <i class='fa fa-file-text-o'></i> Download file
+  <% end %>
 
             <div class='card' title='Clustering details'>
               <div class='card-header'>

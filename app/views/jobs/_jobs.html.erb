@@ -4,17 +4,17 @@
 <table id="jobTable" class="table table-striped table-condensed">
   <thead>
     <tr>
-      <th title="Analysis key"><i class="fa fa-key"></i></th>
-      <th title="name">Name</th>
-      <th title="date">Date</th>
+      <th title="analysis key"><i class="fa fa-key"></i></th>
+      <th title="analysis name">Name</th>
+      <th title="last update">Date</th>
       <% if current_user.role == "admin" %>
         <th title="user">User</th>
-	<th title="type">Type</th>
+	<th title="analysis type">Type</th>
       <% end %>
-      <th title="status">Status</th>
-      <th title="results">Results</th>
-      <th title="size">Size</th>
-      <th title="Downloads"><i class='fa fa-download'></i></th>
+      <th title="analysis status">Status</th>
+      <th title="analysis report">Results</th>
+      <th title="total data size">Size</th>
+      <th title="downloads"><i class='fa fa-download'></i></th>
       <th style="font-weight:normal;"><i title="copy" class="fa fa-clone" aria-hidden="true"></i> | <i title="edit" class="fa fa-pencil" aria-hidden="true"></i> | <i title="delete" class="fa fa-trash-o" aria-hidden="true"></i></th>
     </tr>
   </thead>
@@ -48,7 +48,7 @@
           <i class="fa <%= job.status == 'running' ? 'fa-circle-o-notch fa-pulse' : job.status == 'completed' ? 'fa-check icon-success' : job.status == 'pending' ? 'fa-ellipsis-h icon-inactive' : 'fa-exclamation-triangle icon-warning' %>" aria-hidden="true"></i>
           <% end %>
         <td>
-          <%= link_to raw('<i class="fa fa-eye" aria-hidden="true"></i>'), job_path(job.key), :title => 'show' %>
+          <%= link_to raw('<i class="fa fa-eye" aria-hidden="true"></i>'), job_path(job.key), :title => 'see analysis report' %>
         </td>
         <td>
           <%= number_to_human_size(job.size.to_i, precision: 2, prefix: :si) %>

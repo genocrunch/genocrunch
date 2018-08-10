@@ -118,18 +118,23 @@
   }
 ],
 "Pre-processing":[
+  {"id":"abundance_threshold_type",
+   "type":"threshold_type",
+   "default":"percent",
+   "hidden_field":1
+  },
   {"id":"abundance_threshold",
    "help":"Abundance threshold for filtering.",
    "type":"threshold",
    "default_type":"integer",
    "default_integer":"1",
    "default_percent":"0.03",
-   "placeholder_integer":">0",
+   "placeholder_integer":"An integer over 0",
    "placeholder_percent":"0-100"
   },
-  {"id":"abundance_threshold_type",
+  {"id":"presence_threshold_type",
    "type":"threshold_type",
-   "default":"percent",
+   "default":"int",
    "hidden_field":1
   },
   {"id":"presence_threshold",
@@ -138,13 +143,8 @@
    "default_type":"integer",
    "default_integer":"1",
    "default_percent":"10",
-   "placeholder_integer":">0",
+   "placeholder_integer":"An integer over 0",
    "placeholder_percent":"0-100"
-  },
-  {"id":"presence_threshold_type",
-   "type":"threshold_type",
-   "default":"int",
-   "hidden_field":1
   },
   {"id":"bin_levels",
    "label":"Category binning levels",

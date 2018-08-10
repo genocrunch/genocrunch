@@ -209,12 +209,12 @@ if (opt$method == 'clustering') {
     names(data[['txt']]) <- basename(opt$output)
   }
 } else if (opt$method == 'proportions') {
-  data[['json']] <- AnalyseProportions(table=table,
+  data <- AnalyseProportions(table=table,
                                       verbose=opt$verbose,
                                       graphical=opt$graphical)
 
 } else if (opt$method == 'diversity') {
-  data[['json']] <- AnalyseDiversity(table=table, map=map, fun=fun,
+  data <- AnalyseDiversity(table=table, map=map, fun=fun,
                                      nrar=opt$nrar,
                                      compare_diversity=opt$compare_diversity,
                                      stats=stats,
@@ -240,7 +240,7 @@ if (opt$method == 'clustering') {
 
 } else if (opt$method == 'pca') {
 
-  data[['json']] <- PerformPCA(table=table, map=map,
+  data <- PerformPCA(table=table, map=map,
                                verbose=opt$verbose,
                                graphical=opt$graphical)
 
@@ -252,7 +252,7 @@ if (opt$method == 'clustering') {
 
 } else if (opt$method == 'pcoa') {
 
-  data[['json']] <- PerformPCoA(table=table, map=map,
+  data <- PerformPCoA(table=table, map=map,
                                 fun=fun, json=json, verbose=opt$verbose,
                                 graphical=opt$graphical)
 
@@ -264,21 +264,21 @@ if (opt$method == 'clustering') {
 
 } else if (opt$method == 'change') {
 
-  data[['json']] <- AnalyseChange(table=table, map=map,
+  data <- AnalyseChange(table=table, map=map,
                                   stats=stats,
                                   model=model, json=json,
                                   verbose=opt$verbose, graphical=opt$graphical)
 
 } else if (opt$method == 'heatmap') {
 
-  data[['json']] <- BuildHeatMap(table=table, map=map,
+  data <- BuildHeatMap(table=table, map=map,
                        stats=stats,
                        model=model, secondary=secondary.data, fun=fun, json=json,
                        verbose=opt$verbose, graphical=opt$graphical)
 
 } else if (opt$method == 'correlation_network') {
 
-  data[['json']] <- BuildCorrelationNetwork(table=table, map=map,
+  data <- BuildCorrelationNetwork(table=table, map=map,
                        stats=stats,
                        model=model,
                        json=json, secondary=secondary.data, fun=fun,

@@ -68,10 +68,10 @@
         <span id='analysis-name'><%= @job.name %></span> | <span id='view-title'></span>
       </h2>
 
-      <span id="edit-btn" class="float-right"><%= link_to raw('Edit <i class="fa fa-pencil" aria-hidden="true"></i>'), edit_job_path(:key => @job.key), :class => 'btn btn-primary' %></span>
+      <span id="edit-btn" class="float-right"><%= link_to raw('<i class="fa fa-pencil" aria-hidden="true"></i> Edit Analysis'), edit_job_path(:key => @job.key), :class => 'btn btn-primary', :title => 'Edit Analysis' %></span>
 
-      <%= link_to serve_archive_job_path(@job.key), :id => 'archive-btn', :title => 'Download archive', :class => 'btn btn-secondary float-right mr-1 hidden' do %>
-        <i class="fa fa-file-archive-o" aria-hidden="true"></i>
+      <%= link_to serve_archive_job_path(@job.key), :id => 'archive-btn', :title => 'Download Archive', :class => 'btn btn-secondary float-right mr-1 hidden' do %>
+        <i class="fa fa-file-archive-o" aria-hidden="true"></i> Download Archive
       <% end %>
       
 

@@ -1,35 +1,52 @@
+
      <div class='dropdown'>
         <a class="dropdown-toggle btn btn-success" href="#" id="export-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Export
         </a>
         <ul class="dropdown-menu">
+
+        <div class='dropdown-header'>Standard</div>
+
+          <li>
+            <a id='exportSVG' class='dropdown-item'>Figure SVG</a>
+          </li>
+          <li id='txt-data-export-link'>
+          <% if @txtfilename and File.exist? @txtfilename %>
+            <%= link_to 'Data TXT', serve_job_path(@job.key, :filename => @txtfilename.gsub(/.*#{@job.key}\//, '')), :class => 'dropdown-item' %>
+          <% end %>
+          </li>
+          <li>
+            <a id='exportLegend' class='dropdown-item'>Legend HTML</a>
+          </li>
+
+
+
+        <div class="dropdown-divider"></div> 
+        <div class='dropdown-header'>Advanced</div>
+
+          <% if @datafilename and File.exist? @datafilename %>
             <li>
-              <a id='exportSVG' class='dropdown-item'>Figure SVG</a>
-            </li>
-          <% if @filename and File.exist? @filename %>
-            <li>
-              <%= link_to 'Figure '+@filename.split('.').last().upcase, serve_job_path(@job.key, :filename => @filename), :class => 'dropdown-item' %>
+              <%= link_to 'Data '+@datafilename.split('.').last().upcase, serve_job_path(@job.key, :filename => @datafilename.gsub(/.*#{@job.key}\//, '')), :class => 'dropdown-item' %>
             </li>
           <% end %>
           <% if @imagename and File.exist? @imagename %>
             <li>
-              <%= link_to 'Figure '+@imagename.split('.').last().upcase, serve_job_path(@job.key, :filename => @imagename), :class => 'dropdown-item' %>
+              <%= link_to 'Figure '+@imagename.split('.').last().upcase, serve_job_path(@job.key, :filename => @imagename.gsub(/.*#{@job.key}\//, '')), :class => 'dropdown-item' %>
             </li>
           <% end %>
-          <li>
-            <a id='exportLegend' class='dropdown-item'>Legend HTML</a>
-          </li>
+
+
         </ul>
       </div>
 
-<% if @filename %>
+<% if @datafilename %>
 <%= javascript_tag do %>
 
   $("#exportSVG").on("click", function(){
-    exportFigure('#svg-figure', 'svg', '<%= Pathname(@filename).basename.to_s.split('.').first() %>')
+    exportFigure('#svg-figure', 'svg', '<%= Pathname(@datafilename).basename.to_s.split('.').first() %>')
   })
   $("#exportLegend").on("click", function(){
-    exportFigure('#svg-legend', 'html', 'legend-<%= Pathname(@filename).basename.to_s.split('.').first() %>')
+    exportFigure('#svg-legend', 'html', 'legend-<%= Pathname(@datafilename).basename.to_s.split('.').first() %>')
   })
 
 <% end %>

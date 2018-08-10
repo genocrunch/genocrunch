@@ -97,8 +97,8 @@ ActiveRecord::Schema.define(version: 20180528202115) do
     t.text    "category"
     t.text    "icon"
     t.integer "position"
-    t.boolean "graphical"
-    t.text    "data_format"
+    t.boolean "graphical",	default: "true"
+    t.text    "data_format",	default: "json"
   end
 
 end

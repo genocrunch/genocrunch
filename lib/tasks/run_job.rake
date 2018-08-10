@@ -2,8 +2,9 @@ desc '####################### Run a job'
 task :run_job, [:key] => [:environment] do |t, args|
 
   puts "Executing run_job #{args[:key]}..."
-  
+
   job = Job.where(:key => args[:key]).first
+
   user_dir = Pathname.new(APP_CONFIG[:data_dir]) + "users" + job.user_id.to_s
   data_dir = user_dir + job.key.to_s
   

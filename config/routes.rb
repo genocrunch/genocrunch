@@ -32,6 +32,7 @@ Genocrunch::Application.routes.draw do
       get :serve
       get :serve_archive
       get :serve_stderr
+      get :export_data
       get :view
       get :refresh
       get :clone

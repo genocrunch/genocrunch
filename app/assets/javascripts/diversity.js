@@ -72,7 +72,9 @@ function diversity(id, legend_id, json, RfunctionsDiversity, W = 600, H = 600, f
             sign = sign_table[j][1];
           };
         };
-
+        if (p == 0) {
+          return "p<0.001 ("+ sign +")"
+        }
         return "p="+ p +" ("+ sign +")";
       };
     };
@@ -370,6 +372,18 @@ function diversity(id, legend_id, json, RfunctionsDiversity, W = 600, H = 600, f
 
     //////////////// Control buttons ////////////////
 
+    // Display labels button
+    var showLabels = function() {
+      var label = $(".plot-label");
+      if ($("#labelButton").is(':checked')) {
+        label.attr("display", "inline")
+        label.attr("mass-selected", "true")
+      } else {
+        label.attr("display", "none")
+        label.attr("mass-selected", "false")
+      };
+    };
+
     appendLabelCheckBox(buttons, "Show labels", "Labels", "labelButton", showLabels)
 
     // Search in labels
@@ -442,18 +456,6 @@ function diversity(id, legend_id, json, RfunctionsDiversity, W = 600, H = 600, f
         .data(color_select_options)
         .enter().append("option")
           .text(function (d){ return d;});
-
-    // Display labels button
-    var showLabels = function() {
-      var label = d3.selectAll(".plot-label");
-      if ($("#labelButton").is(':checked')) {
-        label.attr("display", "inline")
-        label.attr("mass-selected", "true")
-      } else {
-        label.attr("display", "none")
-        label.attr("mass-selected", "false")
-      };
-    };
 
     // Draw means button
     var meansButton = buttons.append("div")

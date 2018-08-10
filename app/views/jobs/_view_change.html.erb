@@ -4,8 +4,27 @@
 
   $("#view-title").html("Changes")
 
+<% if @data_json %>
   var fig_data = <%= raw @data_json %>;
 
   foldChange('fig', 'fig-legend', fig_data,  W = 600, H = 600, font_family = "verdana, arial, helvetica, sans-serif", color_palette = d3.schemeCategory10);
+
+  var setExportHref = function() {
+    $('#txt-data-export-link').html('<a class="dropdown-item" href="/jobs/<%= @job.key.to_s %>/export_data?key=<%= @job.key.to_s %>&inputfile=<%= @datafilename.gsub(/.*#{@job.key}\//, '').to_s %>&data_format=change&model=' + $('#modelSelect').val() + '&effect=' + $('#effectSelect').val() + '&comparison=' + $('#compSelect').val() + '">Data TXT</a>')
+  }
+  setExportHref()
+
+  $('#modelSelect').on('change', setExportHref);
+  $('#effectSelect').on('change', setExportHref);
+  $('#compSelect').on('change', setExportHref);
+
+<% else %>
+  var status = '<%= (@final_json)? @final_json[:global_status_by_step]['change'] : 'pending' %>';
+  if (['pending', 'running'].indexOf(status) == -1) {
+    noDataError('#fig-container', '#fig')
+  } else {
+    noDataYet('#fig-container', '#fig')
+  }
+<% end %>
 
 <% end %>

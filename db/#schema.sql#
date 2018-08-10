@@ -1,6 +1,0 @@
-create table jobs(
-id serial,
-created_at timestamp,
-updated_at timestamp,
-primary key id
-);

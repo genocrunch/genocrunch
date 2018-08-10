@@ -6,7 +6,7 @@
   <div class="input-group-btn">
     
     <button id='btn-<%= field['id'] %>' type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-     <%= (field['default_type'] == 'percent') ? 'Percent' : 'Absolute value' %>
+     <%# (field['default_type'] == 'percent') ? 'Percent' : 'Absolute value' %>
     </button>
     <div id = 'select-<%= field['id'] %>' class="dropdown-menu dropdown-menu-right">
       <a class="dropdown-item" href="#">Percent</a>
@@ -15,18 +15,10 @@
   </div>
 </div>
 
-<!--
-    <a class="dropdown-item" href="#">%</a>
-    <a class="dropdown-item" href="#">Absolute value</a>
-  </div>
-</div>
--->
 
+<div id="testtext<%= field['id'] %>"></div>
 <%= javascript_tag do %>
 
-$("#select-<%= field['id'] %> a").click(function(){
-  name =  $(this).html();
-  $("#btn-<%= field['id'] %>").html(name);
   var default_val = {
     'Percent' : "<%= field['default_percent'] %>",
     'Absolute value' : "<%= field['default_integer'] %>"
@@ -40,9 +32,18 @@ $("#select-<%= field['id'] %> a").click(function(){
    'Absolute value' : 'int'
   };
 
- $("#p_<%= field['id'] %>").attr('placeholder', default_placeholder[name]);  
- $("#p_<%= field['id'] %>").val(default_val[name]);
- $("#p_<%= field['id'] %>_type").val(type_val[name]);
+  var field_type = ($("#p_<%= field['id'] %>_type").val() == 'int')? 'Absolute value' : 'Percent';
+
+  $("#btn-<%= field['id'] %>").html(field_type);
+  $("#p_<%= field['id'] %>").attr('placeholder', default_placeholder[field_type]);  
+  //$("#p_<%= field['id'] %>").val(default_val[field_type]);
+
+$("#select-<%= field['id'] %> a").click(function(){
+  name =  $(this).html();
+  $("#btn-<%= field['id'] %>").html(name);
+  $("#p_<%= field['id'] %>").attr('placeholder', default_placeholder[name]);  
+  //$("#p_<%= field['id'] %>").val(default_val[name]);
+  $("#p_<%= field['id'] %>_type").val(type_val[name]);
 });
 
 <% end %>

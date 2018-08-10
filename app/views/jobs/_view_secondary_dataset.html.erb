@@ -1,10 +1,14 @@
 <% if @final_json and @final_json[:status_by_step]['secondary_dataset'] %>
-  <i class='fa fa-file-text-o'></i>
-  <%= link_to 'Original file', serve_job_path(@job.key, :filename => 'input/secondary_dataset.txt'), :class => 'btn btn-secondary btn-sm mb-1' %>
+
+  <%= link_to serve_job_path(@job.key, :filename => 'input/secondary_dataset.txt'), :class => 'btn btn-secondary btn-sm mb-1' do %>
+  <i class='fa fa-file-text-o'></i> Original file
+  <% end %>
+
 <%= render :partial => 'list_messages', :locals => {:data => 'secondary_dataset'} %>
 
 <% end %>
 
 <%= javascript_tag do %>
+
   $("#view-title").html("Secondary dataset")
 <% end %>

@@ -1,5 +1,5 @@
 class JobsController < ApplicationController
-  before_action :set_job, only: [:show, :edit, :update, :destroy, :serve, :serve_archive, :serve_stderr, :view, :refresh, :clone]
+  before_action :set_job, only: [:show, :edit, :update, :destroy, :serve, :serve_archive, :serve_stderr, :export_data, :view, :refresh, :clone]
   before_action :check_storage_limit, only: [:new, :create, :update, :clone]
   #  before_action :authenticate_user!, only: [:show, :edit, :update, :destroy, :serve] 
 
@@ -109,10 +109,10 @@ class JobsController < ApplicationController
     if readable? @job
       sleep 0.5
       job_dir = Pathname.new(APP_CONFIG[:data_dir]) + 'users' + @job.user_id.to_s + @job.key
-      filename = params[:filename]
+      filename = Pathname.new(params[:filename])
       filepath = job_dir + filename
       if File.exist?(filepath)
-        send_file filepath.to_s, type: params[:content_type] || 'text', disposition: (!params[:display]) ? ("attachment; filename=" + filename.gsub("/", "_")) : ''
+        send_file filepath.to_s, type: params[:content_type] || 'text', disposition: (!params[:display]) ? ("attachment; filename=" + Pathname(filename).basename.to_s) : ''
       else
         flash[:notice] = 'Sorry, this file is no longer available, please try again later.'
         redirect_to job_path(@job.key)
@@ -129,7 +129,7 @@ class JobsController < ApplicationController
       filepath = job_dir + filename
       t = (APP_CONFIG[:archive_format] == 'zip') ? 'zip' : 'tar+gzip'
       if File.exist?(filepath)
-        send_file filepath.to_s, type: t, disposition: "attachment; filename=" + filename.gsub("/", "_")
+        send_file filepath.to_s, type: t, disposition: "attachment; filename=" + Pathname(filename).basename.to_s
       end
     end
   end
@@ -141,10 +141,32 @@ class JobsController < ApplicationController
       filename =  "stderr.txt"
       filepath = job_dir + filename
       if File.exist?(filepath)
-        send_file filepath.to_s, type: 'text', disposition: "attachment; filename=" + filename
+        send_file filepath.to_s, type: 'text', disposition: "attachment; filename=" + filename.to_s
       end
     end
   end
+
+  def export_data
+    if readable? @job
+      job_dir = Pathname.new(APP_CONFIG[:data_dir]) + 'users' + @job.user_id.to_s + @job.key
+      inputfile = Pathname.new(params[:inputfile])
+      inputpath = job_dir + inputfile
+      outputpath = inputpath.to_s.split('.').first + '.txt'
+      if File.exist?(inputpath)
+        `rails export_data[#{@job.key.to_s},#{inputpath.to_s},#{params[:data_format].to_s},#{params[:model].to_s},#{params[:effect].to_s},#{params[:comparison].to_s},#{outputpath.to_s}]`
+        if File.exist?(outputpath)
+          send_file outputpath.to_s, type: 'text', disposition: "attachment; filename=" + Pathname(outputpath).basename.to_s
+        else
+          flash[:notice] = 'Sorry, export failed.'
+          redirect_to job_path(@job.key)
+        end
+      else
+        flash[:notice] = 'Sorry, this file is no longer available, please try again later.'
+        redirect_to job_path(@job.key)
+      end
+    end
+  end
+
 
   def read_file_header
     if params[:file_key]
@@ -431,9 +453,11 @@ class JobsController < ApplicationController
       session[:current_level] = (@form_json['bin_levels'] and @form_json['bin_levels'].size > 0) ? @form_json['bin_levels'][0] : nil
     end
     session[:current_level] = params[:current_level].to_i if params[:current_level]
+    session[:selected_view] = params[:partial]
 
     @data_json = nil
-    @filename = nil
+    @datafilename = nil
+    @txtfilename = nil
     @imagename = nil
     @description = ''
     @warning = ''
@@ -445,7 +469,7 @@ class JobsController < ApplicationController
       
       e = @log_json.select{|el| el['type'] == 'analysis'}.first['log'].select{|el| el['name'] == params[:partial]}.first
       if e['levels'] #and @form_json['bin_levels']
-        @i = @form_json['bin_levels'].index(session[:current_level].to_s) 
+        @i = @form_json['bin_levels'].index(session[:current_level].to_s)
         @form_json['bin_levels'].each_index do |li|
           l = @form_json['bin_levels'][li]
           @log += ">" + l.to_s + ";"
@@ -455,26 +479,26 @@ class JobsController < ApplicationController
           end
         end
         e2 = e['levels'][@i]
-        @filename = e2['messages'].select{|el| el['output'] and el['output'].match(/#{@h_views[params[:partial]].data_format}$/)}.map{|el| el['output']}.first
+        @datafilename = e2['messages'].select{|el| el['output'] and el['output'].match(/#{@h_views[params[:partial]].data_format}$/)}.map{|el| el['output']}.first
+        @txtfilename = e2['messages'].select{|el| el['output'] and el['output'].match(/txt$/)}.map{|el| el['output']}.first
         @imagename = e2['messages'].select{|el| el['output'] and el['output'].match(/pdf|png|jpg$/)}.map{|el| el['output']}.first
         @description = e2['messages'].select{|el| el['description']}.map{|el| el['description']}
         @warning = e2['messages'].select{|el| el['warning']}.map{|el| el['warning']}
         @error = e2['messages'].select{|el| el['error']}.map{|el| el['error']}
       else
         @i = -1
-        @filename = e['messages'].select{|el| el['output'] and el['output'].match(/#{@h_views[params[:partial]].data_format}$/)}.map{|el| el['output']}.first
+        @datafilename = e['messages'].select{|el| el['output'] and el['output'].match(/#{@h_views[params[:partial]].data_format}$/)}.map{|el| el['output']}.first
+        @txtfilename = e['messages'].select{|el| el['output'] and el['output'].match(/txt$/)}.map{|el| el['output']}.first
         @imagename = e['messages'].select{|el| el['output'] and el['output'].match(/pdf|png|jpg$/)}.map{|el| el['output']}.first
         @description = e['messages'].select{|el| el['description']}.map{|el| el['description']}
         @warning = e['messages'].select{|el| el['warning']}.map{|el| el['warning']}
         @error = e['messages'].select{|el| el['error']}.map{|el| el['error']}
       end
+      if @datafilename and File.exist? @datafilename
+        @data_json = File.read(@datafilename)
+      end
     end
     
-    if @filename and File.exist? @filename
-      @data_json = File.read(@filename)
-    end
-    session[:selected_view] = params[:partial]
-
     json_file = Rails.root.join('lib', 'genocrunch_console', 'etc', 'genocrunchlib.json')
     file_content = File.read(json_file)
     h = JSON.parse(file_content)

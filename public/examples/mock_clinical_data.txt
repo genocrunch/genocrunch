@@ -1,0 +1,3 @@
+#OTU ID	Smpl1	Smpl2	Smpl3	Smpl4	Smpl5	Smpl6	Smpl7	Smpl8	Smpl9	Smpl10	Smpl11	Smpl12	Smpl13	Smpl14	Smpl15	Smpl16	Smpl17	Smpl18	Smpl19	Smpl20	taxonomy
+IgE
+

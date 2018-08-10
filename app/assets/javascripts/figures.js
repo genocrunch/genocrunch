@@ -1,3 +1,23 @@
+function noDataError(figcontainerid, figid) {
+  $(figcontainerid).addClass('alert alert-danger')
+  $(figid).addClass('align-center')
+  $(figid).html('Sorry, the figure could not be displayed because no data was found.<br>Please refer to logs and bug report for more information.')
+  $('#export-toggle').addClass('disabled')
+}
+
+function noDataYet(figcontainerid, figid) {
+  $(figcontainerid).addClass('alert alert-info')
+  $(figid).addClass('align-center')
+  $(figid).html('This figure is not available yet, please wait.')
+  $('#export-toggle').addClass('disabled')
+}
+
+function figWarning(figcontainerid, figid, text) {
+  $(figcontainerid).addClass('alert alert-warning')
+  $(figid).addClass('align-center')
+  $(figid).html(text)
+}
+
 function exportFigure(id, format, filename) {
 
   var svgData = $(id)[0].outerHTML,

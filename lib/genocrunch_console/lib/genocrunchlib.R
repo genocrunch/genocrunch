@@ -1048,6 +1048,10 @@ AnalyseProportions <- function(table=NULL,
   # Order by decreasing values
   table <- as.data.frame(table[order(rowMeans(table), decreasing=TRUE), ])
 
+  out <- list()
+  out[['txt']] <- table
+  out[['json']] <- Dataframe2DataJson(data=table, xmetadata=map)
+
   # Build stacked barchart
   if (as.logical(graphical) == TRUE) {
     col <- rainbow(nrow(table))
@@ -1068,7 +1072,7 @@ AnalyseProportions <- function(table=NULL,
            fill=col, horiz=FALSE)
   }
 
-  return (Dataframe2DataJson(data=table, xmetadata=map))
+  return (out)
 }
 
 ################
@@ -1694,7 +1698,6 @@ AnalyseDiversity <- function(table=NULL, map=NULL, fun=c('richness', 'shannon'),
     table <- round(table, digits=0)
   }
 
-
   # Compute rarefaction curves for diversity
   colsums <- colSums(table)
   min.colsum <- floor(min(colsums))
@@ -1712,22 +1715,27 @@ AnalyseDiversity <- function(table=NULL, map=NULL, fun=c('richness', 'shannon'),
 
   PrintMsg(paste('"description":"The dataset was rarefied until ', min.colsum, ' counts per sample."', sep=''), verbose)
 
+  out <- list()
+  out[['txt']] <- as.data.frame(matrix(ncol=length(fun), nrow=ncol))
+  names(out[['txt']]) <- fun
+  row.names(out[['txt']]) <- names(table)
+
   data.json <- c(1:length(fun))
   for (i in 1:length(fun)) {
-    div <- matrix(ncol=ncol, nrow=0)
+    div <- matrix(ncol=ncol, nrow=nrar)
     v <- TRUE
     for (j in 1:nrar) {
-      div <- rbind(div,
-                   ComputeDiversity(table=t(rarefied.table[[j]]),
+      div[j, ] <- ComputeDiversity(table=t(rarefied.table[[j]]),
                                     fun=fun[i],
                                     json=json,
-                                    verbose=v))
+                                    verbose=v)
       v <- FALSE
     }
     colnames(div) <- colnames(table)
     row.names(div) <- sample[, 1]
 
     diversity[[i]] <- as.matrix(div)
+    out[['txt']][, i] <- div[nrar, ]
 
     # Build figures
     if (graphical == TRUE) {
@@ -1760,7 +1768,8 @@ AnalyseDiversity <- function(table=NULL, map=NULL, fun=c('richness', 'shannon'),
     data.json[i] <- paste('"', fun[i], '":', diversity2json(diversity[[i]], p.value, map), sep='')
   }
 
-  return (paste('{', paste(data.json, collapse=','), '}', sep=''))
+  out[['json']] <- paste('{', paste(data.json, collapse=','), '}', sep='')
+  return (out)
 }
 
 
@@ -1971,7 +1980,9 @@ PerformPCA <- function(table=NULL, map=NULL, biplot=TRUE,
   data.ind <- as.data.frame(t(as.data.frame(pca.output$ind$coord)))
   row.names(data.ind) <- gsub('Dim.', 'PC', row.names(data.ind))
 
-  data.json <- Dataframe2DataJson(data=data.ind, xmetadata=map)
+  out <- list()
+  out[['txt']] <- as.data.frame(t(data.ind))
+  out[['json']] <- Dataframe2DataJson(data=data.ind, xmetadata=map)
 
   eig.json <- c(1:ncp)
   for (i in 1:ncp) {
@@ -1986,9 +1997,9 @@ PerformPCA <- function(table=NULL, map=NULL, biplot=TRUE,
   if (biplot == TRUE) {
     data.var <- as.data.frame(t(as.data.frame(pca.output$var$coord)))
     row.names(data.var) <- gsub('Dim.', 'PC', row.names(data.var))
-
-    data.json <- paste('{"ind":',
-                  data.json,
+    out[['txt']] <- rbind(out[['txt']], as.data.frame(t(data.var)))
+    out[['json']] <- paste('{"ind":',
+                  out[['json']],
                   ',"var":',
                   Dataframe2DataJson(data=data.var),
                   ',"eig":{',
@@ -1996,8 +2007,8 @@ PerformPCA <- function(table=NULL, map=NULL, biplot=TRUE,
                   '}}',
                   sep='')
   } else {
-    data.json <- paste('{"data":',
-                  data.json,
+    out[['json']] <- paste('{"data":',
+                  out[['json']],
                   ',"eig":{',
                   paste(eig.json, collapse=','),
                   '}}',
@@ -2007,7 +2018,7 @@ PerformPCA <- function(table=NULL, map=NULL, biplot=TRUE,
   PrintMsg('"description":"This is a principal component analysis (PCA) (R package {FactoMineR})."',
            verbose)
 
-  return (data.json)
+  return (out)
 }
 
 ################
@@ -2110,7 +2121,7 @@ PerformPCoA <- function(table=NULL, map=NULL, fun='bray',
                                     fun=fun, json=json, verbose=FALSE))
   row.names(dist) <- names(table)
 
-  data.json <- PerformPCA(table=dist, map=map, biplot=FALSE,
+  out <- PerformPCA(table=dist, map=map, biplot=FALSE,
                           verbose=FALSE, graphical=graphical)
 
   PrintMsg(paste('"description":"This is a principal coordinate analysis (PCoA) (R package {FactoMineR}) based on ',
@@ -2120,7 +2131,7 @@ PerformPCoA <- function(table=NULL, map=NULL, fun='bray',
                  sep=''),
            verbose)
 
-  return (data.json)
+  return (out)
 }
 
 ################
@@ -2265,6 +2276,7 @@ AnalyseChange <- function(table=NULL, map=NULL,
   }
   nmodel <- length(model)
   data.json <- c(1:nmodel)
+  out <- list()
   for (i in 1:nmodel) {
     if (length(stats) != length(model)) {
       method = stats[1]
@@ -2329,6 +2341,9 @@ AnalyseChange <- function(table=NULL, map=NULL,
         v <- FALSE
       }
 
+
+
+      
       for (k in 1:length(effect.json)) {
         for (l in 1:length(effect.json[[k]])) {
           effect.json[[k]][[l]] <- paste('"',
@@ -2337,6 +2352,7 @@ AnalyseChange <- function(table=NULL, map=NULL,
                                          paste(effect.json[[k]][[l]], collapse=','),
                                          ']',
                                          sep='')
+
           if (graphical == TRUE) {
             plot(graphic.data[[k]][[l]]$ab,
                  graphic.data[[k]][[l]]$logfc,
@@ -2362,12 +2378,13 @@ AnalyseChange <- function(table=NULL, map=NULL,
                             sep='')
     }
 
-  return(paste('{"data":{',
+  out[['json']] <- paste('{"data":{',
                paste(data.json, collapse=','),
                '},"names":["',
                paste(row.names(table), collapse='","'),
                '"]}',
-               sep=''))
+               sep='')
+  return(out)
 
 }
 
@@ -2579,8 +2596,9 @@ BuildHeatMap <- function(table=NULL, map=NULL, stats='anova',
                              sep='')
   }
 
-
-  data.json <- paste('{"heatmap":[',
+  out <- list()
+  out[['txt']] <- as.data.frame(data)
+  out[['json']] <- paste('{"heatmap":[',
                      paste(heatmap.json, collapse=','),
                      '],"colnames":["',
                      paste(names(data), collapse='","'),
@@ -2597,7 +2615,7 @@ BuildHeatMap <- function(table=NULL, map=NULL, stats='anova',
                      '}',
                      sep='')
 
-  return (data.json)
+  return (out)
 }
 
 ################
@@ -2792,14 +2810,20 @@ BuildCorrelationNetwork <- function(table=NULL, map=NULL, stats='anova',
       }
     }
   }
-  return (paste('{"nodes":[',
+
+  out <- list()
+  out[['txt']] <- as.data.frame(weight$estimate)
+  names(out[['txt']]) <- row.names(data)
+  row.names(out[['txt']]) <- row.names(data)
+  out[['json']] <- paste('{"nodes":[',
                 paste(node.json, collapse=','),
                 '],"links":[',
                 paste(link.json, collapse=','),
                 '],"legend":{',
                 paste(unlist(legend.json), collapse=','),
                 '}}',
-                sep=''))
+                sep='')
+  return (out)
 
 }
 

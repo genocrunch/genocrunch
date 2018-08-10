@@ -4,8 +4,18 @@
 
   $("#view-title").html("PCoA")
 
+<% if @data_json %>
   var fig_data = <%= raw @data_json %>;
 
   pcoa('fig', 'fig-legend', fig_data,  W = 600, H = 600, font_family = "verdana, arial, helvetica, sans-serif", color_palette = d3.schemeCategory10);
+
+<% else %>
+  var status = '<%= (@final_json)? @final_json[:global_status_by_step]['pcoa'] : 'pending' %>';
+  if (['pending', 'running'].indexOf(status) == -1) {
+    noDataError('#fig-container', '#fig')
+  } else {
+    noDataYet('#fig-container', '#fig')
+  }
+<% end %>
 
 <% end %>

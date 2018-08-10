@@ -125,7 +125,7 @@
    "default_type":"percent",
    "default_integer":"10",
    "default_percent":"0.03",
-   "placeholder_integer":"0",
+   "placeholder_integer":">0",
    "placeholder_percent":"0-100"
   },
   {"id":"presence_threshold_type",

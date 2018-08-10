@@ -28,16 +28,9 @@ class User < ActiveRecord::Base
       }
   end
   
-  validates :password,
-    :presence => {
-      :on=>:create
-    },
-    :confirmation => {
-      :on=>:create
-    },
-    :length => {
-      :within => Devise.password_length
-    }
+  validates_presence_of    :password, :on=>:create
+  validates_confirmation_of    :password, :on=>:create
+  validates_length_of    :password, :within => Devise.password_length, :allow_blank => true
 
   protected
 

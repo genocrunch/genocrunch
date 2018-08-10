@@ -956,7 +956,7 @@ class Analysis(object):
           sub.wait()
 
           s = sub.stdout.read()
-          #print s
+          print s
 
           if s is not None and s != '':
             stdout.append(s)

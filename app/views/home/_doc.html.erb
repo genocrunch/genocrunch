@@ -43,7 +43,7 @@ The results of clustering are automatically inferred as additional models into o
 <p>New analyses can be submitted via the <a class='btn btn-primary btn-sm' href="<%= new_job_path %>" target='_self'>New Analysis</a> button of the topbar. If the user is signed out, the analysis session will be associated to the browser session and remain available as long as the browser is not closed. If the user had been signed-in, the analysis will be stored in his personal index. Analyses parameters are set by filling a single form comprising four parts for <b>Inputs</b>, <b>Pre-processing</b>, <b>Transformation</b> and <b>Analysis</b>. Analyses are then submitted via the <span class='btn btn-success btn-sm'>Start Analysis</span> button located at the bottom the form. See the <b>Inputs and Tools</b> section below for details.</p>
 
 <h3 id='editing-an-analysis'>Editing an analysis</h3>
-<p>Analyses can be edited via the associated <span class='btn btn-primary btn-sm'>Edit</span> button present on the analysis page and via the edit icons (<i class="fa fa-pencil-square-o" aria-hidden="true"></i>) of the analysis index (for signed-in users only). Editing is performed by updating the analysis form and submiting the modifications via the <span class='btn btn-success btn-sm'>Restart Analysis</span> button located at the bottom of the form.</p>
+<p>Analyses can be edited via the associated <span class='btn btn-primary btn-sm'>Edit Analysis</span> button present on the analysis page and via the edit icons (<i class="fa fa-pencil-square-o" aria-hidden="true"></i>) of the analysis index (for signed-in users only). Editing is performed by updating the analysis form and submiting the modifications via the <span class='btn btn-success btn-sm'>Restart Analysis</span> button located at the bottom of the form.</p>
 
 <h3 id='cloning-an-analysis'>Cloning an analysis</h3>
 <p>Analyses can be copied via the copy icons (<i class="fa fa-clone" aria-hidden="true"></i>) of the analysis index (for signed-in users only).</p>
@@ -498,14 +498,24 @@ Spl12	Control	F
 <h2 id='analysis-report'>Analysis report</h2>
   <p>A detailed analysis report is generated for each analysis. It is available directly after creating/updating a new analysis via the <span class='btn btn-secondary btn-sm'>My Analysis</span> button of the topbar or via the corresponding icon (<i class='fa fa-eye'></i>) in the analysis index (for signed-in users only). The analysis report includes detailed descriptions of the tools and methods used, possible warning and error logs as well as intermediate files, final files and interactive figures as they become available. Information for the pre-processing and data transformation are available for the primary dataset and the optional secondary dataset in their respective sections. Figures and descriptions for each analysis are available in separate sections. If multiple binning levels were specified, figures for each levels can be accessed via the associated <b>Level</b> button.</p>
 
-<h3 id='exporting-figures'>Exporting figures</h3>
-<p>Figures can be exported via the associated <span class='btn btn-success btn-sm dropdown-toggle'>Export</span> menu. All figures can be exported as a vector image in the SVG format. Some figures are also available in the PDF format, but PDFs are generated in the same time as the figure raw data and cannot be edited with the interactive visualization tools. Raw figure data are also available either in the JSON format, the TXT format or both. Figure legends are currently only available in the HTML format.</p>
+<h3 id='exporting-figures'>Exporting figures and data</h3>
+<p>Figures and their corresponding legends and data can be exported via the associated <span class='btn btn-success btn-sm dropdown-toggle'>Export</span> menu.
+<ul>
+  <li><b>Standard export</b>
+    <p>Includes a vector image in the SVG format as well as a figure legend in HTML format. Data in a tab-delimited text format is also proposed for some figures.
+    </p>
+  </li>
+  <li><b>Advanced export</b>
+    <p>Includes raw data in JSON format. R-generated PDFs are also proposed for some figures.
+    </p>
+  </li>
+</ul>
 
 <h3 id='archive'>Archive</h3>
-<p>Files containing initial, intermediate and final data as well as the analysis log and logs for standard output and standard error are automatically included into a .<%= APP_CONFIG[:archive_format] %> archive. This archive can be downloaded via the <span class='btn btn-secondary btn-sm'><i class="fa fa-file-archive-o" aria-hidden="true"></i></span> button of the analysis report page or via the corresponding icon (<i class="fa fa-file-archive-o" aria-hidden="true"></i>) in the analysis index (for signed-in users only). Although some figures may be automatically included in the archive in the form of a minimal PDF file, the archive does generally not contain figure images. These should be exported separately via the <span class='btn btn-success btn-sm dropdown-toggle'>Export</span> menu.</p>
+<p>Files containing initial, intermediate and final data as well as the analysis log and logs for standard output and standard error are automatically included into a .<%= APP_CONFIG[:archive_format] %> archive. This archive can be downloaded via the <span class='btn btn-secondary btn-sm'><i class="fa fa-file-archive-o" aria-hidden="true"></i> Download Archive</span> button of the analysis report page or via the corresponding icon (<i class="fa fa-file-archive-o" aria-hidden="true"></i>) in the analysis index (for signed-in users only). Although some figures may be automatically included in the archive in the form of a rough PDF file, the archive does generally not contain figure images. These should be exported separately via the <span class='btn btn-success btn-sm dropdown-toggle'>Export</span> menu.</p>
 
 <h3 id='bugs-report'>Bugs report</h3>
-<p>During computation (while the analysis is running), the standard error (stderr) stream is redirected into a bugs report that can be downloaded using the <i class="fa fa-bug" aria-hidden="true"></i> link located at the bottom-right of the details page in the analysis report.</p>
+<p>During computation (while the analysis is running), the standard error (stderr) stream is redirected into a bugs report that can be downloaded using the <span class='btn btn-secondary btn-sm'><i class="fa fa-bug" aria-hidden="true"></i> Bugs Report</span> button located at the bottom-right of the details page in the analysis report.</p>
 
 <h2 id='usage-limits'>Usage limits</h2>
   <h3 id=time-limits'>Time limits</h3>
