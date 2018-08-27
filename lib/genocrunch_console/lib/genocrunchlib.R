@@ -1878,6 +1878,10 @@ PerformAdonis <- function(table=NULL, map=NULL, fun='bray',
            sep=''),
            verbose)
 
+  if ((nrow(table) < 4) || (ncol(table) < 4)) {
+    PrintMsg('"error":"Not enough data to perform statistics."', TRUE, TRUE)
+  }
+
   # Correct for negative entries by adding a scalar (Caillez correction method)
   if (min(table) < 0) {
     c <- abs(min(table))
@@ -1967,6 +1971,14 @@ PerformAdonis <- function(table=NULL, map=NULL, fun='bray',
 PerformPCA <- function(table=NULL, map=NULL, biplot=TRUE,
                        verbose=TRUE, graphical=TRUE) {
 
+
+  PrintMsg('"description":"This is a principal component analysis (PCA) (R package {FactoMineR})."',
+           verbose)
+
+  if ((nrow(table) < 2) || (ncol(table) < 2)) {
+    PrintMsg('"error":"Not enough dimensions to perform dimmensional reduction."', TRUE, TRUE)
+  }
+
   suppressMessages(library('FactoMineR'))
 
   ncp <- min(max(2, ncol(table)), 5)
@@ -2014,9 +2026,6 @@ PerformPCA <- function(table=NULL, map=NULL, biplot=TRUE,
                   '}}',
                   sep='')
   }
-
-  PrintMsg('"description":"This is a principal component analysis (PCA) (R package {FactoMineR})."',
-           verbose)
 
   return (out)
 }
@@ -2712,8 +2721,8 @@ BuildCorrelationNetwork <- function(table=NULL, map=NULL, stats='anova',
   # Check that there is no constant data
   RemoveConstantRows(table=data, verbose=TRUE)
 
-  if ((nrow(data) < 3) || (ncol(data) < 3)) {
-    PrintMsg('"error":"Not enough data to compute a network (min 3 rows and 3 columns)."', TRUE, TRUE)
+  if ((nrow(data) < 2) || (ncol(data) < 3)) {
+    PrintMsg('"error":"Not enough data to compute a network (min 2 rows and 3 columns)."', TRUE, TRUE)
   }
 
   # Calculate the correlation matrix
@@ -2874,11 +2883,17 @@ BuildSimilarityNetwork <- function(table=NULL, map=NULL, funs=NULL,
   # Calculate similarity matrices
   mat <- list()
   for (i in 1:length(table)) {
-    fun <- funs[1]
-    if (length(funs) == length(table)) {
-      fun <- funs[i]
+
+    if ((nrow(table[[i]]) < 3) || (ncol(table[[i]]) < 3)) {
+      PrintMsg('"warning":"Not enough data to compute a network (min 3 rows and 3 columns)."', TRUE)
+      mat[[i]] <- NULL
+    } else {
+      fun <- funs[1]
+      if (length(funs) == length(table)) {
+        fun <- funs[i]
+      }
+      mat[[i]] <- CreateAdjacencyMatrix(CreateSimilarityMatrix(table[[i]], fun))
     }
-    mat[[i]] <- CreateAdjacencyMatrix(CreateSimilarityMatrix(table[[i]], fun))
   }
 
   # If multiple matrices exist, fuse them

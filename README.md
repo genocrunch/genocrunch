@@ -161,7 +161,7 @@ Create a new rails project and add the Genocrunch files:
 ```
 $ rails new genocrunch -d postgresql -B
 $ git clone https://git@c4science.ch/source/genocrunch-2.1.git /tmp/genocrunch
-$ rsync -r /tmp/genocrunch/ /genocrunch
+$ rsync -r /tmp/genocrunch/ ./genocrunch
 $ sudo rm -r /tmp/genocrunch
 $ cd genocrunch \
   && cp gitignore.keep .gitignore \
@@ -169,6 +169,7 @@ $ cd genocrunch \
   && cp config/database.yml.keep config/database.yml \
   && cp config/initializers/devise.rb.keep config/initializers/devise.rb \
   && cp config/environments/development.rb.keep config/environments/development.rb \
+  && cp config/environment_variables.rb.keep config/environment_variables.rb \
   && cp db/seeds.rb.keep db/seeds.rb \
   && cp public/app/TERMS_OF_SERVICE.txt.keep public/app/TERMS_OF_SERVICE.txt
 ```
@@ -178,12 +179,16 @@ Run the `install.sh` script (this is not essential for the application):
 ```
 $ chmod 755 install.sh
 $ ./install.sh
-$ source .bashrc  # or .bash_profile for macOS
+$ source ~/.bashrc  # or .bash_profile for macOS
 ```
-The Genocrunch web app will store data files in `users/`. To store data in another location, use a simlink:
-
+The Genocrunch web app will store data files in `users/`:
 ```
-$ rmdir users && ln -s /path/to/your/custom/storage/location users
+$ mkdir users
+```
+Or, to store data in another location, use a simlink:
+```
+$ mkdir /path/to/your/custom/storage/location
+$ ln -s /path/to/your/custom/storage/location users
 ```
 
 ### Ruby libraries (gems)
@@ -198,6 +203,8 @@ $ bundle install
 
 Set the application configuration variables in the `config/config.yml` file to fit the current installation needs.
 All variables are documented in the development section of the file.
+
+Edit the devise secret key in `config/environment_variables.rb`.
 
 ### Set genocrunch emails
 
@@ -260,6 +267,19 @@ password: mypassword
 ...
 host: localhost
 ...
+```
+
+Finally, ensure the md5 identification is set in `/etc/postgresql/9.?/main/pg_hba.conf`:
+```
+#/etc/postgresql/9.?/main/pg_hba.conf
+...
+host    all             all             0.0.0.0/0               md5
+...
+```
+
+Restart the PostgreSQL service:
+```
+$ sudo /etc/init.d/postgresql restart
 ```
 
 ### Initialize the database

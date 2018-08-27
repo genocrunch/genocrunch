@@ -26,8 +26,10 @@
 config/config.yml
 config/environments/*
 !config/environments/*.keep
+config/environment_variables.rb
 config/initializers/devise.rb
 .env
+
 
 # Version
 version_[0-9-:.]*.json
