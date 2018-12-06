@@ -29,12 +29,13 @@
               <%= link_to 'Data '+@datafilename.split('.').last().upcase, serve_job_path(@job.key, :filename => @datafilename.gsub(/.*#{@job.key}\//, '')), :class => 'dropdown-item' %>
             </li>
           <% end %>
+<!--
           <% if @imagename and File.exist? @imagename %>
             <li>
               <%= link_to 'Figure '+@imagename.split('.').last().upcase, serve_job_path(@job.key, :filename => @imagename.gsub(/.*#{@job.key}\//, '')), :class => 'dropdown-item' %>
             </li>
           <% end %>
-
+-->
 
         </ul>
       </div>
