@@ -1,15 +1,16 @@
 development:
   # Genocrunch main directory
-  data_dir: /path/to/genocrunch
+  data_dir: /path/to/genocrunch/storage
 
   # Additional link(s) that should be included in the Infos menu of the topbar (set to [] to ignore)
-  info_links: [{name: 'link_name', href: 'link_url', target: '_blank'}]
+  # format must look like: [{name: 'link_name_1', href: 'link_url_1', target: '_blank'}, {name: 'link_name_2', href: 'link_url_2', target: '_blank'}]
+  info_links: []
 
   # Webmaster email
   webmaster_email: webmaster_email
 
   # Google analytics tag (set to "" to ignore)
-  gtag_id: UA-24167610-32
+  gtag_id: ""
 
   # Send a validation link to user email to confirm registration?
   user_confirmable: false
@@ -24,10 +25,10 @@ development:
   max_job_age: 365
 
 production:
-  data_dir: /path/to/genocrunch
-  info_links: [{name: 'link_name', href: 'link_url', target: '_blank'}]
-  webmaster_email: 'webmaster_email'
-  gtag_id: UA-24167610-32
+  data_dir: /path/to/genocrunch/storage
+  info_links: []
+  webmaster_email: webmaster_email
+  gtag_id: ""
   user_confirmable: false
   archive_format: zip
   max_sandbox_job_age: 2
