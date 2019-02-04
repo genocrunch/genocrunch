@@ -9,7 +9,7 @@
 *.tmp
 /tmp/*
 /tmp/storage/*
-!/tmp/storage/.gitkeep
+!/tmp/storage/.keep
 
 # log files
 *.log
@@ -17,7 +17,7 @@
 
 # Storage directory
 /users/*
-!/users/.gitkeep
+!/users/.keep
 
 # Python compiled files
 *.pyc
@@ -26,8 +26,10 @@
 config/config.yml
 config/environments/*
 !config/environments/*.keep
+config/environment_variables.rb
 config/initializers/devise.rb
 .env
+
 
 # Version
 version_[0-9-:.]*.json
