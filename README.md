@@ -3,21 +3,20 @@ Genocrunch
 
 A web-based platform for the analysis of metagenomic and metataxonomic data
 
-**Official web server:** <https://genocrunch.epfl.ch>
+**Official web server:** https://genocrunch.epfl.ch
 
 ## Rights
 
-- **Copyright:** All rights reserved. ECOLE POLYTECHNIQUE FEDERALE DE LAUSANNE, Switzerland, Laboratory of Intestinal Immunology, 2016-2018
 - **License:** GNU AGPL 3 (See LICENSE.txt for details)
-- **Authors:** AR Rapin, FPA David, C Pattaroni, J Rougemont, BJ Marsland and NL Harris
 
 ## Resources
 
-- **Git clone URL:** <https://c4science.ch/source/genocrunch-2.1.git>
-- **Documentation:** <https://c4science.ch/source/genocrunch-2.1>
-- **License:** <https://www.gnu.org/licenses/agpl-3.0.md>
-- **Dockerfile:** <https://github.com/genocrunch/genocrunch_docker>
-- **Docker image** <https://hub.docker.com/r/genocrunch/genocrunch_docker>
+- **Git clone URL:** https://github.com/genocrunch/genocrunch.git
+- **Documentation:** https://github.com/genocrunch/genocrunch
+- **License:** https://www.gnu.org/licenses/agpl-3.0.md
+- **Dockerfile:** https://github.com/genocrunch/genocrunch-docker
+- **Docker image** https://hub.docker.com/r/genocrunch/genocrunch-docker
+- **Official web server:** https://genocrunch.epfl.ch
 
 ## Framework
 
@@ -160,7 +159,7 @@ Create a new rails project and add the Genocrunch files:
 
 ```
 $ rails new genocrunch -d postgresql -B
-$ git clone https://git@c4science.ch/source/genocrunch-2.1.git /tmp/genocrunch
+$ git clone https://github.com/genocrunch/genocrunch.git /tmp/genocrunch
 $ rsync -r /tmp/genocrunch/ ./genocrunch
 $ sudo rm -r /tmp/genocrunch
 $ cd genocrunch \
@@ -387,3 +386,7 @@ Note that Examples will not be deleted by this process.
 ## Running on Docker
 
 See [here](https://github.com/genocrunch/genocrunch_docker).
+
+## Contributing
+
+Thank you for your interest in contributing. Get started [here](https://github.com/genocrunch/genocrunch/CONTRIBUTING.md).
